@@ -1,0 +1,176 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               Int            @id @default(autoincrement())
+  username         String         @db.VarChar(20)
+  password         String         @db.Char(60)
+  email            String         @db.VarChar(254)
+  isAdmin          Boolean        @default(false)
+  avatar           String         @db.Text
+  biography        String         @db.VarChar(170)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  isActivated      Boolean        @default(false)
+  threads          Thread[]
+  posts            Post[]
+  likes            Like[]
+  reportsSent      Report[]       @relation("ReportSender")
+  reportsReceived  Report[]       @relation("ReportedUser")
+  reportsHandled   Report[]
+  bansReceived     Ban[]          @relation("BannedUser")
+  bansIssued       Ban[]
+  sessions         Session[]
+  verifications    Verification[]
+  chatsStarted     Chat[]         @relation("FirstSender")
+  chatsUsed        Chat[]
+  messagesSent     Message[]      @relation("MessageSender")
+  messagesReceived Message[]
+  blocksIssued     Block[]        @relation("Blocker")
+  blocksReceived   Block[]
+}
+
+model Category {
+  id        Int        @id @default(autoincrement())
+  title     String     @db.VarChar(64)
+  subforums Subforum[]
+}
+
+model Subforum {
+  id          Int      @id @default(autoincrement())
+  title       String   @db.VarChar(64)
+  logo        String   @db.Text
+  description String   @db.VarChar(170)
+  category    Category @relation(fields: [categoryId], references: [id])
+  categoryId  Int
+  isHidden    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  threads     Thread[]
+}
+
+model Thread {
+  id         Int      @id @default(autoincrement())
+  title      String   @db.VarChar(170)
+  author     User     @relation(fields: [authorId], references: [id])
+  authorId   Int
+  subforum   Subforum @relation(fields: [subforumId], references: [id])
+  subforumId Int
+  isPinned   Boolean  @default(false)
+  isLocked   Boolean  @default(false)
+  isHidden   Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  posts      Post[]
+}
+
+model Post {
+  id           Int      @id @default(autoincrement())
+  content      String   @db.Text
+  author       User     @relation(fields: [authorId], references: [id])
+  authorId     Int
+  thread       Thread   @relation(fields: [threadId], references: [id])
+  threadId     Int
+  parentPostId Int?
+  parentPost   Post?    @relation("ParentChildPosts", fields: [parentPostId], references: [id])
+  childPosts   Post[]   @relation("ParentChildPosts")
+  isHidden     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  Like         Like[]
+}
+
+model Like {
+  id       Int  @id @default(autoincrement())
+  author   User @relation(fields: [authorId], references: [id])
+  authorId Int
+  post     Post @relation(fields: [postId], references: [id])
+  postId   Int
+}
+
+model Report {
+  id            Int      @id @default(autoincrement())
+  targetUser    User     @relation("ReportedUser", fields: [targetUserId], references: [id])
+  targetUserId  Int
+  author        User     @relation("ReportSender", fields: [authorId], references: [id])
+  authorId      Int
+  reason        String   @db.VarChar(1024)
+  handledBy     User?    @relation(fields: [handledById], references: [id])
+  handledById   Int?
+  notes         String?  @db.VarChar(1024)
+  isActionTaken Boolean?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Ban {
+  id           Int      @id @default(autoincrement())
+  targetUser   User     @relation("BannedUser", fields: [targetUserId], references: [id])
+  targetUserId Int
+  author       User     @relation(fields: [authorId], references: [id])
+  authorId     Int
+  reason       String   @db.VarChar(1024)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  expiresAt    DateTime
+}
+
+model Session {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  token     String   @db.Char(60)
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+}
+
+model Verification {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  type      Int
+  token     String   @db.Char(60)
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+}
+
+model Chat {
+  id        Int       @id @default(autoincrement())
+  userOne   User      @relation("FirstSender", fields: [userOneId], references: [id])
+  userOneId Int
+  userTwo   User      @relation(fields: [userTwoId], references: [id])
+  userTwoId Int
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  messages  Message[]
+}
+
+model Message {
+  id         Int      @id @default(autoincrement())
+  sender     User     @relation("MessageSender", fields: [senderId], references: [id])
+  senderId   Int
+  receiver   User     @relation(fields: [receiverId], references: [id])
+  receiverId Int
+  content    String   @db.VarChar(1024)
+  chat       Chat     @relation(fields: [chatId], references: [id])
+  chatId     Int
+  createdAt  DateTime @default(now())
+}
+
+model Block {
+  id        Int      @id @default(autoincrement())
+  blocker   User     @relation("Blocker", fields: [blockerId], references: [id])
+  blockerId Int
+  blocked   User     @relation(fields: [blockedId], references: [id])
+  blockedId Int
+  createdAt DateTime @default(now())
+}
