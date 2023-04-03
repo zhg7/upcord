@@ -7,7 +7,7 @@ import Button from 'primevue/button';
 
 import { ref } from 'vue';
 
-const username = ref(null);
+const email = ref(null);
 const password = ref(null);
 
 </script>
@@ -16,21 +16,28 @@ const password = ref(null);
     <main>
         <div class="card">
             <Card>
-                <template #title> <h3 class="flex justify-content-center">Iniciar sesión</h3> </template>
+                <template #title>
+                    <h3 class="flex justify-content-center">Iniciar sesión</h3>
+                </template>
                 <template #content>
                     <div class="card flex justify-content-center">
                         <form class="flex flex-column gap-4">
                             <span class="p-float-label">
-                                <InputText id="username" v-model="username" />
-                                <label for="username">Nombre de usuario</label>
+                                <InputText class="w-full" id="email" v-model="email" />
+                                <label for="email">Dirección de e-mail</label>
                             </span>
-                            <span class="p-float-label">
+                            <span class="p-float-label">    
                                 <Password id="password" v-model="password" :feedback=false toggleMask/>
                                 <label for="password">Contraseña</label>
                             </span>
-                            <Button label="He olvidado mi contraseña" link/>
                             <Button label="Entrar" />
                         </form>
+                    </div>
+                </template>
+                <template #footer>
+                    <div class="flex justify-content-center">
+                        <Button label="He olvidado mi contraseña" link />
+                        <Button label="No estoy registrado" link />
                     </div>
                 </template>
             </Card>
