@@ -16,7 +16,7 @@ const router = createRouter({
       name: 'login',
       component: () => import('../components/TheLogin.vue'),
       meta: {
-        title: `Iniciar sesion - ${DEFAULT_TITLE}`
+        title: `Iniciar sesión - ${DEFAULT_TITLE}`
       }
     },
     {

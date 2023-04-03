@@ -15,6 +15,7 @@ const username = ref("");
 const password = ref("");
 const repeatPassword = ref("");
 const rememberMe = ref(false);
+const acceptTerms = ref(false);
 
 </script>
 <template>
@@ -42,22 +43,25 @@ const rememberMe = ref(false);
                         <Password id="repeatPassword" v-model="repeatPassword" :feedback=false toggleMask />
                         <label for="repeatPassword">Repite la contraseña</label>
                     </span>
-                    <div v-if="isLogin" class="flex align-items-center">
+                    <div v-else class="flex align-items-center">
                         <Checkbox id="rememberMe" v-model="rememberMe" :binary="true" />
                         <label for="rememberMe" class="ml-2">Recuérdame</label>
                     </div>
                     <div v-if="!isLogin" class="flex align-items-center">
-                        <Checkbox id="rememberMe" v-model="rememberMe" :binary="true" />
-                        <label for="rememberMe" class="ml-2"><small>Acepto los términos de uso y la política de privacidad</small></label>
+                        <Checkbox id="acceptTerms" v-model="acceptTerms" :binary="true" />
+                        <label for="acceptTerms" class="ml-2"><small>Acepto los términos de uso<br /> y la política de
+                                privacidad</small></label>
                     </div>
-                    <Button label="Entrar" />
+                    <Button v-if="isLogin" label="Entrar" />
+                    <Button v-else label="Registrar" />
                 </form>
             </div>
         </template>
         <template #footer>
-            <div v-if="isLogin" class="flex justify-content-center">
-                <Button label="He olvidado mi contraseña" link />
-                <Button label="No estoy registrado" link />
+            <div class="flex justify-content-center">
+                <Button v-if="isLogin" label="He olvidado mi contraseña" link />
+                <router-link v-if="isLogin" to="/signup"><Button label="No estoy registrado" link /></router-link>
+                <router-link v-else to="/login"><Button label="Ya estoy registrado" link /></router-link>
             </div>
         </template>
     </Card>
