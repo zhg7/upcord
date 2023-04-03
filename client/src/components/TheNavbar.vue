@@ -10,13 +10,18 @@ const items = ref([
         icon: 'pi pi-fw pi-comments'
     },
     {
+        label: 'Chats',
+        icon: 'pi pi-fw pi-envelope'
+    },
+    {
         label: 'Iniciar sesión',
         icon: 'pi pi-fw pi-sign-in',
         to: "login"
     },
     {
         label: 'Crear cuenta',
-        icon: 'pi pi-fw pi-user-plus'
+        icon: 'pi pi-fw pi-user-plus',
+        to: "signup"
     },
 ]);
 

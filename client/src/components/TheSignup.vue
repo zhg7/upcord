@@ -4,5 +4,5 @@ import AuthForm from './AuthForm.vue';
 </script>
 
 <template>
-    <AuthForm isLogin />
+    <AuthForm :isLogin=false />
 </template>
