@@ -30,7 +30,8 @@ const router = createRouter({
     {
       path: "/:pathMatch(.*)*",
       name: 'notfound',
-      component: () => import('../components/NotFound.vue'),
+      component: () => import('../components/ClientError.vue'),
+      props: { isNotFound: true },
       meta: {
           title: `Página no encontrada - ${DEFAULT_TITLE}`
       }

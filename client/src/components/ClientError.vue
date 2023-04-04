@@ -6,12 +6,14 @@ import Button from 'primevue/button';
 defineProps({
     isNotFound: Boolean,
 })
+
 </script>
 
 <template>
     <Card>
         <template #title>
-            <h3 class="flex justify-content-center">Error 404</h3>
+            <h3 v-if="isNotFound" class="flex justify-content-center">Error 404</h3>
+            <h3 v-else class="flex justify-content-center">Error 401</h3>
         </template>
         <template #content>
             <figure class="flex justify-content-center">
