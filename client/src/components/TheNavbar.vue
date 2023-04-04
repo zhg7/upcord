@@ -31,7 +31,7 @@ const items = ref([
     <nav>
         <Menubar :model="items" class="mb-2">
             <template #start>
-                <router-link to="/"><img alt="logo" src="@/assets/upcord-logo-dark.svg" height="40" class="mr-2" /></router-link>
+                <router-link to="/"><img alt="logo" src="@/assets/images/upcord-logo-dark.svg" height="40" class="mr-2" /></router-link>
             </template>
         </Menubar>
     </nav>
