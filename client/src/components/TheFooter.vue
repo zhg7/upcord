@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router';
+import { RouterLink } from 'vue-router';
 import Card from 'primevue/card';
 import Divider from 'primevue/divider';
 
@@ -10,12 +10,16 @@ import Divider from 'primevue/divider';
         <Card>
             <template #content>
                 <ul class="list-none flex justify-content-center">
-                    <li class="mr-5"><router-link to="/">Inicio</router-link></li>
-                    <li class="mr-5">Términos de uso</li>
-                    <li class="mr-5">Política de privacidad</li>
+                    <li class="mr-5"><router-link class="text-primary no-underline hover:underline"
+                            to="/">Inicio</router-link></li>
+                    <li class="mr-5"><router-link class="text-primary no-underline hover:underline" to="/">Términos de
+                            uso</router-link></li>
+                    <li class="mr-5"><router-link class="text-primary no-underline hover:underline" to="/">Política de
+                            privacidad</router-link></li>
                 </ul>
-                <Divider type="solid" />
-                <small class="flex justify-content-center">&#127341; Upcord {{ new Date().getFullYear() }}</small>
+                <Divider />
+                <small class="flex justify-content-center text-color-secondary">&#127341; Upcord {{ new Date().getFullYear()
+                }}</small>
             </template>
         </Card>
 
