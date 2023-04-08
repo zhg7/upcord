@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { validateSignUp } from '../middlewares/auth.middleware';
+import { validateSignUpDetails } from '../middlewares/auth.middleware';
 
 export const authRoutes = express.Router();
 
@@ -8,5 +8,5 @@ authRoutes.get('/login', async (req: Request, res: Response) => {
 })
 
 authRoutes.post('/signup', async (req, res) => {
-    validateSignUp(req, res);
+    validateSignUpDetails(req, res);
 })

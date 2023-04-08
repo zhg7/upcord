@@ -1,13 +1,19 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
 import { SignUpUser } from '../types/user.type';
-import { createUser } from '../controllers/auth.controller';
+import { createUser } from '../controllers/user.controller';
+import { emailExists, usernameExists } from '../services/user.service';
 
 
-export async function validateSignUp(req: Request, res: Response) {
+export async function validateSignUpDetails(req: Request, res: Response) {
     try {
-        const user = SignUpUser.parse(req.body)
-        createUser(user)
+        const newUser = SignUpUser.parse(req.body)
+        const isEmailDuplicated = await emailExists(newUser.email)
+        const isUsernameDuplicated = await usernameExists(newUser.username)
+        if (!isEmailDuplicated && !isUsernameDuplicated) {
+            createUser(req, res, newUser)
+        }
+
     } catch (err) {
         if (err instanceof z.ZodError) {
             return res

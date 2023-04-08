@@ -1,14 +1,22 @@
 import express, { Request, Response } from 'express';
-import { emailExists, usernameExists } from "../services/user.service";
+import { insertUser, emailExists, usernameExists } from "../services/user.service";
+import { SignUpUser } from '../types/user.type';
 
-export async function checkEmail(req: Request, res: Response) {
+export async function createUser(req: Request, res: Response, newUser: SignUpUser) {
+    insertUser(newUser);
+}
+
+export async function checkDuplicateEmail(req: Request, res: Response) {
     const email = req.params.email;
     const isEmailDuplicated = await emailExists(email);
-    if (isEmailDuplicated) {
-        return res
-            .json(`Ya existe una cuenta con la dirección ${email}`);
-    } else {
-        return res
-            .json(`${email} disponible`);
-    }
+    return res
+        .json({ email: email, exists: isEmailDuplicated });
 }
+
+export async function checkDuplicateUsername(req: Request, res: Response) {
+    const username = req.params.username;
+    const isUsernameDuplicate = await usernameExists(username);
+    return res
+        .json({ username: username, exists: isUsernameDuplicate });
+}
+
