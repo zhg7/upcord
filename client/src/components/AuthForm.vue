@@ -13,8 +13,6 @@ defineProps({
 const email = ref("");
 const username = ref("");
 const password = ref("");
-const repeatPassword = ref("");
-const rememberMe = ref(false);
 const acceptTerms = ref(false);
 
 </script>
@@ -39,14 +37,6 @@ const acceptTerms = ref(false);
                         <Password id="password" v-model="password" :feedback=false toggleMask />
                         <label for="password">Contraseña</label>
                     </span>
-                    <span v-if="!isLogin" class="p-float-label">
-                        <Password id="repeatPassword" v-model="repeatPassword" :feedback=false toggleMask />
-                        <label for="repeatPassword">Repite la contraseña</label>
-                    </span>
-                    <div v-else class="flex align-items-center">
-                        <Checkbox id="rememberMe" v-model="rememberMe" :binary="true" />
-                        <label for="rememberMe" class="ml-2">Recuérdame</label>
-                    </div>
                     <div v-if="!isLogin" class="flex align-items-center">
                         <Checkbox id="acceptTerms" v-model="acceptTerms" :binary="true" />
                         <label for="acceptTerms" class="ml-2"><small>Acepto los términos de uso<br /> y la política de
