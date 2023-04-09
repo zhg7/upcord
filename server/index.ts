@@ -1,4 +1,5 @@
 import express, { Express } from 'express';
+import { PrismaClient } from '@prisma/client';
 import dotenv from 'dotenv';
 import { routes } from './routes/index.routes'
 
@@ -6,6 +7,7 @@ dotenv.config();
 
 const app: Express = express();
 const port = process.env.PORT;
+export const prisma = new PrismaClient();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json())

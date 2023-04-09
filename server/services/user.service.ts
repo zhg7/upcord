@@ -1,7 +1,7 @@
-import { prisma } from '../models/connection';
+import { prisma } from '../index';
 import { SignUpUser } from '../types/user.type';
 
-export async function insertUser(newUser: SignUpUser) {
+export async function addUser(newUser: SignUpUser) {
 
     const user = await prisma.user.create({
         data: {
@@ -10,6 +10,8 @@ export async function insertUser(newUser: SignUpUser) {
             email: newUser.email
         }
     })
+
+    console.log(user);
 }
 
 export async function emailExists(email: string) {

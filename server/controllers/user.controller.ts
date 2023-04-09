@@ -1,9 +1,9 @@
 import express, { Request, Response } from 'express';
-import { insertUser, emailExists, usernameExists } from "../services/user.service";
+import { addUser, emailExists, usernameExists } from "../services/user.service";
 import { SignUpUser } from '../types/user.type';
 
 export async function createUser(req: Request, res: Response, newUser: SignUpUser) {
-    insertUser(newUser);
+    addUser(newUser);
 }
 
 export async function checkDuplicateEmail(req: Request, res: Response) {
