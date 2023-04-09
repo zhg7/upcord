@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { addUser, emailExists, usernameExists } from "../services/user.service";
-import { SignUpUser } from '../types/user.type';
+import { SignUpUser } from '../types/signup.type';
 
 export async function createUser(req: Request, res: Response, newUser: SignUpUser) {
     addUser(newUser);

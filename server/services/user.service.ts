@@ -1,5 +1,19 @@
 import { prisma } from '../index';
-import { SignUpUser } from '../types/user.type';
+import { SignUpUser } from '../types/signup.type';
+
+export async function getUserIdByEmail(email: string) {
+    const user = await prisma.user.findUnique({
+        where: {
+            email: email
+        },
+        select: {
+            id: true
+        }
+    })
+
+    return user?.id ?? 0;
+
+}
 
 export async function addUser(newUser: SignUpUser) {
 

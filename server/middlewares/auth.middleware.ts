@@ -1,9 +1,11 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
-import { SignUpUser } from '../types/user.type';
+import { SignUpUser } from '../types/signup.type';
 import { createUser } from '../controllers/user.controller';
 import { emailExists, usernameExists } from '../services/user.service';
-import { checkLoginCredentials, getPasswordHash } from '../services/auth.service';
+import { loginCredentialsMatches, getPasswordHash } from '../services/auth.service';
+import { getUserIdByEmail } from '../services/user.service';
+import { createSessionCookie } from '../controllers/auth.controller';
 
 
 export async function validateSignUpDetails(req: Request, res: Response) {
@@ -12,8 +14,7 @@ export async function validateSignUpDetails(req: Request, res: Response) {
         const isEmailDuplicated = await emailExists(newUser.email)
         const isUsernameDuplicated = await usernameExists(newUser.username)
         if (!isEmailDuplicated && !isUsernameDuplicated) {
-            const passwordHash = await getPasswordHash(newUser.password);
-            newUser.password = passwordHash;
+            newUser.password = await getPasswordHash(newUser.password);;
             createUser(req, res, newUser)
         }
 
@@ -30,10 +31,14 @@ export async function validateLoginDetails(req: Request, res: Response) {
     const email = req.body.email;
     const password = req.body.password;
 
-    if (await checkLoginCredentials(email, password)) {
-        return res
-            .status(200)
-            .json("OK")
+    console.log(req.body)
+
+    if (await loginCredentialsMatches(email, password)) {
+        const userId = await getUserIdByEmail(email);
+        if (userId !== 0) { // Si el id es 0 quiere decir que no existe.
+            createSessionCookie(req, res, userId)
+        }
+
     } else {
         return res
             .status(401)
