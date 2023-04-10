@@ -3,7 +3,11 @@ import { addUser, emailExists, usernameExists } from "../services/user.service";
 import { SignUpUser } from '../types/signup.type';
 
 export async function createUser(req: Request, res: Response, newUser: SignUpUser) {
-    addUser(newUser);
+    await addUser(newUser);
+    if (await usernameExists(newUser.username)) {
+        return res
+            .json({ username: newUser.username })
+    }
 }
 
 export async function checkDuplicateEmail(req: Request, res: Response) {

@@ -24,8 +24,6 @@ export async function addUser(newUser: SignUpUser) {
             email: newUser.email
         }
     })
-
-    console.log(user);
 }
 
 export async function emailExists(email: string) {

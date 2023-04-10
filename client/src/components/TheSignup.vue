@@ -4,7 +4,7 @@ import Password from 'primevue/password';
 import Card from 'primevue/card';
 import Checkbox from 'primevue/checkbox';
 import Button from 'primevue/button';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import useVuelidator from '@vuelidate/core';
 import { required, sameAs, minLength, maxLength, email, alphaNum, helpers } from '@vuelidate/validators';
 
@@ -13,6 +13,11 @@ const formData = ref({
     username: "",
     password: "",
     agreeTerms: false
+})
+
+const dataAvailability = ref({
+    emailTaken: null,
+    usernameTaken: null
 })
 
 const rules = {
@@ -24,23 +29,81 @@ const rules = {
 
 const v$ = useVuelidator(rules, formData);
 
+const emailTaken = computed(() => {
+    return dataAvailability.value.emailTaken;
+})
+
+const usernameTaken = computed(() => {
+    return dataAvailability.value.usernameTaken;
+}
+
+)
+
 async function submitForm() {
     const result = await v$.value.$validate();
-    console.log(result)
+    if (result) {
+        checkEmailAvailability()
+        checkUsernameAvailability()
+    }
+    if (!dataAvailability.value.emailTaken && !dataAvailability.value.usernameTaken) {
+        createAccount();
+    }
+
+}
+
+function createAccount() {
+    fetch('http://localhost:3000/api/auth/signup', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+            "email": formData.value.email,
+            "username": formData.value.username,
+            "password": formData.value.password
+        })
+
+    })
+        .then((response) => response.json())
+        .then(data => {
+            console.log(data)
+        })
+}
+
+function checkEmailAvailability() {
+    fetch(`http://127.0.0.1:3000/api/users/emails/${formData.value.email}`)
+        .then((response) => response.json())
+        .then(data => {
+            dataAvailability.value.emailTaken = data.exists;
+        })
+}
+
+function checkUsernameAvailability() {
+    fetch(`http://127.0.0.1:3000/api/users/usernames/${formData.value.username}`)
+        .then((response) => response.json())
+        .then(data => {
+            dataAvailability.value.usernameTaken = data.exists;
+        })
 }
 
 </script>
 <template>
     <Card>
         <template #title>
-            <h3 class="flex justify-content-center">Crear cuenta</h3>
+            <h3 class="flex justify-content-center m-2 mb-2">Crear cuenta</h3>
         </template>
         <template #content>
+            <div v-if="emailTaken || usernameTaken" class="flex align-items-center flex-column gap-2 mb-5 pb-3">
+                <small v-if="emailTaken" class="p-error">Dirección de e-mail no disponible.</small>
+                <small v-if="usernameTaken" class="p-error">Nombre de usuario no disponible.</small>
+            </div>
             <div class="card flex justify-content-center">
                 <form @submit.prevent="submitForm" class="flex flex-column gap-4">
+
                     <span class="p-float-label">
                         <InputText class="w-full" id="email" v-model="formData.email"
-                            :class="{ 'p-invalid': v$.email.$errors.length }" />
+                            :class="{ 'p-invalid': v$.email.$errors.length || emailTaken }" />
                         <label for="email">Dirección de e-mail</label>
                     </span>
                     <small v-for="error in v$.email.$errors" :key="error.$uid" class="p-error" id="text-error">
@@ -48,7 +111,7 @@ async function submitForm() {
                     </small>
                     <span class="p-float-label">
                         <InputText class="w-full" id="username" v-model="formData.username"
-                            :class="{ 'p-invalid': v$.username.$errors.length }" />
+                            :class="{ 'p-invalid': v$.username.$errors.length || usernameTaken }" />
                         <label for="username">Nombre de usuario</label>
                     </span>
                     <small v-for="error in v$.username.$errors" :key="error.$uid" class="p-error" id="text-error">
@@ -72,11 +135,13 @@ async function submitForm() {
                         {{ error.$message }}
                     </small>
                     <Button label="Registrar" type="submit" />
+
                 </form>
             </div>
         </template>
         <template #footer>
             <div class="flex justify-content-center">
+
                 <router-link to="/login"><Button label="Ya estoy registrado" link /></router-link>
             </div>
         </template>
