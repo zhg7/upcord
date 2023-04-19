@@ -3,10 +3,19 @@ import InputText from 'primevue/inputtext';
 import Password from 'primevue/password';
 import Card from 'primevue/card';
 import Button from 'primevue/button';
+import Toast from 'primevue/toast';
 import { ref } from 'vue';
 import useVuelidator from '@vuelidate/core';
 import { required, email, helpers } from '@vuelidate/validators';
 import { http } from '@/services/http.service';
+import { showError } from '@/services/toast.service';
+
+
+http.interceptors.response.use(function (response) {
+    return response;
+}, function (error) {
+    showError('Credenciales inválidas.', 'Por favor, revisa los datos introducidos.');
+});
 
 const formData = ref({
     email: "",
@@ -22,17 +31,18 @@ const v$ = useVuelidator(rules, formData);
 
 async function submitForm() {
     const result = await v$.value.$validate();
-    if(result){
+    if (result) {
         login();
     }
 }
 
-async function login(){
+
+async function login() {
+
     http.post('auth/login', {
         "email": formData.value.email,
         "password": formData.value.password
     })
-
 
 }
 
@@ -44,6 +54,7 @@ async function login(){
         </template>
         <template #content>
             <div class="card flex justify-content-center">
+                <Toast position="bottom-center" />
                 <form @submit.prevent="submitForm" class="flex flex-column gap-4">
                     <span class="p-float-label">
                         <InputText class="w-full" id="email" v-model="formData.email"
