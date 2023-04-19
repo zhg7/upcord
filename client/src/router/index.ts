@@ -39,7 +39,7 @@ const router = createRouter({
   ]
 })
 
-router.beforeEach((to, from) => {
+router.beforeEach((to) => {
   document.title = to.meta?.title as string ?? DEFAULT_TITLE; // Evitar undefined si no existe un título definido.
 })
 

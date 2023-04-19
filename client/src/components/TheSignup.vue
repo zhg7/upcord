@@ -7,34 +7,32 @@ import Button from 'primevue/button';
 import { ref, computed } from 'vue';
 import useVuelidator from '@vuelidate/core';
 import { required, sameAs, minLength, maxLength, email, alphaNum, helpers } from '@vuelidate/validators';
+import { http } from '@/services/http.service';
 
 const formData = ref({
     email: "",
     username: "",
     password: "",
-    agreeTerms: false
-})
-
-const dataAvailability = ref({
+    agreeTerms: false,
     emailTaken: null,
-    usernameTaken: null
-})
+    usernameTaken: null,
+});
 
 const rules = {
     email: { required: helpers.withMessage('Campo obligatorio.', required), email: helpers.withMessage('Formato de e-mail inválido.', email) },
     username: { required: helpers.withMessage('Campo obligatorio.', required), alphaNum: helpers.withMessage('Solo debe contener letras y números.', alphaNum), minLength: helpers.withMessage('Debe contener entre 4 y 20 carácteres alfanuméricos.', minLength(4)), maxLength: helpers.withMessage('Debe contener entre 4 y 20 carácteres alfanuméricos.', maxLength(20)) },
     password: { required: helpers.withMessage('Campo obligatorio.', required), minLength: helpers.withMessage('Debe tener un mínimo de 8 carácteres.', minLength(8)) },
     agreeTerms: { sameAs: helpers.withMessage('Es obligatorio aceptar los términos.', sameAs(true)) }
-}
+};
 
 const v$ = useVuelidator(rules, formData);
 
 const emailTaken = computed(() => {
-    return dataAvailability.value.emailTaken;
+    return formData.value.emailTaken;
 })
 
 const usernameTaken = computed(() => {
-    return dataAvailability.value.usernameTaken;
+    return formData.value.usernameTaken;
 }
 
 )
@@ -45,46 +43,28 @@ async function submitForm() {
         checkEmailAvailability()
         checkUsernameAvailability()
     }
-    if (!dataAvailability.value.emailTaken && !dataAvailability.value.usernameTaken) {
+    if (!formData.value.emailTaken && !formData.value.usernameTaken) {
         createAccount();
     }
 
 }
 
 function createAccount() {
-    fetch('http://localhost:3000/api/auth/signup', {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-            "email": formData.value.email,
-            "username": formData.value.username,
-            "password": formData.value.password
-        })
-
+    http.post('auth/signup', {
+        "email": formData.value.email,
+        "username": formData.value.username,
+        "password": formData.value.password
     })
-        .then((response) => response.json())
-        .then(data => {
-            console.log(data)
-        })
 }
 
-function checkEmailAvailability() {
-    fetch(`http://127.0.0.1:3000/api/users/emails/${formData.value.email}`)
-        .then((response) => response.json())
-        .then(data => {
-            dataAvailability.value.emailTaken = data.exists;
-        })
+async function checkEmailAvailability() {
+    const response = await http.get(`users/emails/${formData.value.email}`);
+    formData.value.emailTaken = response.data.exists;
 }
 
-function checkUsernameAvailability() {
-    fetch(`http://127.0.0.1:3000/api/users/usernames/${formData.value.username}`)
-        .then((response) => response.json())
-        .then(data => {
-            dataAvailability.value.usernameTaken = data.exists;
-        })
+async function checkUsernameAvailability() {
+    const response = await http.get(`users/usernames/${formData.value.username}`);
+    formData.value.usernameTaken = response.data.exists;
 }
 
 </script>

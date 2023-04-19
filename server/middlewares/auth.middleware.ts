@@ -42,7 +42,7 @@ export async function validateLoginDetails(req: Request, res: Response) {
     } else {
         return res
             .status(401)
-            .json("Credenciales incorrectas.")
+            .json({ login: 'failed'})
     }
 
 
