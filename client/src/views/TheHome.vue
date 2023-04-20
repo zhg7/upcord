@@ -4,7 +4,9 @@ import Card from 'primevue/card';
 
 <template>
     <Card>
-        <template #title> Simple Card </template>
+        <template #title>
+            <h3 class="text-start m-0 ">Foros</h3>
+        </template>
         <template #content>
             <p>
                 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae

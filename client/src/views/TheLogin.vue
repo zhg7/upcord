@@ -14,7 +14,7 @@ import { showError } from '@/services/toast.service';
 http.interceptors.response.use(function (response) {
     return response;
 }, function (error) {
-    showError('Credenciales inválidas.', 'Por favor, revisa los datos introducidos.');
+    showError('Credenciales inválidas.', 'Revisa los datos introducidos.');
 });
 
 const formData = ref({

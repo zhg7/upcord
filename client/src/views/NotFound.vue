@@ -3,15 +3,12 @@ import { RouterLink } from 'vue-router';
 import Card from 'primevue/card';
 import Button from 'primevue/button';
 
-defineProps({
-    isNotFound: Boolean,
-})
 </script>
 
 <template>
     <Card>
         <template #title>
-            <h3 class="flex justify-content-center">Error 404</h3>
+            <h3 class="text-center">Error 404</h3>
         </template>
         <template #content>
             <figure class="flex justify-content-center">

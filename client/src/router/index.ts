@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import HomeView from '../views/HomeView.vue';
 
 const DEFAULT_TITLE = 'Upcord';
 
@@ -9,12 +8,12 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView
+      component: () => import('../views/TheHome.vue')
     },
     {
       path: '/login',
       name: 'login',
-      component: () => import('../components/TheLogin.vue'),
+      component: () => import('../views/TheLogin.vue'),
       meta: {
         title: `Iniciar sesión - ${DEFAULT_TITLE}`
       }
@@ -22,7 +21,7 @@ const router = createRouter({
     {
       path: '/signup',
       name: 'signup',
-      component: () => import('../components/TheSignup.vue'),
+      component: () => import('../views/TheSignup.vue'),
       meta: {
         title: `Crear cuenta - ${DEFAULT_TITLE}`
       }
@@ -30,8 +29,7 @@ const router = createRouter({
     {
       path: "/:pathMatch(.*)*",
       name: 'notfound',
-      component: () => import('../components/ClientError.vue'),
-      props: { isNotFound: true },
+      component: () => import('../views/NotFound.vue'),
       meta: {
           title: `Página no encontrada - ${DEFAULT_TITLE}`
       }
@@ -40,7 +38,7 @@ const router = createRouter({
 })
 
 router.beforeEach((to) => {
-  document.title = to.meta?.title as string ?? DEFAULT_TITLE; // Evitar undefined si no existe un título definido.
+  document.title = to.meta?.title as string ?? DEFAULT_TITLE; // Título de página dinámico
 })
 
 
