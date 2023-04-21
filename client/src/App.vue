@@ -11,3 +11,9 @@ import TheFooter from './layouts/TheFooter.vue';
   </main>
   <TheFooter />
 </template>
+
+<style>
+  body {
+    background-color: var(--surface-ground);
+  }
+</style>

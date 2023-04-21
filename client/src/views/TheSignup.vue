@@ -106,7 +106,7 @@ async function checkUsernameAvailability() {
                         {{ error.$message }}
                     </small>
                     <div class="flex align-items-center">
-                        <Checkbox id="acceptTerms" v-model="formData.agreeTerms"
+                        <Checkbox inputId="acceptTerms" v-model="formData.agreeTerms"
                             :class="{ 'p-invalid': v$.agreeTerms.$errors.length }" :binary="true" />
                         <label for="acceptTerms" class="ml-2"><small>Acepto los términos de uso y la política de
                                 privacidad.</small></label>
