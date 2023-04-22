@@ -7,15 +7,11 @@ import Toast from 'primevue/toast';
 import { ref } from 'vue';
 import useVuelidator from '@vuelidate/core';
 import { required, email, helpers } from '@vuelidate/validators';
-import { http } from '@/services/http.service';
-import { showError } from '@/services/toast.service';
+import { showError, showWarning } from '@/services/toast.service';
+import { useAuth } from '@/composables/auth';
+import { toast } from '@/main';
 
-
-http.interceptors.response.use(function (response) {
-    return response;
-}, function (error) {
-    showError('Credenciales inválidas.', 'Revisa los datos introducidos.');
-});
+const auth = useAuth();
 
 const formData = ref({
     email: "",
@@ -30,20 +26,26 @@ const rules = {
 const v$ = useVuelidator(rules, formData);
 
 async function submitForm() {
-    const result = await v$.value.$validate();
-    if (result) {
-        login();
+    const isFormValidated = await v$.value.$validate();
+    toast.removeAllGroups();
+    if (isFormValidated) {
+        const loginResult = await auth.login(formData.value.email, formData.value.password)
+        handleLoginResult(loginResult)
     }
 }
 
+function handleLoginResult(loginResult: string) {
+    if (loginResult === "failed") {
+        showError('Credenciales inválidas.', 'Revisa los datos introducidos.');
+    }
 
-async function login() {
+    if (loginResult === "unverified"){
+        showWarning('E-mail no verificado.', 'Activa la cuenta con el enlace que hemos enviado a tu e-mail.');
+    }
 
-    http.post('auth/login', {
-        "email": formData.value.email,
-        "password": formData.value.password
-    })
-
+    if (loginResult === "banned"){
+        showError('Cuenta expulsada', `Por {razon}, hasta {fechaFin}`);
+    }
 }
 
 </script>
