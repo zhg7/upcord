@@ -1,18 +1,41 @@
 import { prisma } from '../index';
 import { SignUpUser } from '../types/signup.type';
 
-export async function getUserIdByEmail(email: string) {
+const userData = {
+    id: true,
+    username: true,
+    email: true,
+    isAdmin: true,
+    avatar: true,
+    biography: true,
+    createdAt: true,
+    updatedAt: true,
+    isActivated: true,
+}
+
+export async function getUserByEmail(email: string) {
     const user = await prisma.user.findUnique({
         where: {
             email: email
         },
-        select: {
-            id: true
-        }
+        select: userData
     })
+    return user;
+}
 
-    return user?.id ?? 0;
+export async function getUserBySessionToken(sessionToken: string) {
 
+    const user = await prisma.session.findUnique({
+        where: {
+            token: sessionToken,
+        },
+        select: {
+            user: {
+                select: userData,
+            },
+        },
+    })
+    return user;
 }
 
 export async function addUser(newUser: SignUpUser) {

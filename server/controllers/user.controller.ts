@@ -24,3 +24,5 @@ export async function checkDuplicateUsername(req: Request, res: Response) {
         .json({ username: username, exists: isUsernameDuplicate });
 }
 
+
+

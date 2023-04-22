@@ -34,11 +34,17 @@ export async function storeSessionToken(sessionToken: string, userId: number, ex
     })
 }
 
-export async function deleteSessionTokens(userId: number) {
-    await prisma.session.deleteMany({
+// Verificar si el token no ha expirado o si no existe simplemente.
+export async function isTokenValid(sessionToken: string) {
+    const session = prisma.session.findFirst({
         where: {
-            userId: userId,
+            token: sessionToken,
+            expiresAt: {
+                gte: new Date()
+            }
         }
     })
+
+    return await session !== null;
 }
 

@@ -1,11 +1,12 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
+import { User } from '@prisma/client';
 import { SignUpUser } from '../types/signup.type';
 import { createUser } from '../controllers/user.controller';
 import { emailExists, usernameExists } from '../services/user.service';
-import { loginCredentialsMatches, getPasswordHash } from '../services/auth.service';
-import { getUserIdByEmail } from '../services/user.service';
-import { createSessionCookie } from '../controllers/auth.controller';
+import { loginCredentialsMatches, getPasswordHash, isTokenValid } from '../services/auth.service';
+import { getUserByEmail } from '../services/user.service';
+import { createSessionCookie, sendSessionUserDetails } from '../controllers/auth.controller';
 
 
 export async function validateSignUpDetails(req: Request, res: Response) {
@@ -31,20 +32,28 @@ export async function validateLoginDetails(req: Request, res: Response) {
     const email = req.body.email;
     const password = req.body.password;
 
-    console.log(req.body)
-
     if (await loginCredentialsMatches(email, password)) {
-        const userId = await getUserIdByEmail(email);
-        if (userId !== 0) { // Si el id es 0 quiere decir que no existe.
-            createSessionCookie(req, res, userId)
+        const user = await getUserByEmail(email);
+        if (user) {
+            createSessionCookie(req, res, user as User)
         }
 
     } else {
         return res
             .status(401)
-            .json({ login: 'failed'})
+            .json({ login: 'failed' })
     }
-
-
-
 }
+
+export async function validateSessionToken(req: Request, res: Response) {
+    const token = req.cookies.uc_session;
+    if (token && await isTokenValid(token)) {
+        sendSessionUserDetails(req, res, token);
+    } else {
+        return res
+            .status(418)
+            .json({})
+    }
+}
+
+

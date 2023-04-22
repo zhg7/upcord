@@ -46,6 +46,10 @@ router.beforeEach((to) => {
   document.title = to.meta?.title as string ?? DEFAULT_TITLE; // Título de página dinámico
 })
 
+function checkAuthentication(){
+  
+}
+
 
 
 export default router;

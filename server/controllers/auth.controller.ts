@@ -1,7 +1,9 @@
 import { Request, Response } from 'express';
 import crypto from 'crypto';
-import { storeSessionToken, deleteSessionTokens } from '../services/auth.service';
+import { storeSessionToken } from '../services/auth.service';
 import { CookieOptions } from 'express-serve-static-core';
+import { User } from '@prisma/client';
+import { getUserBySessionToken } from '../services/user.service';
 
 const COOKIE_NAME = 'uc_session';
 const COOKIE_OPTIONS: CookieOptions = {
@@ -10,12 +12,10 @@ const COOKIE_OPTIONS: CookieOptions = {
     sameSite: 'lax'
 }
 
-export async function createSessionCookie(req: Request, res: Response, userId: number) {
+export async function createSessionCookie(req: Request, res: Response, user: User) {
     const DAYS_TO_EXPIRATION = 7;
     const sessionToken = crypto.randomBytes(30).toString('hex');
     const expirationDate = new Date();
-
-    res = invalidateExistingSessions(res, userId);
 
     expirationDate.setDate(expirationDate.getDate() + DAYS_TO_EXPIRATION);
 
@@ -23,16 +23,15 @@ export async function createSessionCookie(req: Request, res: Response, userId: n
 
     res.cookie(COOKIE_NAME, sessionToken, COOKIE_OPTIONS);
 
-    storeSessionToken(sessionToken, userId, expirationDate);
+    storeSessionToken(sessionToken, user.id, expirationDate);
 
     return res
-        .json({ login: 'successful' });
+        .json({ login: 'successful', user: user });
 }
 
-// Evitar que exista más de un token de sesión para un mismo usuario.
-function invalidateExistingSessions(res: Response, userId: number) : Response {
-    deleteSessionTokens(userId);
-    COOKIE_OPTIONS.expires = new Date(0);
-    res.clearCookie(COOKIE_NAME, COOKIE_OPTIONS);
-    return res;
+export async function sendSessionUserDetails(req: Request, res: Response, sessionToken: string) {
+    const user = await getUserBySessionToken(sessionToken)
+    return res
+        .status(200)
+        .json({ user: user })
 }
