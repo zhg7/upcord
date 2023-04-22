@@ -2,18 +2,23 @@ import { createRouter, createWebHistory } from 'vue-router';
 
 const DEFAULT_TITLE = 'Upcord';
 
+const HomePage = () => import('../pages/HomePage.vue');
+const LoginPage = () => import('../pages/LoginPage.vue');
+const SignupPage = () => import('../pages/SignupPage.vue');
+const NotFoundPage = () => import('../pages/NotFoundPage.vue');
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
       name: 'home',
-      component: () => import('../views/TheHome.vue')
+      component: HomePage,
     },
     {
       path: '/login',
       name: 'login',
-      component: () => import('../views/TheLogin.vue'),
+      component: LoginPage,
       meta: {
         title: `Iniciar sesión - ${DEFAULT_TITLE}`
       }
@@ -21,7 +26,7 @@ const router = createRouter({
     {
       path: '/signup',
       name: 'signup',
-      component: () => import('../views/TheSignup.vue'),
+      component: SignupPage,
       meta: {
         title: `Crear cuenta - ${DEFAULT_TITLE}`
       }
@@ -29,7 +34,7 @@ const router = createRouter({
     {
       path: "/:pathMatch(.*)*",
       name: 'notfound',
-      component: () => import('../views/NotFound.vue'),
+      component: NotFoundPage,
       meta: {
           title: `Página no encontrada - ${DEFAULT_TITLE}`
       }
