@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import { useAuth } from '@/composables/auth';
 
 const DEFAULT_TITLE = 'Upcord';
+const auth = useAuth();
 
 const HomePage = () => import('../pages/HomePage.vue');
 const LoginPage = () => import('../pages/LoginPage.vue');
@@ -36,20 +38,15 @@ const router = createRouter({
       name: 'notfound',
       component: NotFoundPage,
       meta: {
-          title: `Página no encontrada - ${DEFAULT_TITLE}`
+        title: `Página no encontrada - ${DEFAULT_TITLE}`
       }
-  }
+    }
   ]
 })
 
 router.beforeEach((to) => {
   document.title = to.meta?.title as string ?? DEFAULT_TITLE; // Título de página dinámico
+  auth.checkSessionStatus();
 })
-
-function checkAuthentication(){
-  
-}
-
-
 
 export default router;

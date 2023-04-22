@@ -2,9 +2,6 @@
 import { RouterView } from 'vue-router'
 import TheNavbar from './layouts/TheNavbar.vue';
 import TheFooter from './layouts/TheFooter.vue';
-import { http } from './services/http.service';
-
-http.get('/auth');
 
 </script>
 

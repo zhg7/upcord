@@ -13,6 +13,16 @@ export async function sendLoginRequest(email: string, password: string) {
 
 }
 
+export async function checkSession(){
+    try {
+        const response = await http.get('/auth');
+        return response.data.user;
+    } catch (err : any) {
+        return;
+    }
+
+}
+
 async function getUser() {
 
 }
