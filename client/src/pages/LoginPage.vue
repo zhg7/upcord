@@ -52,7 +52,7 @@ function handleLoginResult(loginResult: string) {
 <template>
     <Card>
         <template #title>
-            <h3 class="flex justify-content-center">Iniciar sesión {{ auth.isAuthenticated }}</h3>
+            <h3 class="flex justify-content-center">Iniciar sesión</h3>
         </template>
         <template #content>
             <div class="card flex justify-content-center">

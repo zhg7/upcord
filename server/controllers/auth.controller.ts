@@ -33,5 +33,5 @@ export async function sendSessionUserDetails(req: Request, res: Response, sessio
     const user = await getUserBySessionToken(sessionToken)
     return res
         .status(200)
-        .json({ user: user })
+        .json(user)
 }

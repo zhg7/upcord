@@ -42,10 +42,11 @@ async function submitForm() {
     if (result) {
         checkEmailAvailability()
         checkUsernameAvailability()
+        if (!formData.value.emailTaken && !formData.value.usernameTaken) {
+            createAccount();
+        }
     }
-    if (!formData.value.emailTaken && !formData.value.usernameTaken) {
-        createAccount();
-    }
+
 
 }
 

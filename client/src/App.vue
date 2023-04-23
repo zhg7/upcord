@@ -2,11 +2,14 @@
 import { RouterView } from 'vue-router'
 import TheNavbar from './layouts/TheNavbar.vue';
 import TheFooter from './layouts/TheFooter.vue';
+import { useAuth } from './composables/auth';
+
+const auth = useAuth();
 
 </script>
 
 <template>
-  <TheNavbar />
+  <TheNavbar :key="auth.user.value?.username"/>
   <main>
     <RouterView />
   </main>
