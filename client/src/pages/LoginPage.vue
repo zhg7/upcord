@@ -11,7 +11,6 @@ import { required, email, helpers } from '@vuelidate/validators';
 import toast, { showError, showWarning, showSuccess } from '@/services/toast.service';
 import { useAuth } from '@/store/auth';
 
-
 const auth = useAuth();
 
 const formData = ref({
@@ -52,7 +51,7 @@ function handleLoginResult(loginResult: any) {
         showSuccess(`¡Bienvenido ${auth.user.value.username}!`, 'Redirigiendo al inicio...');
         setTimeout(() => {
             router.push({name: "home"});
-        }, 2000)
+        }, 1200)
     }
 
 }

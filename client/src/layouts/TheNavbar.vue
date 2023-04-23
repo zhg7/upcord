@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router';
 import Menubar from 'primevue/menubar';
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import { useAuth } from '@/store/auth';
+import { useRouter } from 'vue-router';
 
 const auth = useAuth();
+const router = useRouter();
 
 const items = ref([
     {
@@ -35,11 +37,13 @@ const items = ref([
         items: [
             {
                 label: 'Perfil',
-                icon: 'pi pi-fw pi-id-card'
+                icon: 'pi pi-fw pi-id-card',
+                to: "profile"
             },
             {
                 label: 'Ajustes',
-                icon: 'pi pi-fw pi-cog'
+                icon: 'pi pi-fw pi-cog',
+                to: "settings"
             },
             {
                 separator: true
@@ -47,7 +51,10 @@ const items = ref([
             {
                 label: 'Cerrar sesión',
                 icon: 'pi pi-fw pi-power-off',
-                command: auth.logout
+                command: () => {
+                    auth.logout();
+                    router.push({ path: "/" });
+                },
             },
         ]
     },

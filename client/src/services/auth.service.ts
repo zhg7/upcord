@@ -1,6 +1,5 @@
 import { http } from '@/services/http.service';
 
-
 export async function sendLoginRequest(email: string, password: string) {
     try {
         const response = await http.post('auth/login', {
