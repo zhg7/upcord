@@ -16,7 +16,8 @@ const items = ref([
     {
         label: 'Chats',
         icon: 'pi pi-fw pi-envelope',
-        visible: auth.isAuthenticated
+        visible: auth.isAuthenticated,
+        to: "chats"
     },
     {
         label: 'Iniciar sesión',

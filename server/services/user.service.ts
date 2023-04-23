@@ -40,7 +40,7 @@ export async function getUserBySessionToken(sessionToken: string) {
 
 export async function addUser(newUser: SignUpUser) {
 
-    const user = await prisma.user.create({
+    await prisma.user.create({
         data: {
             username: newUser.username,
             password: newUser.password,
