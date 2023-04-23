@@ -1,5 +1,5 @@
-import { computed, ref } from 'vue';
-import { sendLoginRequest, checkSession } from '@/services/auth.service';
+import { ref } from 'vue';
+import { sendLoginRequest, checkSessionStatus } from '@/services/auth.service';
 
 const user = ref();
 const isAuthenticated = ref(false);
@@ -14,13 +14,13 @@ async function login(email: string, password: string) {
     return result;
 }
 
-async function checkSessionStatus() {
-    const result = await checkSession();
-    if (result){
+async function checkSession() {
+    const result = await checkSessionStatus();
+    if (result) {
         user.value = result;
         isAuthenticated.value = true;
     } else {
-        isAuthenticated.value = false; 
+        isAuthenticated.value = false;
     }
 }
 
@@ -29,7 +29,7 @@ export function useAuth() {
         isAuthenticated,
         user,
         login,
-        checkSessionStatus
+        checkSession
     }
 
 }

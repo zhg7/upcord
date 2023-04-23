@@ -2,7 +2,7 @@
 import { RouterView } from 'vue-router'
 import TheNavbar from './layouts/TheNavbar.vue';
 import TheFooter from './layouts/TheFooter.vue';
-import { useAuth } from './composables/auth';
+import { useAuth } from './store/auth';
 
 const auth = useAuth();
 

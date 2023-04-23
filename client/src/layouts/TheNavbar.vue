@@ -2,7 +2,7 @@
 import { RouterLink } from 'vue-router';
 import Menubar from 'primevue/menubar';
 import { ref, computed } from "vue";
-import { useAuth } from '@/composables/auth';
+import { useAuth } from '@/store/auth';
 
 const auth = useAuth();
 
@@ -33,6 +33,17 @@ const items = ref([
         visible: auth.isAuthenticated,
         icon: 'pi pi-fw pi-user',
         items: [
+            {
+                label: 'Perfil',
+                icon: 'pi pi-fw pi-id-card'
+            },
+            {
+                label: 'Ajustes',
+                icon: 'pi pi-fw pi-cog'
+            },
+            {
+                separator: true
+            },
             {
                 label: 'Cerrar sesión',
                 icon: 'pi pi-fw pi-power-off'

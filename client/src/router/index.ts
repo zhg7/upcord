@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 const DEFAULT_TITLE = 'Upcord';
-import { useAuth } from '@/composables/auth';
+import { useAuth } from '@/store/auth';
 const auth = useAuth();
 
 const HomePage = () => import('../pages/HomePage.vue');
@@ -45,7 +45,7 @@ const router = createRouter({
 
 router.beforeEach((to) => {
   document.title = to.meta?.title as string ?? DEFAULT_TITLE; // Título de página dinámico
-  auth.checkSessionStatus();
+  auth.checkSession();
 })
 
 
