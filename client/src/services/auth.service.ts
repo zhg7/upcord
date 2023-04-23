@@ -15,7 +15,7 @@ export async function sendLoginRequest(email: string, password: string) {
 
 export async function checkSessionStatus(){
     try {
-        const response = await http.get('/auth');
+        const response = await http.get('auth');
         return response.data.user;
     } catch (err : any) {
         return;

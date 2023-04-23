@@ -4,7 +4,7 @@ import { User } from '@prisma/client';
 import { SignUpUser } from '../types/signup.type';
 import { createUser } from '../controllers/user.controller';
 import { emailExists, usernameExists } from '../services/user.service';
-import { loginCredentialsMatches, getPasswordHash, isTokenValid } from '../services/auth.service';
+import { loginCredentialsMatches, getPasswordHash, isSessionTokenValid } from '../services/auth.service';
 import { getUserByEmail } from '../services/user.service';
 import { createSessionCookie, sendSessionUserDetails } from '../controllers/auth.controller';
 
@@ -47,7 +47,7 @@ export async function validateLoginDetails(req: Request, res: Response) {
 
 export async function validateSessionToken(req: Request, res: Response) {
     const token = req.cookies.uc_session;
-    if (token && await isTokenValid(token)) {
+    if (token && await isSessionTokenValid(token)) {
         sendSessionUserDetails(req, res, token);
     } else {
         return res

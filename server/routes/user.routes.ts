@@ -1,5 +1,4 @@
 import express, { Request, Response } from 'express';
-import { validateSignUpDetails } from '../middlewares/auth.middleware';
 import { checkDuplicateEmail, checkDuplicateUsername } from '../controllers/user.controller';
 
 export const userRoutes = express.Router();

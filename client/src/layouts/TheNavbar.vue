@@ -46,7 +46,8 @@ const items = ref([
             },
             {
                 label: 'Cerrar sesión',
-                icon: 'pi pi-fw pi-power-off'
+                icon: 'pi pi-fw pi-power-off',
+                command: auth.logout
             },
         ]
     },

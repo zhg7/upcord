@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import { validateSignUpDetails, validateLoginDetails, validateSessionToken } from '../middlewares/auth.middleware';
+import { destroySession } from '../controllers/auth.controller';
 
 export const authRoutes = express.Router();
 
@@ -9,6 +10,10 @@ authRoutes.post('/login', async (req: Request, res: Response) => {
 
 authRoutes.post('/signup', async (req, res) => {
     validateSignUpDetails(req, res);
+})
+
+authRoutes.get('/logout', async(req, res) => {
+    destroySession(req, res);
 })
 
 authRoutes.get('/', async (req, res) => {

@@ -10,3 +10,10 @@ export function showError(title: string, body: string, lifetime: number = DEFAUL
 export function showWarning(title: string, body: string, lifetime: number = DEFAULT_LIFETIME_IN_MILLISECONDS): void {
     toast.add({ severity: ToastSeverity.WARN, summary: title, detail: body, life: lifetime });
 };
+
+export function showSuccess(title: string, body: string, lifetime: number = DEFAULT_LIFETIME_IN_MILLISECONDS): void {
+    toast.add({ severity: ToastSeverity.SUCCESS, summary: title, detail: body, life: lifetime });
+};
+
+export default toast;
+

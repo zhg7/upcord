@@ -4,6 +4,7 @@ import { storeSessionToken } from '../services/auth.service';
 import { CookieOptions } from 'express-serve-static-core';
 import { User } from '@prisma/client';
 import { getUserBySessionToken } from '../services/user.service';
+import { removeSessionToken } from '../services/auth.service';
 
 const COOKIE_NAME = 'uc_session';
 const COOKIE_OPTIONS: CookieOptions = {
@@ -33,5 +34,22 @@ export async function sendSessionUserDetails(req: Request, res: Response, sessio
     const user = await getUserBySessionToken(sessionToken)
     return res
         .status(200)
-        .json(user)
+        .json(user);
+}
+
+export async function destroySession(req: Request, res: Response) {
+    const token = req.cookies.uc_session;
+    if (token) {
+        removeSessionToken(token);
+        res.clearCookie(COOKIE_NAME, COOKIE_OPTIONS);
+        return res
+            .status(200)
+            .end()
+    } else {
+        return res
+            .status(400)
+            .end();
+    }
+
+
 }

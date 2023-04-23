@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import router from '@/router';
 import InputText from 'primevue/inputtext';
 import Password from 'primevue/password';
 import Card from 'primevue/card';
@@ -7,9 +8,9 @@ import Toast from 'primevue/toast';
 import { ref } from 'vue';
 import useVuelidator from '@vuelidate/core';
 import { required, email, helpers } from '@vuelidate/validators';
-import { showError, showWarning } from '@/services/toast.service';
+import toast, { showError, showWarning, showSuccess } from '@/services/toast.service';
 import { useAuth } from '@/store/auth';
-import { toast } from '@/main';
+
 
 const auth = useAuth();
 
@@ -34,7 +35,7 @@ async function submitForm() {
     }
 }
 
-function handleLoginResult(loginResult: string) {
+function handleLoginResult(loginResult: any) {
     if (loginResult === "failed") {
         showError('Credenciales inválidas.', 'Revisa los datos introducidos.');
     }
@@ -46,6 +47,14 @@ function handleLoginResult(loginResult: string) {
     if (loginResult === "banned"){
         showError('Cuenta expulsada', `Por {razon}, hasta {fechaFin}`);
     }
+
+    if (typeof loginResult === 'object'){
+        showSuccess(`¡Bienvenido ${auth.user.value.username}!`, 'Redirigiendo al inicio...');
+        setTimeout(() => {
+            router.push({name: "home"});
+        }, 2000)
+    }
+
 }
 
 </script>
