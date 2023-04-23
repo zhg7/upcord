@@ -16,6 +16,7 @@ const auth = useAuth();
 const formData = ref({
     email: "",
     password: "",
+    isDisabled: false
 });
 
 const rules = {
@@ -48,6 +49,7 @@ function handleLoginResult(loginResult: any) {
     }
 
     if (typeof loginResult === 'object'){
+        formData.value.isDisabled = true;
         showSuccess(`¡Bienvenido ${auth.user.value.username}!`, 'Redirigiendo al inicio...');
         setTimeout(() => {
             router.push({name: "home"});
@@ -68,7 +70,7 @@ function handleLoginResult(loginResult: any) {
                 <form @submit.prevent="submitForm" class="flex flex-column gap-4">
                     <span class="p-float-label">
                         <InputText class="w-full" id="email" v-model="formData.email"
-                            :class="{ 'p-invalid': v$.email.$errors.length }" />
+                            :class="{ 'p-invalid': v$.email.$errors.length }" :disabled="formData.isDisabled"/>
                         <label for="email">Dirección de e-mail</label>
                     </span>
                     <small v-for="error in v$.email.$errors" :key="error.$uid" class="p-error" id="text-error">
@@ -76,13 +78,13 @@ function handleLoginResult(loginResult: any) {
                     </small>
                     <span class="p-float-label">
                         <Password id="password" v-model="formData.password" :feedback=false toggleMask
-                            :class="{ 'p-invalid': v$.password.$errors.length }" />
+                            :class="{ 'p-invalid': v$.password.$errors.length }" :disabled="formData.isDisabled"/>
                         <label for="password">Contraseña</label>
                     </span>
                     <small v-for="error in v$.password.$errors" :key="error.$uid" class="p-error" id="text-error">
                         {{ error.$message }}
                     </small>
-                    <Button label="Entrar" type="submit" />
+                    <Button label="Entrar" type="submit" :disabled="formData.isDisabled"/>
                 </form>
             </div>
         </template>
