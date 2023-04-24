@@ -7,7 +7,7 @@ import Button from 'primevue/button';
 import { ref, computed } from 'vue';
 import useVuelidator from '@vuelidate/core';
 import { required, sameAs, minLength, maxLength, email, alphaNum, helpers } from '@vuelidate/validators';
-import { http } from '@/services/http.service';
+import { http } from '@/services/HttpService';
 
 const formData = ref({
     email: "",

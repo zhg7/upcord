@@ -8,7 +8,7 @@ import Toast from 'primevue/toast';
 import { ref } from 'vue';
 import useVuelidator from '@vuelidate/core';
 import { required, email, helpers } from '@vuelidate/validators';
-import toast, { showError, showWarning, showSuccess } from '@/services/toast.service';
+import toast, { showError, showWarning, showSuccess } from '@/services/ToastService';
 import { useAuth } from '@/store/auth';
 
 const auth = useAuth();

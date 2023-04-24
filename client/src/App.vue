@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-import TheNavbar from './layouts/TheNavbar.vue';
-import TheFooter from './layouts/TheFooter.vue';
+import AppNavbar from './layout/AppNavbar.vue';
+import AppFooter from './layout/AppFooter.vue';
 import { useAuth } from './store/auth';
 
 const auth = useAuth();
@@ -9,11 +9,11 @@ const auth = useAuth();
 </script>
 
 <template>
-  <TheNavbar :key="auth.user.value?.username"/>
+  <AppNavbar :key="auth.user.value?.username"/>
   <main>
     <RouterView />
   </main>
-  <TheFooter />
+  <AppFooter />
 </template>
 
 <style>

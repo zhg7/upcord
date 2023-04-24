@@ -1,4 +1,4 @@
-import { http } from '@/services/http.service';
+import { http } from '@/services/HttpService';
 
 export async function sendLoginRequest(email: string, password: string) {
     try {
