@@ -1,5 +1,6 @@
 import { prisma } from '../index';
 import bcrypt from 'bcrypt';
+import { getUserByEmail } from './user.service';
 
 export async function loginCredentialsMatches(email: string, password: string) {
     const user = await prisma.user.findUnique({
@@ -12,7 +13,7 @@ export async function loginCredentialsMatches(email: string, password: string) {
         return false;
     }
 
-    return await passwordMatches(password, user.password);
+    return await passwordHashMatches(password, user.password);
 }
 
 export async function getPasswordHash(plaintextPassword: string) {
@@ -20,7 +21,7 @@ export async function getPasswordHash(plaintextPassword: string) {
     return await bcrypt.hash(plaintextPassword, SALT_ROUNDS);
 }
 
-async function passwordMatches(plaintextPassword: string, hash: string) {
+async function passwordHashMatches(plaintextPassword: string, hash: string) {
     return await bcrypt.compare(plaintextPassword, hash);
 }
 
@@ -48,11 +49,24 @@ export async function isSessionTokenValid(sessionToken: string) {
     return session !== null;
 }
 
-export async function removeSessionToken(sessionToken: string){
+export async function removeSessionToken(sessionToken: string) {
     prisma.session.delete({
-        where : {
+        where: {
             token: sessionToken
         }
     })
 }
 
+export async function storeVerificationToken(vericationToken: string, expirationDate: Date, email: string, type: number) {
+    // 0 = verificación email; 1 = recuperación contraseña
+    const user = await getUserByEmail(email);
+
+    await prisma.verification.create({
+        data: {
+            userId: user?.id as number,
+            type: type,
+            token: vericationToken,
+            expiresAt: expirationDate
+        }
+    })
+}

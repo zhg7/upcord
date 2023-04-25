@@ -138,7 +138,7 @@ model Verification {
   user      User     @relation(fields: [userId], references: [id])
   userId    Int
   type      Int
-  token     String   @db.Char(60)
+  token     String   @db.Char(60) @unique
   createdAt DateTime @default(now())
   expiresAt DateTime
 }

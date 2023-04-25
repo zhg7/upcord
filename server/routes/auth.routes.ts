@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { validateSignUpDetails, validateLoginDetails, validateSessionToken } from '../middlewares/auth.middleware';
+import { validateSignUpDetails, validateLoginDetails, validateSessionToken, validateVerificationToken } from '../middlewares/auth.middleware';
 import { destroySession } from '../controllers/auth.controller';
 
 export const authRoutes = express.Router();
@@ -18,4 +18,8 @@ authRoutes.get('/logout', async(req, res) => {
 
 authRoutes.get('/', async (req, res) => {
     validateSessionToken(req, res);
+})
+
+authRoutes.get("/confirm/:token", async(req, res) => {
+    validateVerificationToken(req, res);
 })

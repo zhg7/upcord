@@ -38,6 +38,35 @@ export async function getUserBySessionToken(sessionToken: string) {
     return user;
 }
 
+export async function getUserByVerificationToken(verificationToken: string) {
+    const user = await prisma.verification.findFirst({
+        where: {
+            token: verificationToken,
+            expiresAt: {
+                gte: new Date() // Asegurarse de que no está caducado.
+            }
+        },
+        select: {
+            user: {
+                select: userData,
+            }
+        },
+    })
+
+    return user;
+}
+
+export async function validateUserAccount(userId: number) {
+    await prisma.user.update({
+        where: {
+            id: userId,
+        },
+        data: {
+            isActivated: true
+        },
+    })
+}
+
 export async function addUser(newUser: SignUpUser) {
 
     await prisma.user.create({

@@ -1,14 +1,5 @@
 import express, { Request, Response } from 'express';
-import { addUser, emailExists, usernameExists } from "../services/user.service";
-import { SignUpUser } from '../types/signup.type';
-
-export async function createUser(req: Request, res: Response, newUser: SignUpUser) {
-    await addUser(newUser);
-    if (await usernameExists(newUser.username)) {
-        return res
-            .json({ username: newUser.username })
-    }
-}
+import { emailExists, usernameExists } from "../services/user.service";
 
 export async function checkDuplicateEmail(req: Request, res: Response) {
     const email = req.params.email;
