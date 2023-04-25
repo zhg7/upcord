@@ -32,14 +32,14 @@ export async function validateLoginDetails(req: Request, res: Response) {
     const email = req.body.email;
     const password = req.body.password;
 
-    if (!await isUserActivated(email)){
-        return res
-            .status(401)
-            .json({ login: 'unverified' });
-    }
-
-
     if (await loginCredentialsMatches(email, password)) {
+        
+        if (!await isUserActivated(email)) {
+            return res
+                .status(401)
+                .json({ login: 'unverified' });
+        }
+
         const user = await getUserByEmail(email);
         if (user) {
             createSessionCookie(req, res, user as User)
