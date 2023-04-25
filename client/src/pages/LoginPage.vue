@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import router from '@/router';
+import { useRouter } from 'vue-router'
 import InputText from 'primevue/inputtext';
 import Password from 'primevue/password';
 import Card from 'primevue/card';
@@ -12,6 +12,7 @@ import toast, { showError, showWarning, showSuccess } from '@/services/ToastServ
 import { useAuth } from '@/store/auth';
 
 const auth = useAuth();
+const router = useRouter();
 
 const formData = ref({
     email: "",
@@ -40,19 +41,19 @@ function handleLoginResult(loginResult: any) {
         showError('Credenciales inválidas.', 'Revisa los datos introducidos.');
     }
 
-    if (loginResult === "unverified"){
+    if (loginResult === "unverified") {
         showWarning('E-mail no verificado.', 'Activa la cuenta con el enlace que hemos enviado a tu e-mail.');
     }
 
-    if (loginResult === "banned"){
+    if (loginResult === "banned") {
         showError('Cuenta expulsada', `Por {razon}, hasta {fechaFin}`);
     }
 
-    if (typeof loginResult === 'object'){
+    if (typeof loginResult === 'object') {
         formData.value.isDisabled = true;
         showSuccess(`¡Bienvenido ${auth.user.value.username}!`, 'Redirigiendo al inicio...');
         setTimeout(() => {
-            router.push({name: "home"});
+            router.push({ name: "home" });
         }, 1200)
     }
 
@@ -70,7 +71,7 @@ function handleLoginResult(loginResult: any) {
                 <form @submit.prevent="submitForm" class="flex flex-column gap-4">
                     <span class="p-float-label">
                         <InputText class="w-full" id="email" v-model="formData.email"
-                            :class="{ 'p-invalid': v$.email.$errors.length }" :disabled="formData.isDisabled"/>
+                            :class="{ 'p-invalid': v$.email.$errors.length }" :disabled="formData.isDisabled" />
                         <label for="email">Dirección de e-mail</label>
                     </span>
                     <small v-for="error in v$.email.$errors" :key="error.$uid" class="p-error" id="text-error">
@@ -78,13 +79,13 @@ function handleLoginResult(loginResult: any) {
                     </small>
                     <span class="p-float-label">
                         <Password id="password" v-model="formData.password" :feedback=false toggleMask
-                            :class="{ 'p-invalid': v$.password.$errors.length }" :disabled="formData.isDisabled"/>
+                            :class="{ 'p-invalid': v$.password.$errors.length }" :disabled="formData.isDisabled" />
                         <label for="password">Contraseña</label>
                     </span>
                     <small v-for="error in v$.password.$errors" :key="error.$uid" class="p-error" id="text-error">
                         {{ error.$message }}
                     </small>
-                    <Button label="Entrar" type="submit" :disabled="formData.isDisabled"/>
+                    <Button label="Entrar" type="submit" :disabled="formData.isDisabled" />
                 </form>
             </div>
         </template>
