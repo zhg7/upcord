@@ -6,7 +6,7 @@ import { http } from '@/services/HttpService';
 const user = ref();
 const isAuthenticated = ref(false);
 
-
+//Acciones
 async function login(email: string, password: string) {
     const result = await sendLoginRequest(email, password);
     if (typeof result === 'object' && result !== null) {
@@ -32,6 +32,7 @@ async function logout(){
     isAuthenticated.value = false;
 }
 
+//Hook
 export function useAuth() {
     return {
         isAuthenticated,

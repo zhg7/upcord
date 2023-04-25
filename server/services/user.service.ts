@@ -103,3 +103,14 @@ export async function usernameExists(username: string) {
 
     return userName !== null;
 }
+
+export async function isUserActivated(email: string) {
+    const user = await prisma.user.findFirst({
+        where: {
+            email: email,
+            isActivated : true
+        },
+    })
+
+    return user !== null;
+}
