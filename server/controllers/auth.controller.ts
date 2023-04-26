@@ -67,3 +67,4 @@ export async function createEmailConfirmation(req: Request, res: Response, user:
         .status(200)
         .end();
 }
+

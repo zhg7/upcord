@@ -4,8 +4,9 @@ import { User } from '@prisma/client';
 import { SignUpUser } from '../types/signup.type';
 import { emailExists, usernameExists } from '../services/user.service';
 import { loginCredentialsMatches, getPasswordHash, isSessionTokenValid } from '../services/auth.service';
-import { getUserByEmail, getUserByVerificationToken, addUser, validateUserAccount, isUserActivated } from '../services/user.service';
+import { getUserByEmail, getUserByVerificationToken, addUser, isUserActivated } from '../services/user.service';
 import { createEmailConfirmation, createSessionCookie, sendSessionUserDetails } from '../controllers/auth.controller';
+import { activateUserAccount } from '../controllers/user.controller';
 
 
 export async function validateSignUpDetails(req: Request, res: Response) {
@@ -67,10 +68,7 @@ export async function validateVerificationToken(req: Request, res: Response) {
     const token = req.params.token;
     const result = await getUserByVerificationToken(token);
     if (result?.user) {
-        await validateUserAccount(result.user.id);
-        return res
-            .status(200)
-            .json({ result: "account verified" });
+        activateUserAccount(req, res, result.user.id)
     } else {
         return res
             .status(400)
