@@ -4,19 +4,22 @@ import Password from 'primevue/password';
 import Card from 'primevue/card';
 import Checkbox from 'primevue/checkbox';
 import Button from 'primevue/button';
-import { ref, computed } from 'vue';
+import Message from 'primevue/message';
+import { ref } from 'vue';
 import useVuelidator from '@vuelidate/core';
 import { required, sameAs, minLength, maxLength, email, alphaNum, helpers } from '@vuelidate/validators';
-import { http } from '@/services/HttpService';
+import { checkEmailAvailability, checkUsernameAvailability, sendSignupRequest } from '@/services/AuthService';
 
 const formData = ref({
     email: "",
     username: "",
     password: "",
     agreeTerms: false,
-    emailTaken: null,
-    usernameTaken: null,
 });
+
+const emailTaken = ref(false);
+const usernameTaken = ref(false);
+const signupSuccessful = ref(false);
 
 const rules = {
     email: { required: helpers.withMessage('Campo obligatorio.', required), email: helpers.withMessage('Formato de e-mail inválido.', email) },
@@ -27,45 +30,17 @@ const rules = {
 
 const v$ = useVuelidator(rules, formData);
 
-const emailTaken = computed(() => {
-    return formData.value.emailTaken;
-})
-
-const usernameTaken = computed(() => {
-    return formData.value.usernameTaken;
-}
-
-)
-
 async function submitForm() {
+    signupSuccessful.value = false;
     const result = await v$.value.$validate();
     if (result) {
-        checkEmailAvailability()
-        checkUsernameAvailability()
-        if (!formData.value.emailTaken && !formData.value.usernameTaken) {
-            createAccount();
+        emailTaken.value = await checkEmailAvailability(formData.value.email);
+        usernameTaken.value = await checkUsernameAvailability(formData.value.username);
+        if (!emailTaken.value && !usernameTaken.value) {
+            await sendSignupRequest(formData.value.email, formData.value.username, formData.value.password);
+            signupSuccessful.value = true;
         }
     }
-
-
-}
-
-function createAccount() {
-    http.post('auth/signup', {
-        "email": formData.value.email,
-        "username": formData.value.username,
-        "password": formData.value.password
-    })
-}
-
-async function checkEmailAvailability() {
-    const response = await http.get(`users/emails/${formData.value.email}`);
-    formData.value.emailTaken = response.data.exists;
-}
-
-async function checkUsernameAvailability() {
-    const response = await http.get(`users/usernames/${formData.value.username}`);
-    formData.value.usernameTaken = response.data.exists;
 }
 
 </script>
@@ -81,7 +56,6 @@ async function checkUsernameAvailability() {
             </div>
             <div class="card flex justify-content-center">
                 <form @submit.prevent="submitForm" class="flex flex-column gap-4">
-
                     <span class="p-float-label">
                         <InputText class="w-full" id="email" v-model="formData.email"
                             :class="{ 'p-invalid': v$.email.$errors.length || emailTaken }" />
@@ -116,13 +90,13 @@ async function checkUsernameAvailability() {
                         {{ error.$message }}
                     </small>
                     <Button label="Registrar" type="submit" />
-
+                    <Message v-if="signupSuccessful" severity="success" class="max-w-25rem">Cuenta creada. Te hemos enviado
+                        instrucciones al e-mail indicado para activar la cuenta.</Message>
                 </form>
             </div>
         </template>
         <template #footer>
             <div class="flex justify-content-center">
-
                 <router-link to="/login"><Button label="Ya estoy registrado" link /></router-link>
             </div>
         </template>

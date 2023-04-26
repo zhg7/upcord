@@ -1,4 +1,4 @@
-import { MailService } from '@sendgrid/mail';
+import { MailService } from '@sendgrid/mail'; // Reemplazable por nodemailer
 import type { MailDataRequired } from '@sendgrid/mail'
 
 const sgMail = new MailService();

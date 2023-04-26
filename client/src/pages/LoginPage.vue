@@ -7,8 +7,8 @@ import Button from 'primevue/button';
 import Toast from 'primevue/toast';
 import { ref } from 'vue';
 import useVuelidator from '@vuelidate/core';
-import { required, email, helpers } from '@vuelidate/validators';
-import toast, { showError, showWarning, showSuccess } from '@/services/ToastService';
+import { required, requiredUnless, email, helpers } from '@vuelidate/validators';
+import toast, { showError, showWarning, showSuccess, showInfo } from '@/services/ToastService';
 import { useAuth } from '@/store/auth';
 
 const auth = useAuth();
@@ -17,17 +17,21 @@ const router = useRouter();
 const formData = ref({
     email: "",
     password: "",
-    isDisabled: false
 });
+
+const isDisabled = ref(false); // Prevenir múltiples submit mientras se espera a la redirección.
+const forgottenPassword = ref(false);
+
 
 const rules = {
     email: { required: helpers.withMessage('Campo obligatorio.', required), email: helpers.withMessage('Formato de e-mail inválido.', email) },
-    password: { required: helpers.withMessage('Campo obligatorio.', required) },
+    password: { requiredIf: helpers.withMessage('Campo obligatorio.', requiredUnless(forgottenPassword)) },
 };
 
 const v$ = useVuelidator(rules, formData);
 
 async function submitForm() {
+    forgottenPassword.value = false; // Volver a requerir los dos campos.
     const isFormValidated = await v$.value.$validate();
     toast.removeAllGroups();
     if (isFormValidated) {
@@ -36,7 +40,7 @@ async function submitForm() {
     }
 }
 
-function handleLoginResult(loginResult: any) {
+function handleLoginResult(loginResult: unknown) {
     if (loginResult === "failed") {
         showError('Credenciales inválidas.', 'Revisa los datos introducidos.');
     }
@@ -50,13 +54,21 @@ function handleLoginResult(loginResult: any) {
     }
 
     if (typeof loginResult === 'object') {
-        formData.value.isDisabled = true;
+        isDisabled.value = true;
         showSuccess(`¡Bienvenido ${auth.user.value.username}!`, 'Redirigiendo al inicio...');
         setTimeout(() => {
             router.push({ name: "home" });
         }, 1200)
     }
 
+}
+
+async function handleForgottenPassword() {
+    forgottenPassword.value = true; // Requerir solo el campo de e-mail
+    const isFormValidated = await v$.value.$validate();
+    if (isFormValidated){
+        showInfo('Reseteo de contraseña iniciado.', 'Recibirás un e-mail con las instrucciones.')
+    }
 }
 
 </script>
@@ -71,7 +83,7 @@ function handleLoginResult(loginResult: any) {
                 <form @submit.prevent="submitForm" class="flex flex-column gap-4">
                     <span class="p-float-label">
                         <InputText class="w-full" id="email" v-model="formData.email"
-                            :class="{ 'p-invalid': v$.email.$errors.length }" :disabled="formData.isDisabled" />
+                            :class="{ 'p-invalid': v$.email.$errors.length }" :disabled="isDisabled" />
                         <label for="email">Dirección de e-mail</label>
                     </span>
                     <small v-for="error in v$.email.$errors" :key="error.$uid" class="p-error" id="text-error">
@@ -79,19 +91,19 @@ function handleLoginResult(loginResult: any) {
                     </small>
                     <span class="p-float-label">
                         <Password id="password" v-model="formData.password" :feedback=false toggleMask
-                            :class="{ 'p-invalid': v$.password.$errors.length }" :disabled="formData.isDisabled" />
+                            :class="{ 'p-invalid': v$.password.$errors.length }" :disabled="isDisabled" />
                         <label for="password">Contraseña</label>
                     </span>
                     <small v-for="error in v$.password.$errors" :key="error.$uid" class="p-error" id="text-error">
                         {{ error.$message }}
                     </small>
-                    <Button label="Entrar" type="submit" :disabled="formData.isDisabled" />
+                    <Button label="Entrar" type="submit" :disabled="isDisabled" />
                 </form>
             </div>
         </template>
         <template #footer>
             <div class="flex justify-content-center">
-                <Button label="He olvidado mi contraseña" link />
+                <Button label="Resetear contraseña" text @click="handleForgottenPassword" />
                 <router-link to="/signup"><Button label="No estoy registrado" link /></router-link>
             </div>
         </template>
