@@ -40,25 +40,24 @@ async function submitForm() {
     }
 }
 
-function handleLoginResult(loginResult: unknown) {
-    if (loginResult === "failed") {
-        showError('Credenciales inválidas.', 'Revisa los datos introducidos.');
-    }
+function handleLoginResult(loginResult: any) {
 
-    if (loginResult === "unverified") {
-        showWarning('E-mail no verificado.', 'Activa la cuenta con el enlace que hemos enviado a tu e-mail.');
-    }
-
-    if (loginResult === "banned") {
-        showError('Cuenta expulsada', `Por {razon}, hasta {fechaFin}`);
-    }
-
-    if (typeof loginResult === 'object') {
-        isDisabled.value = true;
-        showSuccess(`¡Bienvenido ${auth.user.value.username}!`, 'Redirigiendo al inicio...');
-        setTimeout(() => {
-            router.push({ name: "home" });
-        }, 1200)
+    switch (loginResult.login) {
+        case "failed":
+            showError('Credenciales inválidas.', 'Revisa los datos introducidos.');
+            break;
+        case "unverified":
+            showWarning('E-mail no verificado.', 'Activa la cuenta con el enlace que hemos enviado a tu e-mail.');
+            break;
+        case "banned":
+            showError('Cuenta expulsada', `Por ${loginResult.ban.reason}, hasta ${loginResult.ban.expiresAt}`);
+            break;
+        case "successful":
+            isDisabled.value = true;
+            showSuccess(`¡Bienvenido ${auth.user.value.username}!`, 'Redirigiendo al inicio...');
+            setTimeout(() => {
+                router.push({ name: "home" });
+            }, 1200)
     }
 
 }
@@ -66,7 +65,7 @@ function handleLoginResult(loginResult: unknown) {
 async function handleForgottenPassword() {
     forgottenPassword.value = true; // Requerir solo el campo de e-mail
     const isFormValidated = await v$.value.$validate();
-    if (isFormValidated){
+    if (isFormValidated) {
         showInfo('Reseteo de contraseña iniciado.', 'Recibirás un e-mail con las instrucciones.')
     }
 }

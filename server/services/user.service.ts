@@ -114,3 +114,16 @@ export async function isUserActivated(email: string) {
 
     return user !== null;
 }
+
+export async function getUserBan(userId : number){
+    const ban = await prisma.ban.findFirst({
+        where: {
+            targetUserId: userId,
+            expiresAt: {
+                gte: new Date() // Comprobar si está en vigor
+            }
+        }
+    })
+
+    return ban;
+}

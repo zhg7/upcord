@@ -27,7 +27,7 @@ export async function createSessionCookie(req: Request, res: Response, user: Use
     storeSessionToken(sessionToken, user.id, expirationDate);
 
     return res
-        .json({ login: 'successful', user: user });
+        .json({ login: 'successful', user });
 }
 
 export async function sendSessionUserDetails(req: Request, res: Response, sessionToken: string) {

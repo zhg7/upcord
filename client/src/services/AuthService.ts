@@ -6,9 +6,9 @@ export async function sendLoginRequest(email: string, password: string) {
             "email": email,
             "password": password
         })
-        return response.data.user // Devuelve objeto en caso de éxito.
+        return response.data
     } catch (err: any) {
-        return err.response.data.login // Devuelve el motivo en caso de error.
+        return err.response.data
     }
 }
 

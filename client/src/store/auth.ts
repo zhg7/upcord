@@ -9,8 +9,8 @@ const isAuthenticated = ref(false);
 //Acciones
 async function login(email: string, password: string) {
     const result = await sendLoginRequest(email, password);
-    if (typeof result === 'object' && result !== null) {
-        user.value = result;
+    if (result.user) {
+        user.value = result.user;
         isAuthenticated.value = true;
     }
     return result;

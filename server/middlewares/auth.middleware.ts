@@ -2,9 +2,8 @@ import { Request, Response } from 'express';
 import { z } from 'zod';
 import { User } from '@prisma/client';
 import { SignUpUser } from '../types/signup.type';
-import { emailExists, usernameExists } from '../services/user.service';
 import { loginCredentialsMatches, getPasswordHash, isSessionTokenValid } from '../services/auth.service';
-import { getUserByEmail, getUserByVerificationToken, addUser, isUserActivated } from '../services/user.service';
+import { emailExists, getUserBan, usernameExists, getUserByEmail, getUserByVerificationToken, addUser, isUserActivated, } from '../services/user.service';
 import { createEmailConfirmation, createSessionCookie, sendSessionUserDetails } from '../controllers/auth.controller';
 import { activateUserAccount } from '../controllers/user.controller';
 
@@ -34,14 +33,24 @@ export async function validateLoginDetails(req: Request, res: Response) {
     const password = req.body.password;
 
     if (await loginCredentialsMatches(email, password)) {
-        
+
+        //Verificar si está expulsado.
+        const user = await getUserByEmail(email);
+        const possibleBan = await getUserBan(user?.id as number);
+
+        if (possibleBan) {
+            return res
+                .status(403)
+                .json({login : 'banned', ban: possibleBan});
+        }
+
+        // Verificar si está verificado el correo.
         if (!await isUserActivated(email)) {
             return res
-                .status(401)
+                .status(403)
                 .json({ login: 'unverified' });
         }
 
-        const user = await getUserByEmail(email);
         if (user) {
             createSessionCookie(req, res, user as User)
         }
