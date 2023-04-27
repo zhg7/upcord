@@ -1,6 +1,5 @@
 import { ref } from 'vue';
-import { sendLoginRequest, checkSessionStatus} from '@/services/AuthService';
-import { http } from '@/services/HttpService';
+import { sendLoginRequest, checkSessionStatus, destroySession} from '@/services/AuthService';
 
 //Estado
 const user = ref();
@@ -27,7 +26,7 @@ async function checkSession() {
 }
 
 async function logout(){
-    http.get('auth/logout')
+    await destroySession();
     user.value = {};
     isAuthenticated.value = false;
 }

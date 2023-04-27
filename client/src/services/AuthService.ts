@@ -21,6 +21,10 @@ export async function checkSessionStatus(){
     }
 }
 
+export async function destroySession(){
+    http.post('auth/logout');
+}
+
 export async function checkEmailAvailability(email : string) {
     const response = await http.get(`users/emails/${email}`);
     return response.data.exists;

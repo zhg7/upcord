@@ -12,7 +12,7 @@ authRoutes.post('/signup', async (req, res) => {
     validateSignUpDetails(req, res);
 })
 
-authRoutes.get('/logout', async(req, res) => {
+authRoutes.post('/logout', async(req, res) => {
     destroySession(req, res);
 })
 
