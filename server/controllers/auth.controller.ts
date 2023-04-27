@@ -40,7 +40,7 @@ export async function sendSessionUserDetails(req: Request, res: Response, sessio
 export async function destroySession(req: Request, res: Response) {
     const token = req.cookies.uc_session;
     if (token) {
-        removeSessionToken(token);
+        await removeSessionToken(token);
         res.clearCookie(COOKIE_NAME, COOKIE_OPTIONS);
         return res
             .status(200)

@@ -50,7 +50,7 @@ export async function isSessionTokenValid(sessionToken: string) {
 }
 
 export async function removeSessionToken(sessionToken: string) {
-    prisma.session.delete({
+    await prisma.session.delete({
         where: {
             token: sessionToken
         }
