@@ -11,6 +11,13 @@ import { required, requiredUnless, email, helpers } from '@vuelidate/validators'
 import toast, { showError, showWarning, showSuccess, showInfo } from '@/services/ToastService';
 import { useAuth } from '@/store/auth';
 
+enum LoginResult  {
+    FAILED = "failed",
+    UNVERIFIED = "unverified",
+    BANNED = "banned",
+    SUCCESSFUL = "successful"
+}
+
 const auth = useAuth();
 const router = useRouter();
 
@@ -43,16 +50,16 @@ async function submitForm() {
 function handleLoginResult(loginResult: any) {
 
     switch (loginResult.login) {
-        case "failed":
+        case LoginResult.FAILED:
             showError('Credenciales inválidas.', 'Revisa los datos introducidos.');
             break;
-        case "unverified":
+        case LoginResult.UNVERIFIED:
             showWarning('E-mail no verificado.', 'Activa la cuenta con el enlace que hemos enviado a tu e-mail.');
             break;
-        case "banned":
+        case LoginResult.BANNED:
             showError('Cuenta expulsada', `Por ${loginResult.ban.reason}, hasta ${loginResult.ban.expiresAt}`);
             break;
-        case "successful":
+        case LoginResult.SUCCESSFUL:
             isDisabled.value = true;
             showSuccess(`¡Bienvenido ${auth.user.value.username}!`, 'Redirigiendo al inicio...');
             setTimeout(() => {
