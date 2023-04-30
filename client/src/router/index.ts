@@ -7,6 +7,7 @@ const HomePage = () => import('../pages/HomePage.vue');
 const LoginPage = () => import('../pages/LoginPage.vue');
 const SignupPage = () => import('../pages/SignupPage.vue');
 const NotFoundPage = () => import('../pages/NotFoundPage.vue');
+const SettingsPage = () => import('../pages/SettingsPage.vue');
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -30,6 +31,14 @@ const router = createRouter({
       component: SignupPage,
       meta: {
         title: `Crear cuenta - ${DEFAULT_TITLE}`
+      }
+    },
+    {
+      path: '/settings',
+      name: 'settings',
+      component: SettingsPage,
+      meta: {
+        title: `Ajustes - ${DEFAULT_TITLE}`
       }
     },
     {

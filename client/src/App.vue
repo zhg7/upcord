@@ -18,11 +18,7 @@ const auth = useAuth();
   <AppFooter />
 </template>
 
-<style>
-body {
-  background-color: var(--surface-ground);
-}
-
+<style scoped>
 .fade-enter-active {
   animation: fade 0.45s ease-in-out;
 }

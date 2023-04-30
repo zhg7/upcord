@@ -5,7 +5,7 @@ import router from './router';
 import PrimeVue from 'primevue/config';
 import ToastService from 'primevue/toastservice';
 
-import "primevue/resources/themes/viva-dark/theme.css";
+import "@/assets/styles/theme.css";
 import "primevue/resources/primevue.min.css";
 import 'primeicons/primeicons.css';
 import "primeflex/primeflex.css";

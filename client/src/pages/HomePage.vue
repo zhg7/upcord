@@ -6,7 +6,7 @@ import CategoryCard from '@/components/CategoryCard.vue';
 <template>
     <Card>
         <template #title>
-            <h3 class="text-start m-0 ">Foros</h3>
+            <h3 class="text-start m-0">Foros</h3>
         </template>
         <template #content>
             <div class="grid">
