@@ -40,7 +40,9 @@ const router = createRouter({
       component: SettingsPage,
       meta: {
         title: `Ajustes - ${DEFAULT_TITLE}`
-      }
+      },
+      beforeEnter: checkAuthentication,
+
     },
     {
       path: '/profile/:username?/',
@@ -49,9 +51,9 @@ const router = createRouter({
       meta: {
         title: `Perfil de  - ${DEFAULT_TITLE}`
       },
-      beforeEnter: async (to, from) => {
+      beforeEnter: (to, from) => {
         const username = to.params.username as string;
-        if(username){
+        if (username) {
           document.title = `Perfil de ${username} - ${DEFAULT_TITLE}`
         } else {
           document.title = `Mi perfil - ${DEFAULT_TITLE}`
@@ -78,5 +80,10 @@ router.beforeEach(async (to, from) => {
   await auth.checkSession();
 })
 
-
+// Comprobar si se ha iniciado sesión
+function checkAuthentication() {
+  if (!auth.isAuthenticated.value) {
+    return { name: 'login' }
+  }
+}
 export default router;
