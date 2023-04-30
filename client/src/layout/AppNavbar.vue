@@ -39,7 +39,7 @@ const items = ref([
             {
                 label: 'Perfil',
                 icon: 'pi pi-fw pi-id-card',
-                to: {name: 'profile', state: { pageTitle: `${auth.user.value?.username}` } },
+                to: `/profile/${auth.user.value?.username}`,
             },
             {
                 label: 'Ajustes',

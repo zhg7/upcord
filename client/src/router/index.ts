@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { useAuth } from '@/store/auth';
+import { checkUsernameAvailability } from '@/services/UserService';
 const DEFAULT_TITLE = 'Upcord';
 const auth = useAuth();
 
@@ -45,20 +46,19 @@ const router = createRouter({
 
     },
     {
-      path: '/profile/:username?/',
+      path: '/profile/:username/',
       name: 'profile',
       component: ProfilePage,
       meta: {
         title: `Perfil de  - ${DEFAULT_TITLE}`
       },
-      beforeEnter: (to, from) => {
+      beforeEnter: async (to, from) => {
+        // Comprobar que existe el nombre de usuario del perfil
         const username = to.params.username as string;
-        if (username) {
-          document.title = `Perfil de ${username} - ${DEFAULT_TITLE}`
-        } else {
-          document.title = `Mi perfil - ${DEFAULT_TITLE}`
+        document.title = `Perfil de ${username} - ${DEFAULT_TITLE}`
+        if (!await checkUsernameAvailability(username)) {
+          return { name: 'notfound' };
         }
-
       }
     },
     {
