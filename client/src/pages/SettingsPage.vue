@@ -41,7 +41,7 @@ const userDetails = ref({
                                 <div class="flex align-items-center gap-3 mt-3">
                                     <ProfilePicture :image-url=auth.user.value.avatar :username=auth.user.value.username />
                                     <div class="w-9">
-                                        <InputText id="avatar" type="text" class="w-12" />
+                                        <InputText id="avatar" type="text" class="w-12" v-model="profileDetails.avatar"/>
                                         <small class="block mt-2">Introduce la URL de una
                                             imagen.</small>
                                     </div>

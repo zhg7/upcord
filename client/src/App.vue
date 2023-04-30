@@ -12,7 +12,7 @@ const auth = useAuth();
   <AppNavbar :key="auth.user.value?.username" />
   <main>
     <Transition name="fade">
-        <RouterView />
+      <RouterView />
     </Transition>
   </main>
   <AppFooter />
@@ -34,20 +34,6 @@ const auth = useAuth();
 
   to {
     opacity: 1;
-  }
-}
-
-.fade-leave-active {
-  animation: slide 0.45s ease-in-out;
-}
-
-@keyframes slide {
-  from {
-    transform: translateX(0);
-  }
-
-  to {
-    transform: translateX(-300px);
   }
 }
 </style>

@@ -57,7 +57,7 @@ const router = createRouter({
         const username = to.params.username as string;
         document.title = `Perfil de ${username} - ${DEFAULT_TITLE}`
         if (!await checkUsernameAvailability(username)) {
-          return { name: 'notfound' };
+          return { name: 'notfound', params: { pathMatch: to.path.split('/').slice(1) }, }; // Evitar modificación URL
         }
       }
     },
@@ -86,4 +86,5 @@ function checkAuthentication() {
     return { name: 'login' }
   }
 }
+
 export default router;
