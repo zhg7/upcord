@@ -12,7 +12,7 @@ const auth = useAuth();
   <AppNavbar :key="auth.user.value?.username" />
   <main>
     <Transition name="fade">
-      <RouterView />
+        <RouterView />
     </Transition>
   </main>
   <AppFooter />
@@ -27,9 +27,11 @@ const auth = useAuth();
   from {
     opacity: 0;
   }
+
   50% {
     opacity: 50%;
   }
+
   to {
     opacity: 1;
   }
@@ -43,9 +45,9 @@ const auth = useAuth();
   from {
     transform: translateX(0);
   }
+
   to {
     transform: translateX(-300px);
   }
 }
-
 </style>

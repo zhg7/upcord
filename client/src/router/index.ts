@@ -52,9 +52,9 @@ const router = createRouter({
   ]
 })
 
-router.beforeEach((to) => {
+router.beforeEach(async (to) => {
   document.title = to.meta?.title as string ?? DEFAULT_TITLE; // Título de página dinámico
-  auth.checkSession();
+  await auth.checkSession();
 })
 
 

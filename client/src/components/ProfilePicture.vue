@@ -3,18 +3,20 @@ import { computed } from 'vue';
 import Avatar from 'primevue/avatar';
 
 const props = defineProps({
-    user: Object,
+    imageUrl: String,
+    username: String,
     size: String,
 })
 
-const usernameFirstLetter = props.user?.username
-
-const userAvatar = computed(() => {
-    return props.user?.avatar !== null 
+// Placeholder para cuando el usuario no tiene una foto establecida.
+const getUsernameFirstLetter = computed(() => {
+    if (props.imageUrl === null){
+        return props.username?.charAt(0).toUpperCase();
+    }
 })
 
 </script>
 
 <template>
-    <Avatar image="https://avatarfiles.alphacoders.com/321/321781.png" label="" size="xlarge" shape="circle" />
+    <Avatar :image=props.imageUrl :label=getUsernameFirstLetter size="xlarge" shape="circle" />
 </template>
