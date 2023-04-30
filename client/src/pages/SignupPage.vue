@@ -8,7 +8,8 @@ import Message from 'primevue/message';
 import { ref } from 'vue';
 import useVuelidator from '@vuelidate/core';
 import { required, sameAs, minLength, maxLength, email, alphaNum, helpers } from '@vuelidate/validators';
-import { checkEmailAvailability, checkUsernameAvailability, sendSignupRequest } from '@/services/AuthService';
+import { sendSignupRequest } from '@/services/AuthService';
+import { checkEmailAvailability, checkUsernameAvailability} from '@/services/UserService';
 
 const formData = ref({
     email: "",

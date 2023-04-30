@@ -18,7 +18,7 @@ import Button from 'primevue/button';
         </template>
         <template #footer>
             <section class="flex justify-content-center">
-                <router-link to="/"><Button label="Volver al inicio" icon="pi pi-home" severity="secondary" outlined link  /></router-link>
+                <router-link to="/"><Button label="Volver al inicio" icon="pi pi-home" severity="info" outlined link  /></router-link>
             </section>
         </template>
     </Card>

@@ -17,18 +17,18 @@ const items = ref([
         label: 'Chats',
         icon: 'pi pi-fw pi-envelope',
         visible: auth.isAuthenticated,
-        to: "chats"
+        to: "/chats"
     },
     {
         label: 'Iniciar sesión',
         icon: 'pi pi-fw pi-sign-in',
-        to: "login",
+        to: "/login",
         separator: auth.isAuthenticated
     },
     {
         label: 'Crear cuenta',
         icon: 'pi pi-fw pi-user-plus',
-        to: "signup",
+        to: "/signup",
         separator: auth.isAuthenticated
     },
     {
@@ -39,12 +39,12 @@ const items = ref([
             {
                 label: 'Perfil',
                 icon: 'pi pi-fw pi-id-card',
-                to: "profile"
+                to: {name: 'profile', state: { pageTitle: `${auth.user.value?.username}` } },
             },
             {
                 label: 'Ajustes',
                 icon: 'pi pi-fw pi-cog',
-                to: "settings"
+                to: "/settings"
             },
             {
                 separator: true
