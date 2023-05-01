@@ -8,7 +8,9 @@ export async function getForums() {
             subforums: {
                 select: {
                     id: true,
-                    title: true
+                    title: true,
+                    logo: true,
+                    description: true
                 }
             }
         },

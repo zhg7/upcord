@@ -11,7 +11,6 @@ import { useAuth } from '@/store/auth';
 
 const auth = useAuth();
 
-
 const profileDetails = ref({
     avatar: auth.user.value?.avatar,
     biography: auth.user.value?.biography
