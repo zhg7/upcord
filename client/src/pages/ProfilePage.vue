@@ -23,6 +23,7 @@ onMounted(async () => {
                 <ProfilePicture :image-url="user.avatar" :username="user.username" />
                 <h1>{{ user.username }}</h1>
                 <h2>{{ user.createdAt }}</h2>
+                <p>{{ user.biography }}</p>
             </section>
         </template>
     </Card>
