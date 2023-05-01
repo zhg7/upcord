@@ -13,6 +13,16 @@ const userData = {
     isActivated: true,
 }
 
+export async function getUserByUsername(username: string) {
+    const user = await prisma.user.findUnique({
+        where: {
+            username: username
+        },
+        select: userData
+    })
+    return user;
+}
+
 export async function getUserByEmail(email: string) {
     const user = await prisma.user.findUnique({
         where: {
@@ -108,14 +118,14 @@ export async function isUserActivated(email: string) {
     const user = await prisma.user.findFirst({
         where: {
             email: email,
-            isActivated : true
+            isActivated: true
         },
     })
 
     return user !== null;
 }
 
-export async function getUserBan(userId : number){
+export async function getUserBan(userId: number) {
     const ban = await prisma.ban.findFirst({
         where: {
             targetUserId: userId,

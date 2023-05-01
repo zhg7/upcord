@@ -96,9 +96,6 @@ const userDetails = ref({
                 </section>
             </div>
         </template>
-        <template #footer>
-
-        </template>
     </Card>
 </template>
 

@@ -9,3 +9,8 @@ export async function checkUsernameAvailability(username: string) {
     const response = await http.get(`users/usernames/${username}`);
     return response.data.exists;
 }
+
+export async function getUserDetails(username: string){
+    const response = await http.get(`users/${username}`);
+    return response.data;
+}

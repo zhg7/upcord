@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { emailExists, usernameExists, validateUserAccount } from "../services/user.service";
+import { getUserByUsername, emailExists, usernameExists, validateUserAccount } from "../services/user.service";
 
 export async function checkDuplicateEmail(req: Request, res: Response) {
     const email = req.params.email;
@@ -20,6 +20,21 @@ export async function activateUserAccount(req: Request, res: Response, userId: n
     return res
         .status(200)
         .json({ result: "account verified" });
+}
+
+export async function getUserDetails(req: Request, res: Response) {
+    const user = await getUserByUsername(req.params.username);
+
+    if (user) {
+        return res
+            .status(200)
+            .json(user);
+    } else {
+        return res
+            .status(404)
+            .end();
+    }
+
 }
 
 
