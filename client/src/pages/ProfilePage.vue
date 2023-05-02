@@ -8,6 +8,7 @@ import { getUserDetails } from '@/services/UserService';
 
 const route = useRoute();
 const auth = useAuth();
+
 const user: any = ref({});
 
 onMounted(async () => {

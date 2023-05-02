@@ -1,12 +1,12 @@
 import express, { Request, Response } from 'express';
-import { getForums } from "../services/forum.service";
+import { getCategories } from "../services/forum.service";
 
-export async function getForumList(req: Request, res: Response) {
-    const forums = await getForums();
-    if (forums) {
+export async function getCategoryList(req: Request, res: Response) {
+    const categories = await getCategories();
+    if (categories) {
         return res
             .status(200)
-            .json(forums);
+            .json(categories);
     } else {
         return res
             .status(404)

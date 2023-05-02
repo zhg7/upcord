@@ -1,17 +1,45 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router';
 import Menubar from 'primevue/menubar';
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useAuth } from '@/store/auth';
 import { useRouter } from 'vue-router';
+import { getCategories } from '@/services/ForumService';
+import type { MenuItem } from 'primevue/menuitem';
+import type { Category } from '@/types/Forum'
 
 const auth = useAuth();
 const router = useRouter();
 
+const categories = ref<Category[]>();
+
+onMounted(async () => {
+    categories.value = await getCategories();
+    populateForumList();
+})
+
+function populateForumList() {
+    categories.value?.forEach((category, index) => { // @ts-ignore - Problema de PrimeVue.
+        items.value[0].items?.push({
+            label: category.title,
+            items: []
+        });
+
+        category.subforums.forEach(subforum => { // @ts-ignore - Problema de PrimeVue.
+            items.value[0].items[index].items.push({ 
+                label: subforum.title,
+                to: `/forum/${subforum.id}`,
+            })
+        })
+    });
+}
+
 const items = ref([
     {
         label: 'Foros',
-        icon: 'pi pi-fw pi-comments'
+        icon: 'pi pi-fw pi-comments',
+        key: "forums",
+        items: [] as Array<MenuItem>
     },
     {
         label: 'Chats',

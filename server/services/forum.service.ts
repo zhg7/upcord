@@ -1,7 +1,7 @@
 import { prisma } from '../index';
 
-export async function getForums() {
-    const forums = await prisma.category.findMany({
+export async function getCategories() {
+    const categories = await prisma.category.findMany({
         select: {
             id: true,
             title: true,
@@ -16,5 +16,5 @@ export async function getForums() {
         },
     })
 
-    return forums;
+    return categories;
 }
