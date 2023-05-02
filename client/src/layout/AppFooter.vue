@@ -17,7 +17,7 @@ import Card from 'primevue/card';
                             privacidad</router-link></li>
                 </ul>
                 
-                <small class="flex justify-content-center text-color-secondary">&#127341; Upcord {{ new Date().getFullYear()
+                <small class="flex justify-content-center text-color-secondary">(CC) Upcord {{ new Date().getFullYear()
                 }}</small>
             </template>
         </Card>

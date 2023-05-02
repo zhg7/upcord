@@ -4,7 +4,7 @@ export type Category = {
     subforums: Subforum[];
 }
 
-type Subforum = {
+export type Subforum = {
     id: number;
     title: string;
     logo: string;
