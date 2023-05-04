@@ -50,7 +50,7 @@ const router = createRouter({
 
     },
     {
-      path: '/profile/:username/',
+      path: '/profile/:username',
       name: 'profile',
       component: ProfilePage,
       beforeEnter: async (to, from) => {
@@ -64,16 +64,15 @@ const router = createRouter({
       }
     },
     {
-      path: '/forum/:id/',
+      path: '/forum/:id',
       name: 'forum',
       component: ForumPage,
       beforeEnter: async (to, from) => {
         // Comprobar que existe el subforo en cuestión
         const subforumId = Number(to.params.id);
-        console.log(subforumId);
         const subforum = await getSubforum(subforumId);
         if (!subforum) {
-          return { name: 'notfound', params: { pathMatch: to.path.split('/').slice(1) }, }; // Evitar modificación URL
+          return { name: 'notfound', params: { pathMatch: to.path.split('/').slice(1) }, };
         } else {
           document.title = `Foro de ${subforum.title} - ${DEFAULT_TITLE}`
         }
