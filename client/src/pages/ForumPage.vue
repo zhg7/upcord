@@ -2,18 +2,26 @@
 import { ref, onMounted } from 'vue';
 import { useRoute, onBeforeRouteUpdate } from 'vue-router';
 import Card from 'primevue/card';
-import { getSubforum } from '@/services/ForumService';
+import { getSubforum, getThreads } from '@/services/ForumService';
 
 const route = useRoute();
+
 const subforum = ref();
+const threads = ref();
 
 onMounted(async () => {
-    subforum.value = await getSubforum(Number(route.params.id));
+    await updateView(Number(route.params.id))
 })
 
 onBeforeRouteUpdate(async (to, from) => {
-    subforum.value = await getSubforum(Number(to.params.id));
+    await updateView(Number(to.params.id))
 })
+
+//Actualización de los datos al haber cambios de ruta.
+async function updateView(id: number) {
+    subforum.value = await getSubforum(id);
+    threads.value = await getThreads(id);
+}
 
 </script>
 
@@ -25,7 +33,9 @@ onBeforeRouteUpdate(async (to, from) => {
         <template #content>
             <div class="grid">
                 <section class="grid col-12 lg:col-6">
-
+                    <div v-for="thread in threads">
+                        <span>{{ thread }}</span>
+                    </div>
                 </section>
                 <section class="col-12 lg:col-6">
 

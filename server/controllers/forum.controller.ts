@@ -18,8 +18,15 @@ export async function getThreadList(req: Request, res: Response) {
 
 export async function getSubforumDetails(req: Request, res: Response) {
     const subforumId = Number(req.params.subforumId);
-    const subforum = await getSubforum(subforumId);
-    return res
-        .status(200)
-        .json(subforum);
+    if (!isNaN(subforumId)) { // Evitar carácteres extraños.
+        const subforum = await getSubforum(subforumId);
+        return res
+            .status(200)
+            .json(subforum);
+    } else {
+        return res
+            .status(200)
+            .end();
+    }
+
 }
