@@ -18,3 +18,23 @@ export async function getCategories() {
 
     return categories;
 }
+
+export async function getThreads(subforumId: number) {
+    const threads = await prisma.thread.findMany({
+        where: {
+            subforumId: subforumId,
+        }
+    });
+
+    return threads;
+}
+
+export async function getSubforum(subforumId: number) {
+    const subforum = await prisma.subforum.findUnique({
+        where: {
+            id: subforumId,
+        }
+    })
+
+    return subforum;
+}

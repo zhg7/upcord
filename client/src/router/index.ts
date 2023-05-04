@@ -1,15 +1,19 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { useAuth } from '@/store/auth';
 import { checkUsernameAvailability } from '@/services/UserService';
-const DEFAULT_TITLE = 'Upcord';
+import { getSubforum } from '@/services/ForumService';
+
 const auth = useAuth();
 
-const HomePage = () => import('../pages/HomePage.vue');
-const LoginPage = () => import('../pages/LoginPage.vue');
-const SignupPage = () => import('../pages/SignupPage.vue');
-const NotFoundPage = () => import('../pages/NotFoundPage.vue');
-const SettingsPage = () => import('../pages/SettingsPage.vue');
-const ProfilePage = () => import('../pages/ProfilePage.vue');
+const HomePage = () => import('@/pages/HomePage.vue');
+const LoginPage = () => import('@/pages/LoginPage.vue');
+const SignupPage = () => import('@/pages/SignupPage.vue');
+const NotFoundPage = () => import('@/pages/NotFoundPage.vue');
+const SettingsPage = () => import('@/pages/SettingsPage.vue');
+const ProfilePage = () => import('@/pages/ProfilePage.vue');
+const ForumPage = () => import('@/pages/ForumPage.vue');
+
+const DEFAULT_TITLE = 'Upcord';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -49,15 +53,29 @@ const router = createRouter({
       path: '/profile/:username/',
       name: 'profile',
       component: ProfilePage,
-      meta: {
-        title: `Perfil de  - ${DEFAULT_TITLE}`
-      },
       beforeEnter: async (to, from) => {
         // Comprobar que existe el nombre de usuario del perfil
         const username = to.params.username as string;
-        document.title = `Perfil de ${username} - ${DEFAULT_TITLE}`
         if (!await checkUsernameAvailability(username)) {
           return { name: 'notfound', params: { pathMatch: to.path.split('/').slice(1) }, }; // Evitar modificación URL
+        } else {
+          document.title = `Perfil de ${username} - ${DEFAULT_TITLE}`
+        }
+      }
+    },
+    {
+      path: '/forum/:id/',
+      name: 'forum',
+      component: ForumPage,
+      beforeEnter: async (to, from) => {
+        // Comprobar que existe el subforo en cuestión
+        const subforumId = Number(to.params.id);
+        console.log(subforumId);
+        const subforum = await getSubforum(subforumId);
+        if (!subforum) {
+          return { name: 'notfound', params: { pathMatch: to.path.split('/').slice(1) }, }; // Evitar modificación URL
+        } else {
+          document.title = `Foro de ${subforum.title} - ${DEFAULT_TITLE}`
         }
       }
     },
