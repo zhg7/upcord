@@ -25,14 +25,28 @@ export async function getThreads(subforumId: number) {
             subforumId: subforumId,
         },
         include: {
-            author: {
+            author: { // Obtener datos del autor.
                 select: {
                     username: true,
                     avatar: true
                 }
             },
-            _count: {
-                select: { posts: true }
+            _count: {  // Contar número de respuestas.
+                select: { posts: true } 
+            },
+            posts: { // Obtener el autor de la respuesta más reciente.
+                include: {
+                    author: {
+                        select: {
+                            username: true,
+                            avatar: true
+                        }
+                    }
+                },
+                orderBy: {
+                    createdAt: 'desc',
+                },
+                take: 1
             }
         },
 

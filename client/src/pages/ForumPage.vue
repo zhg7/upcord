@@ -57,6 +57,20 @@ async function updateView(id: number) {
                             {{ data._count.posts }}
                         </template>
                     </Column>
+                    <Column header="Última respuesta" style="min-width: 14rem">
+                        <template #body="{ data }">
+                            <div v-if="data.posts[0]" class="flex align-items-center gap-2">
+                                <ProfilePicture :image-url=data.posts[0].author.avatar
+                                    :username=data.posts[0].author.username />
+                                <span>{{ data.posts[0].author.username }}</span>
+                            </div>
+                            <div v-else>
+                                -
+                            </div>
+                        </template>
+                        <template #filter="{ filterModel }">
+                        </template>
+                    </Column>
                 </DataTable>
             </div>
         </template>
