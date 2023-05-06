@@ -9,7 +9,7 @@ export async function getCategoryList(req: Request, res: Response) {
 }
 
 export async function getThreadList(req: Request, res: Response) {
-    const subforumId = parseInt(req.params.subforumId);
+    const subforumId = Number(req.params.subforumId);
     const threads = await getThreads(subforumId);
     return res
         .status(200)

@@ -2,6 +2,10 @@
 import { ref, onMounted } from 'vue';
 import { useRoute, onBeforeRouteUpdate } from 'vue-router';
 import Card from 'primevue/card';
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
+import ThreadCard from '@/components/ThreadCard.vue';
+import ProfilePicture from '@/components/ProfilePicture.vue'
 import { getSubforum, getThreads } from '@/services/ForumService';
 
 const route = useRoute();
@@ -31,15 +35,29 @@ async function updateView(id: number) {
             <h3 class="text-start m-0">Foro de {{ subforum?.title }}</h3>
         </template>
         <template #content>
-            <div class="grid">
-                <section class="grid col-12 lg:col-6">
-                    <div v-for="thread in threads">
-                        <span>{{ thread }}</span>
-                    </div>
-                </section>
-                <section class="col-12 lg:col-6">
-
-                </section>
+            <div class="card">
+                <DataTable :value="threads" tableStyle="min-width: 50rem">
+                    <Column field="title" header="Título" style="min-width: 12rem">
+                        <template #body="{ data }">
+                            {{ data.title }}
+                        </template>
+                    </Column>
+                    <Column header="Iniciado por" style="min-width: 14rem">
+                        <template #body="{ data }">
+                            <div class="flex align-items-center gap-2">
+                                <ProfilePicture :image-url=data.author.avatar :username=data.author.username />
+                                <span>{{ data.author.username }}</span>
+                            </div>
+                        </template>
+                        <template #filter="{ filterModel }">
+                        </template>
+                    </Column>
+                    <Column field="title" header="Respuestas" style="min-width: 12rem">
+                        <template #body="{ data }">
+                            {{ data._count.posts }}
+                        </template>
+                    </Column>
+                </DataTable>
             </div>
         </template>
     </Card>

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import Avatar from 'primevue/avatar';
+import type { AvatarProps } from 'primevue/avatar';
 
 const props = defineProps({
     imageUrl: String,
     username: String,
-    size: String,
 })
 
 // Placeholder para cuando el usuario no tiene una foto establecida.
@@ -18,5 +18,5 @@ const getUsernameFirstLetter = computed(() => {
 </script>
 
 <template>
-    <Avatar :image=props.imageUrl :label=getUsernameFirstLetter size="xlarge" shape="circle" />
+    <Avatar :image=props.imageUrl :label=getUsernameFirstLetter shape="circle" />
 </template>

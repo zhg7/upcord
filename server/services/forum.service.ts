@@ -23,7 +23,19 @@ export async function getThreads(subforumId: number) {
     const threads = await prisma.thread.findMany({
         where: {
             subforumId: subforumId,
-        }
+        },
+        include: {
+            author: {
+                select: {
+                    username: true,
+                    avatar: true
+                }
+            },
+            _count: {
+                select: { posts: true }
+            }
+        },
+
     });
 
     return threads;
