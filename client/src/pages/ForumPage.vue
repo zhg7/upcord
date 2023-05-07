@@ -74,7 +74,6 @@ async function handleThreadSubmission(result: any) {
                 <Toast position="bottom-center" />
                 <Button v-if="auth.isAuthenticated.value" @click="creatingThread = true" size="small" label="Nuevo hilo"
                     icon="pi pi-plus" />
-
                 <DataTable :value="threads" :rows="10" paginator dataKey="id" class="mt-3">
                     <Column field="title" header="Título">
                         <template #body="{ data }">
@@ -89,7 +88,7 @@ async function handleThreadSubmission(result: any) {
                     <Column header="Iniciado por" style="min-width: 14rem">
                         <template #body="{ data }">
                             <section class="flex align-items-center gap-2">
-                                <ProfilePicture :image-url=data.author.avatar :username=data.author.username />
+                                <ProfilePicture :image-url=data.author.avatar :username=data.author.username image-size="normal" />
                                 <div class="flex flex-column gap-1">
                                     <span>{{ data.author.username }}</span>
                                     <small>{{ getTimeAgo(data.createdAt) }}</small>
@@ -108,7 +107,7 @@ async function handleThreadSubmission(result: any) {
                                 class="flex align-items-center gap-2">
                                 <!-- no tener en cuenta el autor del primer mensaje -->
                                 <ProfilePicture :image-url=data.posts[0].author.avatar
-                                    :username=data.posts[0].author.username />
+                                    :username=data.posts[0].author.username image-size="normal" />
                                 <div class="flex flex-column gap-1">
                                     <span>{{ data.posts[0].author.username }}</span>
                                     <small>{{ getTimeAgo(data.posts[0].createdAt) }}</small>

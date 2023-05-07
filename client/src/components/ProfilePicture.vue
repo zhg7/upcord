@@ -20,6 +20,10 @@ const getUsernameFirstLetter = computed(() => {
 
 <template>
     <router-link :to="`/profile/${props.username}`" class="text-white">
-        <Avatar :image=props.imageUrl :label=getUsernameFirstLetter shape="circle" />
-    </router-link>
-</template>
+        <Avatar v-if="props.imageSize === 'xlarge'" :image=props.imageUrl :label=getUsernameFirstLetter shape="circle"
+            size="xlarge" />
+        <Avatar v-if="props.imageSize === 'large'" :image=props.imageUrl :label=getUsernameFirstLetter shape="circle"
+            size="large" />
+        <Avatar v-if="props.imageSize === 'normal'" :image=props.imageUrl :label=getUsernameFirstLetter shape="circle"
+            size="normal" />
+</router-link></template>

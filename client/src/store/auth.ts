@@ -1,9 +1,12 @@
-import { ref } from 'vue';
-import { sendLoginRequest, checkSessionStatus, destroySession} from '@/services/AuthService';
+import { ref, computed } from 'vue';
+import { sendLoginRequest, checkSessionStatus, destroySession } from '@/services/AuthService';
 
 //Estado
 const user = ref();
 const isAuthenticated = ref(false);
+const isAdmin = computed(() => {
+    return user.value.isAdmin
+})
 
 //Acciones
 async function login(email: string, password: string) {
@@ -25,7 +28,7 @@ async function checkSession() {
     }
 }
 
-async function logout(){
+async function logout() {
     await destroySession();
     user.value = {};
     isAuthenticated.value = false;
@@ -35,6 +38,7 @@ async function logout(){
 export function useAuth() {
     return {
         isAuthenticated,
+        isAdmin,
         user,
         login,
         logout,
