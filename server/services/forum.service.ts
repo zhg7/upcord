@@ -34,21 +34,29 @@ export async function getThreads(subforumId: number) {
             _count: {  // Contar número de respuestas.
                 select: { posts: true }
             },
-            posts: { // Obtener el autor de la respuesta más reciente.
-                include: {
+            posts: {
+                include: {  // Obtener el autor de la respuesta más reciente.
                     author: {
                         select: {
                             username: true,
                             avatar: true
-                        }
-                    }
+                        },
+                    },
                 },
                 orderBy: {
                     createdAt: 'desc',
                 },
                 take: 1
-            }
+            },
         },
+        orderBy: [
+            {
+                isPinned: 'desc', // Primero los hilos fijados.
+            },
+            {
+                updatedAt: 'desc' // Campo a actualizar al insertarse nuevos comentarios.
+            }
+        ]
 
     });
 
@@ -63,4 +71,28 @@ export async function getSubforum(subforumId: number) {
     })
 
     return subforum;
+}
+
+export async function addThread(title: string, content: string, subforumId: number, authorId: number) {
+    const thread = await prisma.thread.create({
+        data: {
+            title: title,
+            authorId: authorId,
+            subforumId: subforumId,
+        }
+    })
+    await addComment(content, thread.id, authorId);
+    return thread;
+}
+
+export async function addComment(content: string, threadId: number, authorId: number) {
+    const comment = prisma.post.create({
+        data: {
+            content: content,
+            authorId: authorId,
+            threadId: threadId
+        }
+    })
+
+    return comment;
 }

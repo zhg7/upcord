@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { getCategories, getThreads, getSubforum } from "../services/forum.service";
+import { getCategories, getThreads, getSubforum, addThread } from "../services/forum.service";
 
 export async function getCategoryList(req: Request, res: Response) {
     const categories = await getCategories();
@@ -26,6 +26,22 @@ export async function getSubforumDetails(req: Request, res: Response) {
     } else {
         return res
             .status(200)
+            .end();
+    }
+
+}
+
+export async function createThread(req: Request, res: Response) {
+    const { title, content, subforumId, authorId } = req.body;
+    const thread = await addThread(title, content, Number(subforumId), Number(authorId));
+
+    if (thread) {
+        return res
+            .status(200)
+            .json(thread);
+    } else {
+        return res
+            .status(400)
             .end();
     }
 
