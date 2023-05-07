@@ -23,7 +23,6 @@ export async function createThread(subforumId: number, title: string, content: s
         "title": title,
         "content": content,
         "subforumId": subforumId,
-        "authorId": auth.user.value.id
     })
 
     return response.data;

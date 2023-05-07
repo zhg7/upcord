@@ -19,7 +19,7 @@ const getUsernameFirstLetter = computed(() => {
 </script>
 
 <template>
-    <router-link :to="`/profile/${props.username}`">
+    <router-link :to="`/profile/${props.username}`" class="text-white">
         <Avatar :image=props.imageUrl :label=getUsernameFirstLetter shape="circle" />
     </router-link>
 </template>
