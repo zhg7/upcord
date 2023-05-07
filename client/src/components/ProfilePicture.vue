@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import Avatar from 'primevue/avatar';
+import { RouterLink } from 'vue-router';
 
 const props = defineProps({
     imageUrl: String,
@@ -18,5 +19,7 @@ const getUsernameFirstLetter = computed(() => {
 </script>
 
 <template>
-    <Avatar :image=props.imageUrl :label=getUsernameFirstLetter shape="circle" />
+    <router-link :to="`/profile/${props.username}`">
+        <Avatar :image=props.imageUrl :label=getUsernameFirstLetter shape="circle" />
+    </router-link>
 </template>

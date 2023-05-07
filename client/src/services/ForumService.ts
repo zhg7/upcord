@@ -1,4 +1,7 @@
 import { http } from '@/services/HttpService';
+import { useAuth } from '@/store/auth';
+
+const auth = useAuth();
 
 export async function getCategories() {
     const response = await http.get(`forums/categories`);
@@ -10,8 +13,18 @@ export async function getSubforum(subforumId: number) {
     return response.data;
 }
 
-export async function getThreads(subforumId: number){
+export async function getThreads(subforumId: number) {
     const response = await http.get(`forums/threads/${subforumId}`);
-    console.log(response.data);
+    return response.data;
+}
+
+export async function createThread(subforumId: number, title: string, content: string) {
+    const response = await http.post('forums/threads', {
+        "title": title,
+        "content": content,
+        "subforumId": subforumId,
+        "authorId": auth.user.value.id
+    })
+
     return response.data;
 }
