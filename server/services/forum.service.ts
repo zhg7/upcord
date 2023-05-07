@@ -32,7 +32,7 @@ export async function getThreads(subforumId: number) {
                 }
             },
             _count: {  // Contar número de respuestas.
-                select: { posts: true } 
+                select: { posts: true }
             },
             posts: { // Obtener el autor de la respuesta más reciente.
                 include: {

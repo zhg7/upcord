@@ -4,9 +4,9 @@ import { useRoute, onBeforeRouteUpdate } from 'vue-router';
 import Card from 'primevue/card';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
-import ThreadCard from '@/components/ThreadCard.vue';
 import ProfilePicture from '@/components/ProfilePicture.vue'
 import { getSubforum, getThreads } from '@/services/ForumService';
+import { getTimeAgo } from '@/utils/time';
 
 const route = useRoute();
 
@@ -46,7 +46,10 @@ async function updateView(id: number) {
                         <template #body="{ data }">
                             <div class="flex align-items-center gap-2">
                                 <ProfilePicture :image-url=data.author.avatar :username=data.author.username />
-                                <span>{{ data.author.username }}</span>
+                                <div class="flex flex-column gap-1">
+                                    <span>{{ data.author.username }}</span>
+                                    <small>{{ getTimeAgo(data.createdAt) }}</small>
+                                </div>
                             </div>
                         </template>
                         <template #filter="{ filterModel }">
@@ -62,7 +65,10 @@ async function updateView(id: number) {
                             <div v-if="data.posts[0]" class="flex align-items-center gap-2">
                                 <ProfilePicture :image-url=data.posts[0].author.avatar
                                     :username=data.posts[0].author.username />
-                                <span>{{ data.posts[0].author.username }}</span>
+                                <div class="flex flex-column gap-1">
+                                    <span>{{ data.posts[0].author.username }}</span>
+                                    <small>{{ getTimeAgo(data.posts[0].createdAt) }}</small>
+                                </div>
                             </div>
                             <div v-else>
                                 -
