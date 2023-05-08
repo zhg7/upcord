@@ -11,7 +11,6 @@ onMounted(async () => {
     categories.value = await getCategories();
 })
 
-
 </script>
 
 <template>
@@ -27,7 +26,7 @@ onMounted(async () => {
                     </div>
                 </section>
                 <section class="col-12 lg:col-6">
-                    
+
                 </section>
             </div>
         </template>

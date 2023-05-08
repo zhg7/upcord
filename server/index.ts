@@ -3,6 +3,7 @@ import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
+import { Server } from "socket.io";
 import { routes } from './routes/index.routes'
 
 dotenv.config();
@@ -18,6 +19,20 @@ app.use(express.json());
 
 app.use("/api", routes);
 
-app.listen(port, () => {
-  console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
+const server = app.listen(port, () => {
+  console.log(`Server is running at port ${port}`);
 });
+
+export const io = new Server(server,
+  {
+    cors: {
+      origin: "*"
+    }
+  });
+
+io.on("connection", (socket) => {
+  socket.on('join', (chatId) => {
+    console.log('Usuario ' + socket.id + ' se ha unido a la sala ' + chatId);
+    socket.join(chatId);
+  });
+})

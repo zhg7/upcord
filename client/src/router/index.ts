@@ -12,6 +12,7 @@ const NotFoundPage = () => import('@/pages/NotFoundPage.vue');
 const SettingsPage = () => import('@/pages/SettingsPage.vue');
 const ProfilePage = () => import('@/pages/ProfilePage.vue');
 const ForumPage = () => import('@/pages/ForumPage.vue');
+const ChatPage = () => import('@/pages/ChatPage.vue');
 
 const DEFAULT_TITLE = 'Upcord';
 
@@ -45,6 +46,16 @@ const router = createRouter({
       component: SettingsPage,
       meta: {
         title: `Ajustes - ${DEFAULT_TITLE}`
+      },
+      beforeEnter: checkAuthentication,
+
+    },
+    {
+      path: '/chats',
+      name: 'chats',
+      component: ChatPage,
+      meta: {
+        title: `Chats - ${DEFAULT_TITLE}`
       },
       beforeEnter: checkAuthentication,
 
