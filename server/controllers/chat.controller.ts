@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { chatExists, addChat } from '../services/chat.service';
+import { chatExists, addChat, getUserChats } from '../services/chat.service';
 
 export async function createChat(req: Request, res: Response) {
     const userOneId = Number(req.body.userOneId);
@@ -15,4 +15,13 @@ export async function createChat(req: Request, res: Response) {
             .status(409)
             .end()
     }
+}
+
+export async function getChats(req: Request, res: Response) {
+    const userId = Number(req.params.userId);
+    const chats = await getUserChats(userId);
+
+    return res
+        .status(200)
+        .json(chats);
 }

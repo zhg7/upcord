@@ -42,6 +42,21 @@ export async function getUserChats(userId: number) {
                 },
             ],
         },
+        include: {
+            userOne: {
+                select: {
+                    username: true,
+                    avatar: true
+                }
+            },
+            userTwo: {
+                select: {
+                    username: true,
+                    avatar: true
+                }
+            },
+
+        }
     });
 
     return chats;
