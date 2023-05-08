@@ -13,7 +13,7 @@ socket.emit('join', "XD");
 
 <template>
     <div class="card grid">
-        <aside class="col-3">
+        <aside class="col-12 sm:col-12 md:col-5 lg:col-4">
             <Card>
                 <template #title> Chats </template>
                 <template #content>
@@ -21,7 +21,7 @@ socket.emit('join', "XD");
                 </template>
             </Card>
         </aside>
-        <section class="col-9">
+        <section class="col-12 sm:col-12 md:col-7 lg:col-8">
             <Card >
                 <template #title>  </template>
                 <template #content>

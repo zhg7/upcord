@@ -29,3 +29,21 @@ export async function chatExists(userOneId: number, userTwoId: number) {
 
     return chat !== null;
 }
+
+export async function getUserChats(userId: number) {
+    const chats = await prisma.chat.findMany({
+        where: {
+            OR: [
+                {
+                    userOneId: userId,
+                },
+                {
+                    userTwoId: userId
+                },
+            ],
+        },
+    });
+
+    return chats;
+
+}
