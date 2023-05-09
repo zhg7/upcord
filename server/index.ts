@@ -34,5 +34,16 @@ io.on("connection", (socket) => {
   socket.on('join', (chatId) => {
     console.log('Usuario ' + socket.id + ' se ha unido a la sala ' + chatId);
     socket.join(chatId);
+
+    socket.on('message', function(message) {
+      console.log(message);
+      socket.to(chatId).emit('message', message);
+    });
   });
+
+  
+
+
 })
+
+

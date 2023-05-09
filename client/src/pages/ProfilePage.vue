@@ -26,6 +26,8 @@ async function updateView(username: string) {
     user.value = await getUserDetails(username);
 }
 
+
+// Ocultar envío de mensaje y mostrar ajustes en perfil propio.
 const isOwnProfile = computed(() => {
     return auth.user.value.id === user.value.id
 })
@@ -44,6 +46,8 @@ const items = ref([
     {
         label: 'Enviar mensaje',
         icon: 'pi pi-envelope',
+        to: '/chats',
+        separator: isOwnProfile,
         command: () => {
 
         }

@@ -11,7 +11,7 @@ export async function addChat(userOneId: number, userTwoId: number) {
     return chat;
 }
 
-export async function chatExists(userOneId: number, userTwoId: number) {
+export async function getUsersChat(userOneId: number, userTwoId: number) {
     const chat = await prisma.chat.findFirst({
         where: {
             OR: [
@@ -27,7 +27,8 @@ export async function chatExists(userOneId: number, userTwoId: number) {
         },
     });
 
-    return chat !== null;
+    console.log(chat)
+    return chat;
 }
 
 export async function getUserChats(userId: number) {
