@@ -160,7 +160,7 @@ model Message {
   senderId   Int
   receiver   User     @relation(fields: [receiverId], references: [id])
   receiverId Int
-  content    String   @db.VarChar(1024)
+  message    String   @db.VarChar(1024)
   chat       Chat     @relation(fields: [chatId], references: [id])
   chatId     Int
   createdAt  DateTime @default(now())

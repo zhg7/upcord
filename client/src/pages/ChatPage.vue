@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted } from 'vue';
 import Card from 'primevue/card';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import Divider from 'primevue/divider';
 import { io } from "socket.io-client";
-import ProfilePicture from '@/components/ProfilePicture.vue'
 import ChatCard from '@/components/ChatCard.vue';
-import { getUserChats } from '@/services/ChatService';
+import { getUserChats, getChatMessages } from '@/services/ChatService';
 import { useAuth } from '@/store/auth';
 import type { Message } from '@/types/Message';
 
@@ -29,10 +28,8 @@ function sendMessage() {
 
     const newMessage = {
         senderId: auth.user.value.id,
-        senderUsername: auth.user.value.username,
-        senderAvatar: auth.user.value.avatar,
         message: message.value,
-        chatId: 1,
+        chatId: chat.value,
         createdAt: new Date(),
     };
 
@@ -42,13 +39,11 @@ function sendMessage() {
 }
 
 
-socket.on("message", (data) => {
+socket.on('message', (data) => {
     messages.value.push({
         senderId: data.senderId,
-        senderUsername: data.senderUsername,
-        senderAvatar: data.senderAvatar,
         message: data.message,
-        chatId: 1,
+        chatId: chat.value,
         createdAt: data.createdAt,
     });
 });
@@ -70,10 +65,16 @@ function getReceiverAvatar(chat: any) {
     }
 }
 
-function joinChat(chatId: number) {
+async function joinChat(chatId: number) {
+    socket.disconnect();
+    socket.connect();
     chat.value = chatId;
-    socket.emit('join', chatId);
+    messages.value = await getChatMessages(chat.value);
+    console.log(messages.value);
+    socket.emit('join', chat.value);
 }
+
+
 
 </script>
 
@@ -104,14 +105,10 @@ function joinChat(chatId: number) {
                                 <div v-if="message.senderId === auth.user.value.id" class="flex w-full justify-content-end">
                                     <div class="flex gap-3">
                                         <p>{{ message.message }}</p>
-                                        <ProfilePicture class="" :image-url=message.senderAvatar
-                                            :username=message.senderUsername image-size="large" />
                                     </div>
                                 </div>
                                 <div v-else class="flex">
                                     <div class="flex gap-3">
-                                        <ProfilePicture class="" :image-url=message.senderAvatar
-                                            :username=message.senderUsername image-size="large" />
                                         <p>{{ message.message }}</p>
                                     </div>
                                 </div>

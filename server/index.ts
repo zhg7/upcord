@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import { Server } from "socket.io";
 import { routes } from './routes/index.routes'
+import { addMessage } from './services/chat.service';
 
 dotenv.config();
 
@@ -23,6 +24,8 @@ const server = app.listen(port, () => {
   console.log(`Server is running at port ${port}`);
 });
 
+
+// Socket.io
 export const io = new Server(server,
   {
     cors: {
@@ -32,16 +35,23 @@ export const io = new Server(server,
 
 io.on("connection", (socket) => {
   socket.on('join', (chatId) => {
-    console.log('Usuario ' + socket.id + ' se ha unido a la sala ' + chatId);
+  
     socket.join(chatId);
 
-    socket.on('message', function(message) {
-      console.log(message);
+    socket.on('message', function (message) {
       socket.to(chatId).emit('message', message);
+
+      addMessage({
+        senderId: message.senderId,
+        message: message.message,
+        chatId: message.chatId
+      })
+
     });
+
   });
 
-  
+
 
 
 })
