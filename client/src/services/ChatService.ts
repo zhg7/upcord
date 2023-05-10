@@ -12,3 +12,10 @@ export async function getChatMessages(chatId: number) {
     const response = await http.get(`chats/messages/${chatId}`);
     return response.data;
 }
+
+export async function addChat(userTwoId: number) {
+    await http.post(`chats`, {
+        userOneId: auth.user.value.id,
+        userTwoId: userTwoId
+    })
+}

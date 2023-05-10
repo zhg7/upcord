@@ -7,6 +7,7 @@ import Button from 'primevue/button';
 import ProfilePicture from '@/components/ProfilePicture.vue';
 import { useAuth } from '@/store/auth';
 import { getUserDetails } from '@/services/UserService';
+import { addChat } from '@/services/ChatService';
 import { getTimeAgo } from '@/utils/time';
 
 const route = useRoute();
@@ -48,9 +49,7 @@ const items = ref([
         icon: 'pi pi-envelope',
         to: '/chats',
         separator: isOwnProfile,
-        command: () => {
-
-        }
+        command: createChat
     },
     {
         label: 'Reportar',
@@ -71,9 +70,13 @@ const items = ref([
 
 );
 
-const toggle = (event: any) => {
+function toggleMenu (event: any)  {
     menu.value.toggle(event);
 };
+
+function createChat(){
+    addChat(user.value.id)
+}
 
 
 </script>
@@ -86,7 +89,7 @@ const toggle = (event: any) => {
                     <ProfilePicture :image-url="user.avatar" :username="user.username" image-size="xlarge" />
                     <h1>{{ user.username }}</h1>
                     <div>
-                        <Button v-if="auth.isAuthenticated.value" type="button" icon="pi pi-bars" label="Opciones" size="small" @click="toggle"
+                        <Button v-if="auth.isAuthenticated.value" type="button" icon="pi pi-bars" label="Opciones" size="small" @click="toggleMenu"
                             aria-haspopup="true" aria-controls="overlay_menu" />
                         <Menu ref="menu" id="overlay_menu" :model="items" :popup="true" />
                     </div>
