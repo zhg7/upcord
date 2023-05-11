@@ -7,13 +7,17 @@ const props = defineProps({
     chatId: Number
 })
 
+/*
+Se emiten los datos necesarios para unirse al chat correcto 
+y mostrar el nombre de usuario y la foto del receptor.
+*/
 const emit = defineEmits(['joinChat']);
 
 
 </script>
 
 <template>
-    <div class="card" @click="emit('joinChat', props.chatId)">
+    <div class="card" @click="emit('joinChat', props)">
         <article class="bg-primary-700 border-round p-3 m-2 mb-4 cursor-pointer flex align-items-center gap-2">
             <ProfilePicture :image-url=props.avatar :username=props.username image-size="large" />
             <span>{{ props.username }}</span>

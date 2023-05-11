@@ -106,6 +106,14 @@ export async function getMessages(chatId: number) {
     const messages = await prisma.message.findMany({
         where: {
             chatId: chatId,
+        },
+        include: {
+            receiver: {
+                select: {
+                    username: true,
+                    avatar: true,
+                }
+            }
         }
     })
 

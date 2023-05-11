@@ -6,6 +6,7 @@ import Button from 'primevue/button';
 import Divider from 'primevue/divider';
 import ScrollPanel from 'primevue/scrollpanel';
 import { io } from "socket.io-client";
+import ProfilePicture from '@/components/ProfilePicture.vue';
 import ChatCard from '@/components/ChatCard.vue';
 import { getUserChats, getChatMessages } from '@/services/ChatService';
 import { useAuth } from '@/store/auth';
@@ -20,6 +21,11 @@ const chats = ref();
 
 const message = ref("");
 const messages = ref<Message[]>([]);
+
+const receiverData = ref({
+    avatar: "",
+    username: "",
+})
 
 const messagesDiv = ref<HTMLDivElement | null>(null);
 
@@ -74,11 +80,17 @@ function getReceiverAvatar(chat: any) {
     }
 }
 
-async function joinChat(chatId: number) {
+async function joinChat(chatId: number, username: string, avatar: string) {
     socket.disconnect();
     socket.connect();
+
     chat.value = chatId;
-    messages.value = await getChatMessages(chat.value);
+    receiverData.value.avatar = avatar;
+    receiverData.value.username = username;
+    
+    const chatMessages = await getChatMessages(chat.value);
+    messages.value = chatMessages;
+
     socket.emit('join', chat.value);
     setTimeout(scrollToBottom);
 }
@@ -100,7 +112,7 @@ function scrollToBottom() {
                 <template #content>
                     <section v-for="chat in chats" :key="chat.id">
                         <ChatCard :avatar=getReceiverAvatar(chat) :username=getReceiverUsername(chat) :chat-id="chat.id"
-                            @join-chat="(chatId) => joinChat(chatId)" />
+                            @join-chat="(props) => joinChat(props.chatId, props.username, props.avatar)" />
                     </section>
                 </template>
             </Card>
@@ -110,8 +122,10 @@ function scrollToBottom() {
                 <template #title> </template>
                 <template #content>
                     <div v-if="chat !== 0">
-                        <section>
-                            info
+                        <section class="flex gap-2 align-items-center">
+                            <ProfilePicture :imageUrl="receiverData.avatar" :username="receiverData.username"
+                                image-size="large" />
+                            <span>{{ receiverData.username }}</span>
                         </section>
                         <Divider />
                         <section>
