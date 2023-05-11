@@ -4,6 +4,7 @@ import Card from 'primevue/card';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import Divider from 'primevue/divider';
+import ScrollPanel from 'primevue/scrollpanel';
 import { io } from "socket.io-client";
 import ChatCard from '@/components/ChatCard.vue';
 import { getUserChats, getChatMessages } from '@/services/ChatService';
@@ -20,6 +21,8 @@ const chats = ref();
 const message = ref("");
 const messages = ref<Message[]>([]);
 
+const messagesDiv = ref<HTMLDivElement | null>(null);
+
 onMounted(async () => {
     chats.value = await getUserChats();
 })
@@ -33,9 +36,13 @@ function sendMessage() {
         createdAt: new Date(),
     };
 
+    message.value = "";
+
     messages.value.push(newMessage);
 
-    socket.emit('message', newMessage)
+    socket.emit('message', newMessage);
+
+    setTimeout(scrollToBottom);
 }
 
 
@@ -46,6 +53,8 @@ socket.on('message', (data) => {
         chatId: chat.value,
         createdAt: data.createdAt,
     });
+
+    setTimeout(scrollToBottom);
 });
 
 
@@ -70,10 +79,15 @@ async function joinChat(chatId: number) {
     socket.connect();
     chat.value = chatId;
     messages.value = await getChatMessages(chat.value);
-    console.log(messages.value);
     socket.emit('join', chat.value);
+    setTimeout(scrollToBottom);
 }
 
+//Flujo del chat: mantener siempre el scroll abajo
+function scrollToBottom() {
+    const chatHeight = messagesDiv.value!.scrollHeight;
+    messagesDiv.value!.scrollTop = chatHeight;
+}
 
 
 </script>
@@ -81,10 +95,10 @@ async function joinChat(chatId: number) {
 <template>
     <div class="card grid">
         <aside class="col-12 sm:col-12 md:col-5 lg:col-4">
-            <Card class="w-full h-20rem sm:h-20rem md:h-25rem lg:h-30rem overflow-y-auto">
+            <Card style="height: 40rem">
                 <template #title> Chats </template>
                 <template #content>
-                    <section v-for="chat in chats">
+                    <section v-for="chat in chats" :key="chat.id">
                         <ChatCard :avatar=getReceiverAvatar(chat) :username=getReceiverUsername(chat) :chat-id="chat.id"
                             @join-chat="(chatId) => joinChat(chatId)" />
                     </section>
@@ -92,7 +106,7 @@ async function joinChat(chatId: number) {
             </Card>
         </aside>
         <section class="col-12 sm:col-12 md:col-7 lg:col-8">
-            <Card class="sm:h-20rem md:h-25rem lg:h-30rem h-10rem">
+            <Card style="height: 40rem">
                 <template #title> </template>
                 <template #content>
                     <div v-if="chat !== 0">
@@ -100,23 +114,22 @@ async function joinChat(chatId: number) {
                             info
                         </section>
                         <Divider />
-                        <section class="h-15rem max-h-15rem overflow-y-auto">
-                            <article v-for="message in messages" class="flex flex-row mb-3">
-                                <div v-if="message.senderId === auth.user.value.id" class="flex w-full justify-content-end">
-                                    <div class="flex gap-3">
-                                        <p>{{ message.message }}</p>
+                        <section>
+                            <div class="h-25rem overflow-y-scroll chat-panel" ref="messagesDiv">
+                                <article v-for="message in messages" :key="message.createdAt.toString()">
+                                    <div v-if="message.senderId === auth.user.value.id"
+                                        class="flex w-full justify-content-end">
+                                        <p class="bg-primary-700 border-round p-3 mr-3 message">{{ message.message }}</p>
                                     </div>
-                                </div>
-                                <div v-else class="flex">
-                                    <div class="flex gap-3">
-                                        <p>{{ message.message }}</p>
+                                    <div v-else class="flex">
+                                        <p class="bg-bluegray-800 border-round p-3 mr-3 message">{{ message.message }}</p>
                                     </div>
-                                </div>
-                            </article>
+                                </article>
+                            </div>
                         </section>
                         <Divider />
                         <section class="flex gap-3">
-                            <InputText type="text" v-model="message" class="w-full" />
+                            <InputText type="text" v-model="message" class="w-full" @keyup.enter="sendMessage()" />
                             <Button label="Enviar" icon="pi pi-send" @click="sendMessage()" class="min-w-max" />
                         </section>
                     </div>
@@ -126,3 +139,8 @@ async function joinChat(chatId: number) {
     </div>
 </template>
 
+<style scoped>
+.message {
+    word-break: break-all;
+}
+</style>
