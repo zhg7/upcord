@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 import Card from 'primevue/card';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import Divider from 'primevue/divider';
-import ScrollPanel from 'primevue/scrollpanel';
+import Badge from 'primevue/badge';
 import { io } from "socket.io-client";
 import ProfilePicture from '@/components/ProfilePicture.vue';
 import ChatCard from '@/components/ChatCard.vue';
@@ -14,7 +14,7 @@ import type { Message } from '@/types/Message';
 
 const auth = useAuth();
 
-const socket = io("ws://localhost:3000");
+const socket = io(import.meta.env.VITE_SERVER_BASE_URL);
 
 const chat = ref(0);
 const chats = ref();
@@ -25,12 +25,17 @@ const messages = ref<Message[]>([]);
 const receiverData = ref({
     avatar: "",
     username: "",
+    isOnline: false
 })
 
 const messagesDiv = ref<HTMLDivElement | null>(null);
 
 onMounted(async () => {
     chats.value = await getUserChats();
+})
+
+onBeforeUnmount(() => {
+    socket.disconnect();
 })
 
 function sendMessage() {
@@ -42,11 +47,11 @@ function sendMessage() {
         createdAt: new Date(),
     };
 
-    message.value = "";
-
     messages.value.push(newMessage);
 
     socket.emit('message', newMessage);
+
+    message.value = ""; // Limpiar input
 
     setTimeout(scrollToBottom);
 }
@@ -62,6 +67,14 @@ socket.on('message', (data) => {
 
     setTimeout(scrollToBottom);
 });
+
+socket.on('online', () => {
+    receiverData.value.isOnline = true;
+})
+
+socket.on('offline', () => {
+    receiverData.value.isOnline = false;
+})
 
 
 function getReceiverUsername(chat: any) {
@@ -87,11 +100,12 @@ async function joinChat(chatId: number, username: string, avatar: string) {
     chat.value = chatId;
     receiverData.value.avatar = avatar;
     receiverData.value.username = username;
-    
+
     const chatMessages = await getChatMessages(chat.value);
     messages.value = chatMessages;
 
     socket.emit('join', chat.value);
+
     setTimeout(scrollToBottom);
 }
 
@@ -126,10 +140,12 @@ function scrollToBottom() {
                             <ProfilePicture :imageUrl="receiverData.avatar" :username="receiverData.username"
                                 image-size="large" />
                             <span>{{ receiverData.username }}</span>
+                            <Badge v-if="receiverData.isOnline" severity="success"></Badge>
+                            <Badge v-else severity="danger"></Badge>
                         </section>
                         <Divider />
                         <section>
-                            <div class="h-25rem overflow-y-scroll chat-panel" ref="messagesDiv">
+                            <div class="h-25rem overflow-y-auto chat-panel" ref="messagesDiv">
                                 <article v-for="message in messages" :key="message.createdAt.toString()">
                                     <div v-if="message.senderId === auth.user.value.id"
                                         class="flex w-full justify-content-end">
