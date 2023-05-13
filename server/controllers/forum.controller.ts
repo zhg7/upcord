@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { getCategories, getThreads, getSubforum, addThread, getThread} from "../services/forum.service";
+import { getCategories, getThreads, getSubforum, addThread, getThread, getComments, getComment } from "../services/forum.service";
 import { getUserBySessionToken } from '../services/user.service';
 import { isSessionTokenValid } from '../services/auth.service';
 
@@ -70,4 +70,21 @@ export async function getThreadDetails(req: Request, res: Response) {
             .status(200)
             .end();
     }
+}
+
+export async function getCommentList(req: Request, res: Response) {
+    const threadId = Number(req.params.threadId);
+    const comments = await getComments(threadId);
+    return res
+        .status(200)
+        .json(comments);
+
+}
+
+export async function getCommentDetails(req: Request, res: Response) {
+    const commentId = Number(req.params.commentId);
+    const comment = await getComment(commentId);
+    return res
+        .status(200)
+        .json(comment);
 }

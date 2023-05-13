@@ -115,3 +115,31 @@ export async function getThread(threadId: number) {
 
     return thread;
 }
+
+export async function getComments(threadId: number) {
+    const comments = await prisma.post.findMany({
+        where: {
+            threadId: threadId,
+        }
+    })
+
+    return comments;
+}
+
+export async function getComment(commentId: number) {
+    const comment = await prisma.post.findUnique({
+        where: {
+            id: commentId
+        },
+        include: {
+            author: {
+                select: {
+                    username: true,
+                    avatar: true
+                }
+            }
+        }
+    })
+
+    return comment;
+}

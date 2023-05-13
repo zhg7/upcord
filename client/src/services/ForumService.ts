@@ -32,3 +32,13 @@ export async function getThread(threadId: number){
     const response = await http.get(`forums/threads/thread/${threadId}`);
     return response.data;
 }
+
+export async function getComments(threadId : number){
+    const response = await http.get(`forums/comments/${threadId}`);
+    return response.data;
+}
+
+export async function getComment(commentId : number){
+    const response = await http.get(`forums/comments/comment/${commentId}`);
+    return response.data;
+}
