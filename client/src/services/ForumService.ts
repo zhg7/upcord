@@ -27,3 +27,8 @@ export async function createThread(subforumId: number, title: string, content: s
 
     return response.data;
 }
+
+export async function getThread(threadId: number){
+    const response = await http.get(`forums/threads/thread/${threadId}`);
+    return response.data;
+}

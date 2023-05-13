@@ -1,3 +1,4 @@
+import { title } from 'process';
 import { prisma } from '../index';
 
 export async function getCategories() {
@@ -86,7 +87,7 @@ export async function addThread(title: string, content: string, subforumId: numb
 }
 
 export async function addComment(content: string, threadId: number, authorId: number) {
-    const comment = prisma.post.create({
+    const comment = await prisma.post.create({
         data: {
             content: content,
             authorId: authorId,
@@ -95,4 +96,22 @@ export async function addComment(content: string, threadId: number, authorId: nu
     })
 
     return comment;
+}
+
+export async function getThread(threadId: number) {
+    const thread = await prisma.thread.findUnique({
+        where: {
+            id: threadId,
+        },
+        include: {
+            subforum: {
+                select: {
+                    title: true,
+                    id: true,
+                }
+            }
+        }
+    });
+
+    return thread;
 }

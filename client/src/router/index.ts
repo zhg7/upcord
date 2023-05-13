@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { useAuth } from '@/store/auth';
 import { checkUsernameAvailability } from '@/services/UserService';
-import { getSubforum } from '@/services/ForumService';
+import { getSubforum, getThread } from '@/services/ForumService';
 
 const auth = useAuth();
 
@@ -12,6 +12,7 @@ const NotFoundPage = () => import('@/pages/NotFoundPage.vue');
 const SettingsPage = () => import('@/pages/SettingsPage.vue');
 const ProfilePage = () => import('@/pages/ProfilePage.vue');
 const ForumPage = () => import('@/pages/ForumPage.vue');
+const ThreadPage = () => import('@/pages/ThreadPage.vue');
 const ChatPage = () => import('@/pages/ChatPage.vue');
 
 const DEFAULT_TITLE = 'Upcord';
@@ -86,6 +87,21 @@ const router = createRouter({
           return { name: 'notfound', params: { pathMatch: to.path.split('/').slice(1) }, };
         } else {
           document.title = `Foro de ${subforum.title} - ${DEFAULT_TITLE}`
+        }
+      }
+    },
+    {
+      path: '/thread/:id',
+      name: 'thread',
+      component: ThreadPage,
+      beforeEnter: async (to, from) => {
+        // Comprobar que existe el subforo en cuestión
+        const threadId = Number(to.params.id);
+        const thread = await getThread(threadId);
+        if (!thread) {
+          return { name: 'notfound', params: { pathMatch: to.path.split('/').slice(1) }, };
+        } else {
+          document.title = `${thread.title} - ${DEFAULT_TITLE}`
         }
       }
     },

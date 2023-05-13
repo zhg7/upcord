@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { getCategories, getThreads, getSubforum, addThread } from "../services/forum.service";
+import { getCategories, getThreads, getSubforum, addThread, getThread} from "../services/forum.service";
 import { getUserBySessionToken } from '../services/user.service';
 import { isSessionTokenValid } from '../services/auth.service';
 
@@ -56,4 +56,18 @@ export async function createThread(req: Request, res: Response) {
             .end();
     }
 
+}
+
+export async function getThreadDetails(req: Request, res: Response) {
+    const threadId = Number(req.params.threadId);
+    if (!isNaN(threadId)) {
+        const subforum = await getThread(threadId);
+        return res
+            .status(200)
+            .json(subforum);
+    } else {
+        return res
+            .status(200)
+            .end();
+    }
 }
