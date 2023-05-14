@@ -42,3 +42,13 @@ export async function getComment(commentId : number){
     const response = await http.get(`forums/comments/comment/${commentId}`);
     return response.data;
 }
+
+export async function createComment(threadId: number, content: string){
+    const response = await http.post('forums/comments', {
+        "threadId" : threadId,
+        "content" : content,
+    });
+
+    return response.data;
+
+}

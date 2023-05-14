@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { getCategories, getThreads, getSubforum, addThread, getThread, getComments, getComment } from "../services/forum.service";
+import { getCategories, getThreads, getSubforum, addThread, getThread, getComments, getComment, addComment } from "../services/forum.service";
 import { getUserBySessionToken } from '../services/user.service';
 import { isSessionTokenValid } from '../services/auth.service';
 
@@ -40,15 +40,9 @@ export async function createThread(req: Request, res: Response) {
         const user = await getUserBySessionToken(sessionToken);
         const thread = await addThread(title, content, Number(subforumId), Number(user?.user.id));
 
-        if (thread) {
-            return res
-                .status(200)
-                .json(thread);
-        } else {
-            return res
-                .status(400)
-                .end();
-        }
+        return res
+            .status(200)
+            .json(thread);
 
     } else {
         return res
@@ -87,4 +81,24 @@ export async function getCommentDetails(req: Request, res: Response) {
     return res
         .status(200)
         .json(comment);
+}
+
+export async function createComment(req: Request, res: Response) {
+    const { content, threadId } = req.body;
+    const sessionToken = req.cookies.uc_session;
+    if (sessionToken && await isSessionTokenValid(sessionToken)) {
+        const user = await getUserBySessionToken(sessionToken);
+        const comment = await addComment(content, threadId, Number(user?.user.id));
+
+        return res
+            .status(200)
+            .json(comment);
+
+
+    } else {
+        return res
+            .status(403)
+            .end();
+    }
+
 }

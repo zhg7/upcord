@@ -88,7 +88,8 @@ async function handleThreadSubmission(result: any) {
                     <Column header="Iniciado por" style="min-width: 14rem">
                         <template #body="{ data }">
                             <section class="flex align-items-center gap-2">
-                                <ProfilePicture :image-url=data.author.avatar :username=data.author.username image-size="normal" />
+                                <ProfilePicture :image-url=data.author.avatar :username=data.author.username
+                                    image-size="normal" />
                                 <div class="flex flex-column gap-1">
                                     <span>{{ data.author.username }}</span>
                                     <small>{{ getTimeAgo(data.createdAt) }}</small>
@@ -101,11 +102,9 @@ async function handleThreadSubmission(result: any) {
                             {{ data._count.posts - 1 }} <!-- no tener en cuenta el primer comentario del autor -->
                         </template>
                     </Column>
-                    <Column field="last-reply" header="Última respuesta">
+                    <Column field="last-reply" header="Última actividad">
                         <template #body="{ data }">
-                            <section v-if="data.posts[0] && data.posts[0].author.username !== data.author.username"
-                                class="flex align-items-center gap-2">
-                                <!-- no tener en cuenta el autor del primer mensaje -->
+                            <section class="flex align-items-center gap-2">
                                 <ProfilePicture :image-url=data.posts[0].author.avatar
                                     :username=data.posts[0].author.username image-size="normal" />
                                 <div class="flex flex-column gap-1">
@@ -113,9 +112,6 @@ async function handleThreadSubmission(result: any) {
                                     <small>{{ getTimeAgo(data.posts[0].createdAt) }}</small>
                                 </div>
                             </section>
-                            <div v-else>
-                                -
-                            </div>
                         </template>
                     </Column>
                 </DataTable>
