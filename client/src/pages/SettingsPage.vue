@@ -58,7 +58,7 @@ function saveProfileDetails() {
                                             image-size="xlarge" />
                                         <div class="w-9">
                                             <FileUpload mode="basic" name="avatar" accept="image/*" customUpload
-                                                :auto="true" @uploader="convertImageBase64" />
+                                                :auto="true" @uploader="convertImageBase64" chooseLabel="Subir"/>
                                         </div>
                                     </div>
                                 </div>

@@ -1,5 +1,4 @@
-import { title } from 'process';
-import { prisma } from '../index';
+import prisma from '../index';
 
 export async function getCategories() {
     const categories = await prisma.category.findMany({

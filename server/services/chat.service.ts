@@ -1,4 +1,4 @@
-import { prisma } from '../index';
+import prisma from '../index';
 import type { Message } from '../types/message.type';
 
 export async function addChat(userOneId: number, userTwoId: number) {

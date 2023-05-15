@@ -27,7 +27,6 @@ async function updateView(username: string) {
     user.value = await getUserDetails(username);
 }
 
-
 // Ocultar envío de mensaje y mostrar ajustes en perfil propio.
 const isOwnProfile = computed(() => {
     return auth.user.value.id === user.value.id
@@ -70,7 +69,7 @@ const items = ref([
 
 );
 
-function toggleMenu (event: any)  {
+function toggleMenu (event: MouseEvent)  {
     menu.value.toggle(event);
 };
 

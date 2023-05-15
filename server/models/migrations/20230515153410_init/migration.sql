@@ -5,12 +5,14 @@ CREATE TABLE `User` (
     `password` CHAR(60) NOT NULL,
     `email` VARCHAR(254) NOT NULL,
     `isAdmin` BOOLEAN NOT NULL DEFAULT false,
-    `avatar` TEXT NOT NULL,
-    `biography` VARCHAR(170) NOT NULL,
+    `avatar` TEXT NULL,
+    `biography` VARCHAR(170) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
     `isActivated` BOOLEAN NOT NULL DEFAULT false,
 
+    UNIQUE INDEX `User_username_key`(`username`),
+    UNIQUE INDEX `User_email_key`(`email`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -110,6 +112,7 @@ CREATE TABLE `Session` (
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `expiresAt` DATETIME(3) NOT NULL,
 
+    UNIQUE INDEX `Session_token_key`(`token`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -122,6 +125,7 @@ CREATE TABLE `Verification` (
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `expiresAt` DATETIME(3) NOT NULL,
 
+    UNIQUE INDEX `Verification_token_key`(`token`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -141,7 +145,7 @@ CREATE TABLE `Message` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `senderId` INTEGER NOT NULL,
     `receiverId` INTEGER NOT NULL,
-    `content` VARCHAR(1024) NOT NULL,
+    `message` VARCHAR(1024) NOT NULL,
     `chatId` INTEGER NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 

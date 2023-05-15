@@ -1,4 +1,4 @@
-import { prisma } from '../index';
+import prisma from '../index';
 import bcrypt from 'bcrypt';
 import { getUserByEmail } from './user.service';
 

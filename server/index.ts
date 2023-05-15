@@ -11,7 +11,7 @@ dotenv.config();
 
 const app: Express = express();
 const port = process.env.PORT;
-export const prisma = new PrismaClient();
+const prisma = new PrismaClient();
 
 app.use(cookieParser());
 app.use(cors({ origin: process.env.CLIENT_BASE_URL, credentials: true }));
@@ -57,5 +57,7 @@ io.on("connection", (socket) => {
 
 
 })
+
+export default prisma;
 
 

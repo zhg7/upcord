@@ -1,4 +1,4 @@
-import { prisma } from '../index';
+import prisma from '../index';
 import { SignUpUser } from '../types/signup.type';
 
 const userData = {
