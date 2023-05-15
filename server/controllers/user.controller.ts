@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
-import { getUserByUsername, emailExists, usernameExists, validateUserAccount, updateProfile, getUserBySessionToken } from "../services/user.service";
-import { isSessionTokenValid } from '../services/auth.service';
+import { getUserByUsername, emailExists, usernameExists, validateUserAccount, updateProfile, updateUser, getUserBySessionToken } from "../services/user.service";
+import { isSessionTokenValid, getPasswordHash } from '../services/auth.service';
 import { uploadImage } from '../utils/image';
 
 export async function checkDuplicateEmail(req: Request, res: Response) {
@@ -57,6 +57,22 @@ export async function editProfileDetails(req: Request, res: Response) {
             .end();
     }
 
+}
+
+export async function editUserDetails(req: Request, res: Response) {
+    const { username, email, password } = req.body;
+    const sessionToken = req.cookies.uc_session;
+    if (sessionToken && await isSessionTokenValid(sessionToken)) {
+        const user = await getUserBySessionToken(sessionToken);
+        await updateUser(Number(user?.user.id), username, email, password || undefined);
+        return res
+            .status(200)
+            .end();
+    } else {
+        return res
+            .status(403)
+            .end();
+    }
 }
 
 

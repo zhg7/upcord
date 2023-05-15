@@ -1,5 +1,6 @@
 import prisma from '../index';
 import { SignUpUser } from '../types/signup.type';
+import { getPasswordHash } from './auth.service';
 
 const userData = {
     id: true,
@@ -146,6 +147,27 @@ export async function updateProfile(userId: number, avatar: string, biography: s
         data: {
             avatar: avatar,
             biography: biography,
+        }
+    })
+
+    return user;
+}
+
+export async function updateUser(userId: number, username: string, email: string, password: string) {
+
+    //Hasheo previo a guardar.
+    if (password) {
+        password = await getPasswordHash(password)
+    };
+
+    const user = await prisma.user.update({
+        where: {
+            id: userId
+        },
+        data: {
+            username: username,
+            email: email,
+            password: password || undefined, // Campo opcional
         }
     })
 

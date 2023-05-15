@@ -9,7 +9,7 @@ import Button from 'primevue/button';
 import FileUpload, { type FileUploadRemoveEvent } from 'primevue/fileupload';
 import ProfilePicture from '@/components/ProfilePicture.vue'
 import { useAuth } from '@/store/auth';
-import { changeProfileDetails } from '@/services/UserService';
+import { changeProfileDetails, changeUserDetails } from '@/services/UserService';
 
 const auth = useAuth();
 
@@ -33,8 +33,14 @@ function convertImageBase64(event: FileUploadRemoveEvent) {
     fileReader.readAsDataURL(imageFile);
 }
 
-function saveProfileDetails() {
-    changeProfileDetails(profileDetails.value.avatar, profileDetails.value.biography);
+async function saveProfileDetails() {
+    await changeProfileDetails(profileDetails.value.avatar, profileDetails.value.biography);
+}
+
+async function saveUserDetails(){
+    await changeUserDetails(userDetails.value.username, userDetails.value.email, userDetails.value.password);
+    await auth.checkSession();
+
 }
 
 </script>
@@ -100,7 +106,7 @@ function saveProfileDetails() {
                                     <small class="block">Mínimo 8 caracteres.</small>
                                 </div>
                             </section>
-                            <Button icon="pi pi-save" label="Guardar" class="mt-5" />
+                            <Button icon="pi pi-save" label="Guardar" class="mt-5" @click="saveUserDetails"/>
                         </form>
                     </Fieldset>
                 </section>

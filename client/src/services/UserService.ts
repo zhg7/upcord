@@ -22,3 +22,13 @@ export async function changeProfileDetails(avatar: string, biography: string) {
     });
     return response.data;
 }
+
+export async function changeUserDetails(username: string, email: string, password: string) {
+    const response = await http.post(`users`, {
+        "username": username,
+        "email": email,
+        "password": password
+    });
+
+    return response.data;
+}
