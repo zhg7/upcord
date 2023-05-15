@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import Divider from 'primevue/divider';
-import ProfilePicture from '@/components/ProfilePicture.vue'
 import Card from 'primevue/card';
+import Button from 'primevue/button';
+import ProfilePicture from '@/components/ProfilePicture.vue'
 import { getTimeAgo } from '@/utils/time';
 import { getComment } from '@/services/ForumService';
+import { useAuth } from '@/store/auth';
+
+const auth = useAuth();
 
 const props = defineProps({
     commentId: Number

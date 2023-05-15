@@ -137,3 +137,17 @@ export async function getUserBan(userId: number) {
 
     return ban;
 }
+
+export async function updateProfile(userId: number, avatar: string, biography: string) {
+    const user = await prisma.user.update({
+        where: {
+            id: userId
+        },
+        data: {
+            avatar: avatar,
+            biography: biography,
+        }
+    })
+
+    return user;
+}

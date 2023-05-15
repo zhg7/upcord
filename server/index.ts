@@ -16,7 +16,7 @@ export const prisma = new PrismaClient();
 app.use(cookieParser());
 app.use(cors({ origin: process.env.CLIENT_BASE_URL, credentials: true }));
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(express.json({ limit: '2mb' }));
 app.use("/api", routes);
 
 const server = app.listen(port, () => {
