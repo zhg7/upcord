@@ -14,6 +14,7 @@ Foro de propósito general organizado en subforos. Los usuarios registrados tien
 - [Node.js](https://nodejs.org/)
 - [MySQL](https://www.mysql.com/)
 - [SendGrid](https://sendgrid.com/)
+- [Cloudinary](https://cloudinary.com/)
 - [Visual Studio Code](https://code.visualstudio.com/)
 
 ### Variables de entorno
@@ -25,6 +26,7 @@ Foro de propósito general organizado en subforos. Los usuarios registrados tien
 - ```DATABASE_URL```
 - ```SENDGRID_API_KEY```
 - ```SENDGRID_SENDER```
+- ```CLOUDINARY_URL```
 - ```CLIENT_BASE_URL```
 
 ### Entorno de desarrollo
