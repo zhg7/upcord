@@ -7,16 +7,28 @@ import Textarea from 'primevue/textarea';
 import Button from 'primevue/button';
 import Toast from 'primevue/toast';
 import ScrollTop from 'primevue/scrolltop';
+import useVuelidator from '@vuelidate/core';
+import { required, minLength } from '@vuelidate/validators';
 import CommentCard from '@/components/CommentCard.vue';
 import { getThread, getComments, createComment } from '@/services/ForumService';
 import { showSuccess, showError } from '@/services/ToastService';
+import { useAuth } from '@/store/auth';
 
+const auth = useAuth();
 const route = useRoute();
 
 const thread = ref();
 const comments = ref();
 
-const newComment = ref("");
+const newComment = ref({
+    comment: "",
+});
+
+const rules = {
+    comment: { required: required, minLength: minLength(1) }
+};
+
+const v$ = useVuelidator(rules, newComment);
 
 const breadcrumbItems = ref([{ label: "Inicio", to: "/" }]);
 
@@ -24,6 +36,7 @@ onMounted(async () => {
     thread.value = await getThread(Number(route.params.id));
     comments.value = await getComments(Number(route.params.id));
 
+    // Mostrar subforo y título del hilo
     breadcrumbItems.value.push(
         { label: thread.value.subforum.title, to: `/forum/${thread.value.subforum.id}` },
     )
@@ -34,10 +47,15 @@ onMounted(async () => {
 })
 
 async function addComment() {
-    const result = await createComment(thread.value.id, newComment.value);
-    await handleCommentSubmission(result);
-    newComment.value = "";
-    comments.value = await getComments(Number(route.params.id));
+    const validationPassed = await v$.value.comment.$validate();
+
+    if (validationPassed) {
+        const result = await createComment(thread.value.id, newComment.value.comment);
+        await handleCommentSubmission(result);
+        newComment.value.comment = "";
+        comments.value = await getComments(Number(route.params.id));
+    }
+
 }
 
 async function handleCommentSubmission(result: any) {
@@ -59,14 +77,15 @@ async function handleCommentSubmission(result: any) {
         <section v-for="comment in comments" :key="comment.id">
             <CommentCard :commentId="comment.id" />
         </section>
-        <Card>
+        <Card v-if="auth.isAuthenticated.value">
             <template #content>
                 <section>
-                    <Textarea v-model="newComment" autoResize rows="5" cols="30" class="w-full new-comment" />
+                    <Textarea v-model="newComment.comment" autoResize rows="5" cols="30" class="w-full" :class="{ 'p-invalid': v$.comment.$errors.length }"/>
+                    <small class="block mt-2">Mínimo 1 carácter.</small>
                 </section>
             </template>
             <template #footer>
-                <Button label="Responder" icon="pi pi-reply" @click="addComment()" />
+                <Button label="Responder" icon="pi pi-reply" @click="addComment" />
             </template>
         </Card>
     </div>

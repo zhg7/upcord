@@ -5,7 +5,10 @@ import { sendLoginRequest, checkSessionStatus, destroySession } from '@/services
 const user = ref();
 const isAuthenticated = ref(false);
 const isAdmin = computed(() => {
-    return user.value.isAdmin
+    if (!user.value){
+        return false;
+    }
+    return user.value.isAdmin;
 })
 
 //Acciones

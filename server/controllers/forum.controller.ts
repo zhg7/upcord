@@ -105,14 +105,21 @@ export async function createComment(req: Request, res: Response) {
 
 export async function editComment(req: Request, res: Response) {
     const { content, commentId } = req.body;
-    if (!isNaN(commentId)) {
-        const comment = await updateComment(Number(commentId), content);
-        return res
-            .status(200)
-            .json(comment);
+    const sessionToken = req.cookies.uc_session;
+    if (sessionToken && await isSessionTokenValid(sessionToken)) {
+        if (!isNaN(commentId)) {
+            const comment = await updateComment(Number(commentId), content);
+            return res
+                .status(200)
+                .json(comment);
+        } else {
+            return res
+                .status(400)
+                .end();
+        }
     } else {
         return res
-            .status(400)
+            .status(403)
             .end();
     }
 }
