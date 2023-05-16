@@ -28,27 +28,35 @@ export async function createThread(subforumId: number, title: string, content: s
     return response.data;
 }
 
-export async function getThread(threadId: number){
+export async function getThread(threadId: number) {
     const response = await http.get(`forums/threads/thread/${threadId}`);
     return response.data;
 }
 
-export async function getComments(threadId : number){
+export async function getComments(threadId: number) {
     const response = await http.get(`forums/comments/${threadId}`);
     return response.data;
 }
 
-export async function getComment(commentId : number){
+export async function getComment(commentId: number) {
     const response = await http.get(`forums/comments/comment/${commentId}`);
     return response.data;
 }
 
-export async function createComment(threadId: number, content: string){
+export async function createComment(threadId: number, content: string) {
     const response = await http.post('forums/comments', {
-        "threadId" : threadId,
-        "content" : content,
+        "threadId": threadId,
+        "content": content,
     });
 
     return response.data;
+}
 
+export async function changeComment(commentId: number, content: string) {
+    const response = await http.post('forums/comments/comment', {
+        "commentId": Number(commentId),
+        "content": content
+    });
+
+    return response.data;
 }

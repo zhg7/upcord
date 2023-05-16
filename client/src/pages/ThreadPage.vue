@@ -6,6 +6,7 @@ import Card from 'primevue/card';
 import Textarea from 'primevue/textarea';
 import Button from 'primevue/button';
 import Toast from 'primevue/toast';
+import ScrollTop from 'primevue/scrolltop';
 import CommentCard from '@/components/CommentCard.vue';
 import { getThread, getComments, createComment } from '@/services/ForumService';
 import { showSuccess, showError } from '@/services/ToastService';
@@ -52,6 +53,7 @@ async function handleCommentSubmission(result: any) {
 
 <template>
     <div class="card flex justify-content-center flex-column gap-3">
+        <ScrollTop />
         <Toast position="bottom-center" />
         <Breadcrumb :model="breadcrumbItems" />
         <section v-for="comment in comments" :key="comment.id">
@@ -60,7 +62,7 @@ async function handleCommentSubmission(result: any) {
         <Card>
             <template #content>
                 <section>
-                    <Textarea v-model="newComment" autoResize rows="5" cols="30" class="w-full" />
+                    <Textarea v-model="newComment" autoResize rows="5" cols="30" class="w-full new-comment" />
                 </section>
             </template>
             <template #footer>

@@ -142,3 +142,16 @@ export async function getComment(commentId: number) {
 
     return comment;
 }
+
+export async function updateComment(commentId: number, content: string) {
+    const comment = await prisma.post.update({
+        where: {
+            id: commentId,
+        },
+        data: {
+            content: content
+        }
+    })
+
+    return comment;
+}

@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { getCategories, getThreads, getSubforum, addThread, getThread, getComments, getComment, addComment } from "../services/forum.service";
+import { getCategories, getThreads, getSubforum, addThread, getThread, getComments, getComment, addComment, updateComment } from "../services/forum.service";
 import { getUserBySessionToken } from '../services/user.service';
 import { isSessionTokenValid } from '../services/auth.service';
 
@@ -61,7 +61,7 @@ export async function getThreadDetails(req: Request, res: Response) {
             .json(subforum);
     } else {
         return res
-            .status(200)
+            .status(400)
             .end();
     }
 }
@@ -101,4 +101,18 @@ export async function createComment(req: Request, res: Response) {
             .end();
     }
 
+}
+
+export async function editComment(req: Request, res: Response) {
+    const { content, commentId } = req.body;
+    if (!isNaN(commentId)) {
+        const comment = await updateComment(Number(commentId), content);
+        return res
+            .status(200)
+            .json(comment);
+    } else {
+        return res
+            .status(400)
+            .end();
+    }
 }

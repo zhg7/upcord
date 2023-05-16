@@ -7,6 +7,7 @@ import Fieldset from 'primevue/fieldset';
 import Password from 'primevue/password';
 import Button from 'primevue/button';
 import Toast from 'primevue/toast';
+import ScrollTop from 'primevue/scrolltop';
 import FileUpload, { type FileUploadRemoveEvent } from 'primevue/fileupload';
 import ProfilePicture from '@/components/ProfilePicture.vue'
 import { useAuth } from '@/store/auth';
@@ -76,9 +77,9 @@ async function saveUserDetails() {
     <Card>
         <template #title>
             <h3 class="text-start m-0">Mis ajustes</h3>
-
         </template>
         <template #content>
+            <ScrollTop />
             <Toast position="bottom-center" />
             <div class="flex flex-column gap-4">
                 <section class="card flex flex-column gap-4">
