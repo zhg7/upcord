@@ -22,7 +22,6 @@ Foro de propósito general organizado en subforos. Los usuarios registrados tien
 - ```VITE_SERVER_BASE_URL```
 
 #### ```server```
-- ```PORT```
 - ```DATABASE_URL```
 - ```SENDGRID_API_KEY```
 - ```SENDGRID_SENDER```
