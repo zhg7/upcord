@@ -12,7 +12,7 @@ const DAYS_TO_EXPIRATION = 7;
 const COOKIE_NAME = 'uc_session';
 const COOKIE_OPTIONS: CookieOptions = {
     httpOnly: true,
-    secure: false,
+    secure: true,
     sameSite: 'lax'
 }
 
