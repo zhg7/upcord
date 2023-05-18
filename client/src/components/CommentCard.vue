@@ -4,11 +4,12 @@ import Divider from 'primevue/divider';
 import Card from 'primevue/card';
 import Button from 'primevue/button';
 import Textarea from 'primevue/textarea';
+import Panel from 'primevue/panel';
 import ProfilePicture from '@/components/ProfilePicture.vue'
 import useVuelidator from '@vuelidate/core';
 import { required, minLength } from '@vuelidate/validators';
 import { getTimeAgo } from '@/utils/time';
-import { getComment, changeComment } from '@/services/ForumService';
+import { getComment, changeComment, createReply, getReplies } from '@/services/ForumService';
 import { useAuth } from '@/store/auth';
 import { showSuccess, showError } from '@/services/ToastService';
 
@@ -19,8 +20,14 @@ const props = defineProps({
 })
 
 const comment = ref();
+const replies = ref();
 
 const editingMode = ref(false);
+const replyingMode = ref(false);
+
+const newComment = ref({
+    comment: ""
+})
 
 const rules = {
     comment: { required: required, minLength: minLength(1) }
@@ -34,6 +41,7 @@ const v$ = useVuelidator(rules, editedComment);
 
 onMounted(async () => {
     comment.value = await getComment(Number(props.commentId));
+    replies.value = await getReplies(Number(props.commentId));
 })
 
 function toggleEditMode() {
@@ -58,6 +66,17 @@ async function saveComment() {
 
 }
 
+async function addReply() {
+    const result = await createReply(comment.value.threadId, newComment.value.comment, comment.value.id);
+    if (result) {
+        showSuccess('Respuesta añadida', "");
+        replyingMode.value = false;
+        replies.value = await getReplies(Number(props.commentId));
+    } else {
+        showError('Error interno', "No se podido añadir la respuesta.");
+    }
+}
+
 </script>
 
 <template>
@@ -78,7 +97,8 @@ async function saveComment() {
                 <section class="post-content">
                     <p v-if="!editingMode" class="m-0">{{ comment?.content }}</p>
                     <div v-if="editingMode">
-                        <Textarea v-model="editedComment.comment" autoResize rows="5" cols="30" class="w-full" :class="{ 'p-invalid': v$.comment.$errors.length }"/>
+                        <Textarea v-model="editedComment.comment" autoResize rows="5" cols="30" class="w-full"
+                            :class="{ 'p-invalid': v$.comment.$errors.length }" />
                         <small class="block mt-2">Mínimo 1 carácter.</small>
                     </div>
                 </section>
@@ -87,14 +107,32 @@ async function saveComment() {
         <template #footer>
             <section v-if="auth.isAuthenticated.value" class="flex justify-content-end gap-3">
                 <Button
-                    v-if="(!editingMode && comment?.authorId === auth.user?.value?.id) || (!editingMode && auth.isAdmin?.value)"
+                    v-if="(!editingMode && comment?.authorId === auth.user?.value?.id && !replyingMode) || (!editingMode && auth.isAdmin?.value && !replyingMode)"
                     label="Editar" icon="pi pi-pencil" severity="warning" text aria-label="Editar comentario"
                     @click="toggleEditMode" />
                 <Button v-if="editingMode" label="Cancelar" icon="pi pi-times" text severity="danger"
                     aria-label="Guardar comentario" @click="editingMode = false" />
                 <Button v-if="editingMode" label="Guardar" icon="pi pi-save" aria-label="Guardar comentario"
                     @click="saveComment" />
+
+                <Button v-if="!editingMode && !replyingMode" label="Responder" icon="pi pi-reply" severity="help" text
+                    aria-label="Responder comentario" @click="replyingMode = true"></Button>
             </section>
+            <section v-if="replyingMode" class="mt-3">
+                <Textarea v-model="newComment.comment" autoResize rows="5" cols="30" class="w-full"
+                    :class="{ 'p-invalid': v$.comment.$errors.length }" />
+                <small class="block mt-2">Mínimo 1 carácter.</small>
+                <div class="mt-5 flex justify-content-end align-items-end">
+                    <Button label="Cancelar" icon="pi pi-times" text severity="danger" aria-label="Guardar comentario"
+                        @click="replyingMode = false" />
+                    <Button label="Responder" icon="pi pi-reply" aria-label="Guardar comentario" @click="addReply" />
+                </div>
+            </section>
+            <Panel v-if="replies?.length" header="Respuestas" toggleable collapsed>
+                <section v-for="reply in replies" class="mb-3">
+                    <CommentCard :commentId="reply.id" />
+                </section>
+            </Panel>
         </template>
     </Card>
 </template>

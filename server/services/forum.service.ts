@@ -155,3 +155,26 @@ export async function updateComment(commentId: number, content: string) {
 
     return comment;
 }
+
+export async function addReply(content: string, threadId: number, authorId: number, parentPostId: number) {
+    const reply = await prisma.post.create({
+        data: {
+            content: content,
+            authorId: authorId,
+            threadId: threadId,
+            parentPostId: parentPostId
+        }
+    });
+
+    return reply;
+}
+
+export async function getReplies(commentId : number){
+    const replies = await prisma.post.findMany({
+        where : {
+            parentPostId: commentId
+        }
+    });
+
+    return replies;
+}

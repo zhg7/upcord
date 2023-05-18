@@ -60,3 +60,18 @@ export async function changeComment(commentId: number, content: string) {
 
     return response.data;
 }
+
+export async function createReply(threadId: number, content: string, parentPostId: number){
+    const response = await http.post('forums/replies', {
+        "threadId": threadId,
+        "content": content,
+        "parentPostId" : parentPostId
+    });
+
+    return response.data;
+}
+
+export async function getReplies(commentId: number) {
+    const response = await http.get(`forums/replies/${commentId}`);
+    return response.data;
+}

@@ -45,6 +45,7 @@ async function updateView(id: number) {
 }
 
 async function addThread() {
+
     const result = await createThread(subforum.value.id, formData.title, formData.content)
     await handleThreadSubmission(result);
     creatingThread.value = false;
@@ -119,12 +120,15 @@ async function handleThreadSubmission(result: any) {
         </template>
     </Card>
 
+    <!-- Modal creación hilo -->
     <Dialog v-model:visible="creatingThread" modal header="Creación de hilo" :style="{ width: '75vw' }">
         <form class="flex flex-column gap-3">
             <label for="thread-title">Título</label>
             <InputText id="thread-title" type="text" v-model="formData.title" />
+            <small class="block">Entre 1 y 170 carácteres.</small>
             <label for="thread-content">Contenido</label>
             <Textarea id="thread-content" v-model="formData.content" rows="7" />
+            <small class="block">Mínimo 1 cáracter.</small>
         </form>
         <template #footer>
             <Button label="Cancelar" severity="danger" icon="pi pi-times" @click="creatingThread = false" text />

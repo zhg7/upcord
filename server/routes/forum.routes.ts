@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { getCategoryList, getThreadList, getSubforumDetails, createThread, getThreadDetails, getCommentList, getCommentDetails, createComment, editComment } from '../controllers/forum.controller';
+import { getCategoryList, getThreadList, getSubforumDetails, createThread, getThreadDetails, getCommentList, getCommentDetails, createComment, editComment, createReply, getReplyList } from '../controllers/forum.controller';
 
 export const forumRoutes = express.Router();
 
@@ -27,6 +27,10 @@ forumRoutes.get('/comments/comment/:commentId', async (req: Request, res: Respon
     getCommentDetails(req, res);
 })
 
+forumRoutes.get('/replies/:commentId', async (req: Request, res : Response) => {
+    getReplyList(req, res);
+})
+
 forumRoutes.post('/threads', async (req: Request, res: Response) => {
     createThread(req, res);
 })
@@ -38,3 +42,9 @@ forumRoutes.post('/comments', async (req: Request, res: Response) => {
 forumRoutes.post('/comments/comment', async (req: Request, res: Response) => {
     editComment(req, res);
 })
+
+forumRoutes.post('/replies', async (req: Request, res: Response) => {
+    createReply(req, res);
+})
+
+

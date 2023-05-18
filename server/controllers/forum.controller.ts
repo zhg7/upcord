@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { getCategories, getThreads, getSubforum, addThread, getThread, getComments, getComment, addComment, updateComment } from "../services/forum.service";
+import { getCategories, getThreads, getSubforum, addThread, getThread, getComments, getComment, addComment, updateComment, addReply, getReplies } from "../services/forum.service";
 import { getUserBySessionToken } from '../services/user.service';
 import { isSessionTokenValid } from '../services/auth.service';
 
@@ -122,4 +122,33 @@ export async function editComment(req: Request, res: Response) {
             .status(403)
             .end();
     }
+}
+
+export async function createReply(req: Request, res: Response) {
+    const { content, threadId, parentPostId } = req.body;
+    const sessionToken = req.cookies.uc_session;
+    if (sessionToken && await isSessionTokenValid(sessionToken)) {
+        const user = await getUserBySessionToken(sessionToken);
+        const reply = await addReply(content, threadId, Number(user?.user.id), parentPostId);
+
+        return res
+            .status(200)
+            .json(reply);
+
+
+    } else {
+        return res
+            .status(403)
+            .end();
+    }
+
+
+}
+
+export async function getReplyList(req: Request, res: Response) {
+    const commentId = Number(req.params.commentId);
+    const replies = await getReplies(commentId);
+    return res
+        .status(200)
+        .json(replies);
 }

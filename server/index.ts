@@ -55,7 +55,6 @@ io.on("connection", (socket) => {
 
   });
 
-
 })
 
 export default prisma;
