@@ -26,4 +26,5 @@ const getUsernameFirstLetter = computed(() => {
             size="large" />
         <Avatar v-if="props.imageSize === 'normal'" :image=props.imageUrl :label=getUsernameFirstLetter shape="circle"
             size="normal" />
-</router-link></template>
+    </router-link>
+</template>

@@ -8,7 +8,7 @@ import ProfilePicture from '@/components/ProfilePicture.vue';
 import { useAuth } from '@/store/auth';
 import { getUserDetails } from '@/services/UserService';
 import { addChat } from '@/services/ChatService';
-import { getTimeAgo } from '@/utils/time';
+import { getTimeAgo, formatDate} from '@/utils/time';
 
 const route = useRoute();
 const auth = useAuth();
@@ -95,7 +95,7 @@ function createChat(){
                 </article>
 
                 <article>
-                    <span><i class="pi pi-calendar mr-1"></i>Se unió {{ getTimeAgo(user.createdAt ?? new Date()) }}</span>
+                    <span v-tooltip.top="formatDate(user.createdAt ?? new Date())"><i class="pi pi-calendar mr-1"></i>Se unió {{ getTimeAgo(user.createdAt ?? new Date()) }}</span>
                     <p v-if="user.biography"><i class="pi pi-info-circle mr-1"></i>{{ user.biography }}</p>
                 </article>
             </section>

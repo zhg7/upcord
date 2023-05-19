@@ -9,7 +9,7 @@ import AccordionTab from 'primevue/accordiontab';
 import ProfilePicture from '@/components/ProfilePicture.vue'
 import useVuelidator from '@vuelidate/core';
 import { required, minLength } from '@vuelidate/validators';
-import { getTimeAgo } from '@/utils/time';
+import { getTimeAgo, formatDate } from '@/utils/time';
 import { getComment, changeComment, createReply, getReplies } from '@/services/ForumService';
 import { useAuth } from '@/store/auth';
 import { showSuccess, showError } from '@/services/ToastService';
@@ -91,7 +91,7 @@ async function addReply() {
                         <span>{{ comment?.author.username }}</span>
                     </div>
                     <div class="flex flex-column">
-                        <small>{{ getTimeAgo(comment?.createdAt ?? new Date()) }}</small>
+                        <span v-tooltip.top="formatDate(comment?.createdAt ?? new Date())">{{ getTimeAgo(comment?.createdAt ?? new Date()) }}</span>
                     </div>
                 </section>
                 <Divider />
@@ -131,7 +131,7 @@ async function addReply() {
             </section>
             <Accordion v-if="replies?.length" :multiple="true" class="mt-4">
                 <AccordionTab header="Respuestas">
-                    <section v-for="reply in replies" class="mb-3">
+                    <section v-for="reply in replies" :key="reply.id" class="mb-3">
                         <CommentCard :commentId="reply.id" />
                     </section>
                 </AccordionTab>

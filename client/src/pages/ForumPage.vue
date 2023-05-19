@@ -14,7 +14,7 @@ import useVuelidator from '@vuelidate/core';
 import { required, minLength, maxLength } from '@vuelidate/validators';
 import ProfilePicture from '@/components/ProfilePicture.vue'
 import { getSubforum, getThreads, createThread } from '@/services/ForumService';
-import { getTimeAgo } from '@/utils/time';
+import { getTimeAgo, formatDate } from '@/utils/time';
 import { useAuth } from '@/store/auth';
 import { showSuccess, showError } from '@/services/ToastService';
 
@@ -105,7 +105,7 @@ async function handleThreadSubmission(result: any) {
                                     image-size="normal" />
                                 <div class="flex flex-column gap-1">
                                     <span>{{ data.author.username }}</span>
-                                    <small>{{ getTimeAgo(data.createdAt) }}</small>
+                                    <small v-tooltip.top="formatDate(data.createdAt)">{{ getTimeAgo(data.createdAt) }}</small>
                                 </div>
                             </section>
                         </template>
@@ -122,7 +122,7 @@ async function handleThreadSubmission(result: any) {
                                     :username=data.posts[0].author.username image-size="normal" />
                                 <div class="flex flex-column gap-1">
                                     <span>{{ data.posts[0].author.username }}</span>
-                                    <small>{{ getTimeAgo(data.posts[0].createdAt) }}</small>
+                                    <small v-tooltip.top="formatDate(data.posts[0].createdAt)">{{ getTimeAgo(data.posts[0].createdAt) }}</small>
                                 </div>
                             </section>
                         </template>
