@@ -22,7 +22,7 @@ onMounted(async () => {
             <div class="grid">
                 <section class="grid col-12 lg:col-6">
                     <div class="col-12" v-for="category in categories">
-                        <CategoryCard :title=category.title :subforums=category.subforums :key=category.id />
+                            <CategoryCard :title=category.title :subforums=category.subforums :key=category.id />
                     </div>
                 </section>
                 <section class="col-12 lg:col-6">

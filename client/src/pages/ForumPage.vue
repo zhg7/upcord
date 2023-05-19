@@ -10,6 +10,8 @@ import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
 import Textarea from 'primevue/textarea';
 import Toast from 'primevue/toast';
+import useVuelidator from '@vuelidate/core';
+import { required, minLength, maxLength } from '@vuelidate/validators';
 import ProfilePicture from '@/components/ProfilePicture.vue'
 import { getSubforum, getThreads, createThread } from '@/services/ForumService';
 import { getTimeAgo } from '@/utils/time';
@@ -23,10 +25,17 @@ const subforum = ref();
 const threads = ref();
 
 const creatingThread = ref(false);
-const formData = {
+const formData = ref({
     title: "",
     content: "",
-}
+})
+
+const rules = {
+    title: { required: required, minLength: minLength(1), maxLength: maxLength(170) },
+    content: { required: required, minLength: minLength(1) },
+};
+
+const v$ = useVuelidator(rules, formData);
 
 onMounted(async () => {
     await updateView(Number(route.params.id))
@@ -45,13 +54,16 @@ async function updateView(id: number) {
 }
 
 async function addThread() {
+    const validationPassed = await v$.value.$validate();
 
-    const result = await createThread(subforum.value.id, formData.title, formData.content)
-    await handleThreadSubmission(result);
-    creatingThread.value = false;
-    formData.content = "";
-    formData.title = "";
-    updateView(subforum.value.id);
+    if (validationPassed) {
+        const result = await createThread(subforum.value.id, formData.value.title, formData.value.content)
+        await handleThreadSubmission(result);
+        creatingThread.value = false;
+        formData.value.content = "";
+        formData.value.title = "";
+        updateView(subforum.value.id);
+    }
 }
 
 async function handleThreadSubmission(result: any) {
@@ -124,10 +136,12 @@ async function handleThreadSubmission(result: any) {
     <Dialog v-model:visible="creatingThread" modal header="Creación de hilo" :style="{ width: '75vw' }">
         <form class="flex flex-column gap-3">
             <label for="thread-title">Título</label>
-            <InputText id="thread-title" type="text" v-model="formData.title" />
+            <InputText id="thread-title" type="text" v-model="formData.title"
+                :class="{ 'p-invalid': v$.title.$errors.length }" />
             <small class="block">Entre 1 y 170 carácteres.</small>
             <label for="thread-content">Contenido</label>
-            <Textarea id="thread-content" v-model="formData.content" rows="7" />
+            <Textarea id="thread-content" v-model="formData.content" rows="7"
+                :class="{ 'p-invalid': v$.content.$errors.length }" />
             <small class="block">Mínimo 1 cáracter.</small>
         </form>
         <template #footer>

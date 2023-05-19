@@ -47,7 +47,7 @@ onMounted(async () => {
 })
 
 async function addComment() {
-    const validationPassed = await v$.value.comment.$validate();
+    const validationPassed = await v$.value.$validate();
 
     if (validationPassed) {
         const result = await createComment(thread.value.id, newComment.value.comment);

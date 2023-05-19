@@ -37,7 +37,7 @@ const editedComment = ref({
     comment: "",
 });
 
-const v$ = useVuelidator(rules, editedComment);
+const v$ = useVuelidator(rules, editedComment, { $stopPropagation: true });
 
 onMounted(async () => {
     comment.value = await getComment(Number(props.commentId));
