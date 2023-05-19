@@ -195,3 +195,36 @@ export async function setThreadLastUpdate(threadId: number) {
 
     return thread;
 }
+
+export async function getForumStats() {
+    const users = await prisma.user.aggregate({
+        _count: {
+            id: true
+        }
+    });
+
+    const threads = await prisma.thread.aggregate({
+        _count: {
+            id: true
+        }
+    });
+
+    const comments = await prisma.post.aggregate({
+        _count: {
+            id: true
+        }
+    });
+
+    const messages = await prisma.message.aggregate({
+        _count: {
+            id: true
+        }
+    });
+
+    return {
+        "users": users._count.id,
+        "threads": threads._count.id,
+        "comments": comments._count.id,
+        "messages": messages._count.id
+    };
+}

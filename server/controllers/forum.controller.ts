@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { getCategories, getThreads, getSubforum, addThread, getThread, getComments, getComment, addComment, updateComment, addReply, getReplies } from "../services/forum.service";
+import { getCategories, getThreads, getSubforum, addThread, getThread, getComments, getComment, addComment, updateComment, addReply, getReplies, getForumStats } from "../services/forum.service";
 import { getUserBySessionToken } from '../services/user.service';
 import { isSessionTokenValid } from '../services/auth.service';
 
@@ -151,4 +151,11 @@ export async function getReplyList(req: Request, res: Response) {
     return res
         .status(200)
         .json(replies);
+}
+
+export async function getStats(req: Request, res: Response) {
+    const stats = await getForumStats();
+    return res
+        .status(200)
+        .json(stats);
 }
