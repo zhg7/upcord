@@ -9,4 +9,4 @@ export const routes = express.Router();
 routes.use("/auth", authRoutes);
 routes.use("/users", userRoutes);
 routes.use("/forums", forumRoutes);
-routes.use("/chats", chatRoutes)
+routes.use("/chats", chatRoutes);

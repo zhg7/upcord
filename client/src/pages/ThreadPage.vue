@@ -54,6 +54,7 @@ async function addComment() {
         await handleCommentSubmission(result);
         newComment.value.comment = "";
         comments.value = await getComments(Number(route.params.id));
+        v$.value.$reset();
     }
 
 }

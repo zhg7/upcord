@@ -11,6 +11,8 @@ import ChatCard from '@/components/ChatCard.vue';
 import { getUserChats, getChatMessages } from '@/services/ChatService';
 import { useAuth } from '@/store/auth';
 import type { Message } from '@/types/Message';
+import useVuelidator from '@vuelidate/core';
+import { required, minLength, maxLength, email } from '@vuelidate/validators';
 
 const auth = useAuth();
 
@@ -19,8 +21,16 @@ const socket = io(import.meta.env.VITE_SERVER_BASE_URL);
 const chat = ref(0);
 const chats = ref();
 
-const message = ref("");
+const message = ref({
+    content: "",
+});
 const messages = ref<Message[]>([]);
+
+const rules = {
+    content: { required: required, minLength: minLength(1) },
+};
+
+const v$ = useVuelidator(rules, message);
 
 const receiverData = ref({
     avatar: "",
@@ -38,22 +48,28 @@ onBeforeUnmount(() => {
     socket.disconnect();
 })
 
-function sendMessage() {
+async function sendMessage() {
 
-    const newMessage = {
-        senderId: auth.user.value.id,
-        message: message.value,
-        chatId: chat.value,
-        createdAt: new Date(),
-    };
+    const validationPassed = await v$.value.$validate();
 
-    messages.value.push(newMessage);
+    if (validationPassed) {
+        const newMessage = {
+            senderId: auth.user.value.id,
+            message: message.value.content,
+            chatId: chat.value,
+            createdAt: new Date(),
+        };
 
-    socket.emit('message', newMessage);
+        messages.value.push(newMessage);
 
-    message.value = ""; // Limpiar input
+        socket.emit('message', newMessage);
 
-    setTimeout(scrollToBottom);
+        message.value.content = ""; // Limpiar input
+
+        v$.value.$reset();
+
+        setTimeout(scrollToBottom);
+    }
 }
 
 
@@ -159,7 +175,8 @@ function scrollToBottom() {
                         </section>
                         <Divider />
                         <section class="flex gap-3">
-                            <InputText type="text" v-model="message" class="w-full" @keyup.enter="sendMessage()" />
+                            <InputText type="text" v-model="message.content" class="w-full" @keyup.enter="sendMessage()"
+                                :class="{ 'p-invalid': v$.content.$errors.length }" />
                             <Button label="Enviar" icon="pi pi-send" @click="sendMessage()" class="min-w-max" />
                         </section>
                     </div>
