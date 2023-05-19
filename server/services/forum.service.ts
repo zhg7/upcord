@@ -94,6 +94,8 @@ export async function addComment(content: string, threadId: number, authorId: nu
         }
     })
 
+    await setThreadLastUpdate(threadId);
+
     return comment;
 }
 
@@ -166,15 +168,30 @@ export async function addReply(content: string, threadId: number, authorId: numb
         }
     });
 
+    await setThreadLastUpdate(threadId);
+
     return reply;
 }
 
-export async function getReplies(commentId : number){
+export async function getReplies(commentId: number) {
     const replies = await prisma.post.findMany({
-        where : {
+        where: {
             parentPostId: commentId
         }
     });
 
     return replies;
+}
+
+export async function setThreadLastUpdate(threadId: number) {
+    const thread = await prisma.thread.update({
+        where: {
+            id: threadId,
+        },
+        data: {
+            updatedAt: new Date(),
+        }
+    })
+
+    return thread;
 }

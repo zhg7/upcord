@@ -4,7 +4,8 @@ import Divider from 'primevue/divider';
 import Card from 'primevue/card';
 import Button from 'primevue/button';
 import Textarea from 'primevue/textarea';
-import Panel from 'primevue/panel';
+import Accordion from 'primevue/accordion';
+import AccordionTab from 'primevue/accordiontab';
 import ProfilePicture from '@/components/ProfilePicture.vue'
 import useVuelidator from '@vuelidate/core';
 import { required, minLength } from '@vuelidate/validators';
@@ -128,11 +129,13 @@ async function addReply() {
                     <Button label="Responder" icon="pi pi-reply" aria-label="Guardar comentario" @click="addReply" />
                 </div>
             </section>
-            <Panel v-if="replies?.length" header="Respuestas" toggleable collapsed>
-                <section v-for="reply in replies" class="mb-3">
-                    <CommentCard :commentId="reply.id" />
-                </section>
-            </Panel>
+            <Accordion v-if="replies?.length" :multiple="true" class="mt-4">
+                <AccordionTab header="Respuestas">
+                    <section v-for="reply in replies" class="mb-3">
+                        <CommentCard :commentId="reply.id" />
+                    </section>
+                </AccordionTab>
+            </Accordion>
         </template>
     </Card>
 </template>
