@@ -173,3 +173,18 @@ export async function updateUser(userId: number, username: string, email: string
 
     return user;
 }
+
+export async function updateUserPassword(userId: number, password: string) {
+    password = await getPasswordHash(password);
+
+    const user = await prisma.user.update({
+        where: {
+            id: userId
+        },
+        data: {
+            password: password,
+        }
+    });
+
+    return user;
+}

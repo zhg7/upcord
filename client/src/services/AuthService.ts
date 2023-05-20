@@ -12,23 +12,29 @@ export async function sendLoginRequest(email: string, password: string) {
     }
 }
 
-export async function checkSessionStatus(){
+export async function checkSessionStatus() {
     try {
         const response = await http.get('auth');
         return response.data.user;
-    } catch (err : unknown) {
+    } catch (err: unknown) {
         return;
     }
 }
 
-export async function destroySession(){
+export async function destroySession() {
     http.post('auth/logout');
 }
 
-export async function sendSignupRequest(email : string, username: string, password: string) {
+export async function sendSignupRequest(email: string, username: string, password: string) {
     http.post('auth/signup', {
         "email": email,
         "username": username,
         "password": password
-    })
+    });
+}
+
+export async function sendPasswordResetRequest(email: string) {
+    http.post('auth/reset', {
+        "email": email,
+    });
 }

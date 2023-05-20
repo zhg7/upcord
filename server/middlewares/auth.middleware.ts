@@ -5,7 +5,7 @@ import { SignUpUser } from '../types/signup.type';
 import { loginCredentialsMatches, getPasswordHash, isSessionTokenValid } from '../services/auth.service';
 import { emailExists, getUserBan, usernameExists, getUserByEmail, getUserByVerificationToken, addUser, isUserActivated, } from '../services/user.service';
 import { createEmailConfirmation, createSessionCookie, sendSessionUserDetails } from '../controllers/auth.controller';
-import { activateUserAccount } from '../controllers/user.controller';
+import { activateUserAccount, resetUserPassword } from '../controllers/user.controller';
 
 
 export async function validateSignUpDetails(req: Request, res: Response) {
@@ -41,7 +41,7 @@ export async function validateLoginDetails(req: Request, res: Response) {
         if (possibleBan) {
             return res
                 .status(403)
-                .json({login : 'banned', ban: possibleBan});
+                .json({ login: 'banned', ban: possibleBan });
         }
 
         // Verificar si está verificado el correo.
@@ -73,11 +73,16 @@ export async function validateSessionToken(req: Request, res: Response) {
     }
 }
 
-export async function validateVerificationToken(req: Request, res: Response) {
+export async function validateVerificationToken(req: Request, res: Response, isEmailActivation: boolean) {
     const token = req.params.token;
     const result = await getUserByVerificationToken(token);
     if (result?.user) {
-        activateUserAccount(req, res, result.user.id)
+        if (isEmailActivation) {
+            activateUserAccount(req, res, result.user.id)
+        } else {
+            resetUserPassword(req, res, result.user.id);
+        }
+
     } else {
         return res
             .status(400)

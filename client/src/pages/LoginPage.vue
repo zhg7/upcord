@@ -10,6 +10,7 @@ import useVuelidator from '@vuelidate/core';
 import { required, requiredUnless, email, helpers } from '@vuelidate/validators';
 import toast, { showError, showWarning, showSuccess, showInfo } from '@/services/ToastService';
 import { useAuth } from '@/store/auth';
+import { sendPasswordResetRequest } from '@/services/AuthService';
 
 enum LoginResult  {
     FAILED = "failed",
@@ -54,7 +55,7 @@ function handleLoginResult(loginResult: any) {
             showError('Credenciales inválidas.', 'Revisa los datos introducidos.');
             break;
         case LoginResult.UNVERIFIED:
-            showWarning('E-mail no verificado.', 'Activa la cuenta con el enlace que hemos enviado a tu e-mail.');
+            showWarning('E-mail no verificado.', 'Activa la cuenta con el enlace que habíamos enviado a tu e-mail.');
             break;
         case LoginResult.BANNED:
             showError('Cuenta expulsada', `Por ${loginResult.ban.reason}, hasta ${loginResult.ban.expiresAt}`);
@@ -73,6 +74,7 @@ async function handleForgottenPassword() {
     forgottenPassword.value = true; // Requerir solo el campo de e-mail
     const isFormValidated = await v$.value.$validate();
     if (isFormValidated) {
+        await sendPasswordResetRequest(formData.value.email);
         showInfo('Reseteo de contraseña iniciado.', 'Recibirás un e-mail con las instrucciones.')
     }
 }

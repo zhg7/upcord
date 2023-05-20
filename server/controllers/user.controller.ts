@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
-import { getUserByUsername, emailExists, usernameExists, validateUserAccount, updateProfile, updateUser, getUserBySessionToken } from "../services/user.service";
-import { isSessionTokenValid, getPasswordHash } from '../services/auth.service';
+import crypto from 'crypto';
+import { getUserByUsername, emailExists, usernameExists, validateUserAccount, updateProfile, updateUser, getUserBySessionToken, updateUserPassword } from "../services/user.service";
+import { isSessionTokenValid } from '../services/auth.service';
 import { uploadImage } from '../utils/image';
 
 export async function checkDuplicateEmail(req: Request, res: Response) {
@@ -73,6 +74,17 @@ export async function editUserDetails(req: Request, res: Response) {
             .status(403)
             .end();
     }
+}
+
+export async function resetUserPassword(req: Request, res: Response, userId: number){
+    const newPassword = crypto.randomBytes(4).toString('hex');
+    
+    await updateUserPassword(userId, newPassword);
+
+    return res
+    .status(200)
+    .json({"new password" : newPassword});
+
 }
 
 

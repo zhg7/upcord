@@ -4,7 +4,7 @@ import { storeSessionToken } from '../services/auth.service';
 import { CookieOptions } from 'express-serve-static-core';
 import { User } from '@prisma/client';
 import { SignUpUser } from '../types/signup.type';
-import { getUserBySessionToken } from '../services/user.service';
+import { getUserBySessionToken, emailExists } from '../services/user.service';
 import { removeSessionToken, storeVerificationToken } from '../services/auth.service';
 import { sendEmail } from '../utils/mailer';
 
@@ -62,6 +62,24 @@ export async function createEmailConfirmation(req: Request, res: Response, user:
 
     await storeVerificationToken(verificationToken, expirationDate, user.email, 0) //0 = verificación email
     await sendEmail(recipientEmail, "Confirmación de cuenta", `${req.protocol}://${req.headers.host}/api/auth/confirm/${verificationToken}`);
+
+    return res
+        .status(200)
+        .end();
+}
+
+export async function createPasswordReset(req: Request, res: Response) {
+    const email = req.body.email;
+
+    if (await emailExists(email)) {
+        const verificationToken = crypto.randomBytes(30).toString('hex');
+        const expirationDate = new Date();
+        expirationDate.setDate(expirationDate.getDate() + DAYS_TO_EXPIRATION);
+
+        await storeVerificationToken(verificationToken, expirationDate, email, 1) //1 = restablecimiento contraseña
+        await sendEmail(email, "Restablecimiento de contraseña", `${req.protocol}://${req.headers.host}/api/auth/reset/${verificationToken}`);
+
+    }
 
     return res
         .status(200)
