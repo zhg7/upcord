@@ -116,7 +116,7 @@ async function addReply() {
                 <Button v-if="editingMode" label="Guardar" icon="pi pi-save" aria-label="Guardar comentario"
                     @click="saveComment" />
 
-                <Button v-if="!editingMode && !replyingMode" label="Responder" icon="pi pi-reply" severity="help" text
+                <Button v-if="!comment?.thread.isLocked && !editingMode && !replyingMode" label="Responder" icon="pi pi-reply" severity="help" text
                     aria-label="Responder comentario" @click="replyingMode = true"></Button>
             </section>
             <section v-if="replyingMode" class="mt-3">

@@ -138,6 +138,11 @@ export async function getComment(commentId: number) {
                     username: true,
                     avatar: true
                 }
+            },
+            thread: {
+                select: {
+                    isLocked: true,
+                }
             }
         }
     })
