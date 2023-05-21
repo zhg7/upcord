@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { useRoute, onBeforeRouteUpdate, RouterLink } from 'vue-router';
+import { useRoute, useRouter, onBeforeRouteUpdate, RouterLink } from 'vue-router';
 import Card from 'primevue/card';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
@@ -19,6 +19,7 @@ import { useAuth } from '@/store/auth';
 import { showSuccess, showError } from '@/services/ToastService';
 
 const route = useRoute();
+const router = useRouter();
 const auth = useAuth();
 
 const subforum = ref();
@@ -69,6 +70,9 @@ async function addThread() {
 async function handleThreadSubmission(result: any) {
     if (result.id) { // Si se ha añadido correctamente, se recibirá la id del hilo nuevo.
         showSuccess("Hilo creado", result.title);
+        setTimeout(() => { // Redirigir tras creación exitosa.
+            router.push(`/thread/${result.id}`);
+        }, 800);
     } else {
         showError("Error interno", "No se ha podido crear el hilo");
     }
@@ -105,7 +109,8 @@ async function handleThreadSubmission(result: any) {
                                     image-size="normal" />
                                 <div class="flex flex-column gap-1">
                                     <span>{{ data.author.username }}</span>
-                                    <small v-tooltip.top="formatDate(data.createdAt)">{{ getTimeAgo(data.createdAt) }}</small>
+                                    <small v-tooltip.top="formatDate(data.createdAt)">{{ getTimeAgo(data.createdAt)
+                                    }}</small>
                                 </div>
                             </section>
                         </template>
@@ -122,7 +127,8 @@ async function handleThreadSubmission(result: any) {
                                     :username=data.posts[0].author.username image-size="normal" />
                                 <div class="flex flex-column gap-1">
                                     <span>{{ data.posts[0].author.username }}</span>
-                                    <small v-tooltip.top="formatDate(data.posts[0].createdAt)">{{ getTimeAgo(data.posts[0].createdAt) }}</small>
+                                    <small v-tooltip.top="formatDate(data.posts[0].createdAt)">{{
+                                        getTimeAgo(data.posts[0].createdAt) }}</small>
                                 </div>
                             </section>
                         </template>
