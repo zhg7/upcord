@@ -149,7 +149,7 @@ async function handleThreadUpdate(result: any) {
             <template #item="{ item }">
                 <div class="flex align-items-center flex-wrap gap-2">
                     <section v-if="item.label?.toString() === thread?.title" class="flex gap-2">
-                        <Button icon="pi pi-cog" size="large" class="m-0 p-0"
+                        <Button v-if="thread.authorId === auth.user.value.id || auth.isAdmin.value" icon="pi pi-cog" size="large" class="m-0 p-0"
                             @click="editingThread = true; setEditModalDetails()" />
                         <Tag v-if="thread?.isPinned" severity="success" value="📌 Fijado"></Tag>
                         <Tag v-if="thread?.isLocked" severity="warning" value="🔒 Cerrado"></Tag>
