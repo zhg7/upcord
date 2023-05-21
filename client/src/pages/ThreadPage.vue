@@ -132,7 +132,10 @@ async function handleThreadUpdate(result: any) {
         // Forzar rerenderizado de los comentarios.
         comments.value = null;
         comments.value = await getComments(Number(route.params.id));
+
+        // Actualizar navegación
         breadcrumbItems.value[1].label = thread.value.subforum.title;
+        breadcrumbItems.value[1].to = `/forum/${thread.value.subforum.id}`
         breadcrumbItems.value[2].label = thread.value.title;
     } else {
         showError("Error interno", "No se ha podido editar el hilo");
@@ -149,8 +152,8 @@ async function handleThreadUpdate(result: any) {
             <template #item="{ item }">
                 <div class="flex align-items-center flex-wrap gap-2">
                     <section v-if="item.label?.toString() === thread?.title" class="flex gap-2">
-                        <Button v-if="thread.authorId === auth.user.value.id || auth.isAdmin.value" icon="pi pi-cog" size="large" class="m-0 p-0"
-                            @click="editingThread = true; setEditModalDetails()" />
+                        <Button v-if="thread.authorId === auth.user.value.id || auth.isAdmin.value" icon="pi pi-cog"
+                            size="large" class="m-0 p-0" @click="editingThread = true; setEditModalDetails()" />
                         <Tag v-if="thread?.isPinned" severity="success" value="📌 Fijado"></Tag>
                         <Tag v-if="thread?.isLocked" severity="warning" value="🔒 Cerrado"></Tag>
                     </section>
@@ -180,7 +183,8 @@ async function handleThreadUpdate(result: any) {
     <Dialog v-model:visible="editingThread" modal header="Edición de hilo" :style="{ width: '75vw' }">
         <form class="flex flex-column gap-3">
             <label for="thread-title">Título</label>
-            <InputText id="thread-title" type="text" v-model="formData.title" :class="{ 'p-invalid': v_thread$.title.$errors.length }"/>
+            <InputText id="thread-title" type="text" v-model="formData.title"
+                :class="{ 'p-invalid': v_thread$.title.$errors.length }" />
             <small class="block">Entre 1 y 170 carácteres.</small>
             <section v-if="auth.isAdmin.value" class="flex flex-column  gap-5">
                 <Divider />
