@@ -14,7 +14,7 @@ import Divider from 'primevue/divider';
 import InputSwitch from 'primevue/inputswitch';
 import Dropdown from 'primevue/dropdown';
 import useVuelidator from '@vuelidate/core';
-import { required, minLength } from '@vuelidate/validators';
+import { required, minLength, maxLength } from '@vuelidate/validators';
 import CommentCard from '@/components/CommentCard.vue';
 import { getThread, getComments, createComment, getCategories, changeThread } from '@/services/ForumService';
 import { showSuccess, showError } from '@/services/ToastService';
@@ -46,7 +46,13 @@ const rules = {
     comment: { required: required, minLength: minLength(1) }
 };
 
+const threadRules = {
+    title: { required: required, minLength: minLength(1), maxLength: maxLength(170) }
+}
+
 const v$ = useVuelidator(rules, newComment);
+
+const v_thread$ = useVuelidator(threadRules, formData);
 
 const breadcrumbItems = ref([{ label: "Inicio", to: "/" }]);
 
@@ -93,28 +99,44 @@ async function addComment() {
     if (validationPassed) {
         const result = await createComment(thread.value.id, newComment.value.comment);
         await handleCommentSubmission(result);
-        newComment.value.comment = "";
-        comments.value = await getComments(Number(route.params.id));
-        v$.value.$reset();
     }
 
 }
 
 async function handleCommentSubmission(result: any) {
     if (result.id) {
-        showSuccess("Comentario añadido", "");
+        showSuccess("Comentario añadido correctamente", "");
+        newComment.value.comment = "";
+        comments.value = await getComments(Number(route.params.id));
+        v$.value.$reset();
     } else {
         showError("Error interno", "No se ha podido añadir el comentario");
+    }
+}
+
+async function saveThread() {
+    const validationPassed = await v_thread$.value.$validate();
+
+    if (validationPassed) {
+        const result = await changeThread(formData.value.title, formData.value.isLocked, formData.value.isPinned, formData.value.subforumId, thread.value.id);
+        await handleThreadUpdate(result);
     }
 
 }
 
-async function saveThread() {
-    const result = await changeThread(formData.value.title, formData.value.isLocked, formData.value.isPinned, formData.value.subforumId, thread.value.id);
-    editingThread.value = false;
-    thread.value = await getThread(Number(route.params.id));
-    breadcrumbItems.value[1].label = thread.value.subforum.title;
-    breadcrumbItems.value[2].label = thread.value.title;
+async function handleThreadUpdate(result: any) {
+    if (result.id) {
+        showSuccess("Hilo editado correctamente", "");
+        editingThread.value = false;
+        thread.value = await getThread(Number(route.params.id));
+        // Forzar rerenderizado de los comentarios.
+        comments.value = null;
+        comments.value = await getComments(Number(route.params.id));
+        breadcrumbItems.value[1].label = thread.value.subforum.title;
+        breadcrumbItems.value[2].label = thread.value.title;
+    } else {
+        showError("Error interno", "No se ha podido editar el hilo");
+    }
 }
 
 </script>
@@ -158,7 +180,7 @@ async function saveThread() {
     <Dialog v-model:visible="editingThread" modal header="Edición de hilo" :style="{ width: '75vw' }">
         <form class="flex flex-column gap-3">
             <label for="thread-title">Título</label>
-            <InputText id="thread-title" type="text" v-model="formData.title" />
+            <InputText id="thread-title" type="text" v-model="formData.title" :class="{ 'p-invalid': v_thread$.title.$errors.length }"/>
             <small class="block">Entre 1 y 170 carácteres.</small>
             <section v-if="auth.isAdmin.value" class="flex flex-column  gap-5">
                 <Divider />
