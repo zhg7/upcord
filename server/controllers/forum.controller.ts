@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { getCategories, getThreads, getSubforum, addThread, getThread, getComments, getComment, addComment, updateComment, addReply, getReplies, getForumStats } from "../services/forum.service";
+import { getCategories, getThreads, getSubforum, addThread, getThread, getComments, getComment, addComment, updateComment, updateThread, addReply, getReplies, getForumStats } from "../services/forum.service";
 import { getUserBySessionToken } from '../services/user.service';
 import { isSessionTokenValid } from '../services/auth.service';
 
@@ -64,6 +64,21 @@ export async function getThreadDetails(req: Request, res: Response) {
             .status(400)
             .end();
     }
+}
+
+export async function editThread(req: Request, res: Response) {
+    const { title, isLocked, isPinned, subforumId, threadId } = req.body;
+    if (!isNaN(subforumId) || !isNaN(threadId)) {
+        const thread = await updateThread(title, isLocked, isPinned, Number(subforumId), Number(threadId));
+        return res
+            .status(200)
+            .json(thread)
+    } else {
+        return res
+            .status(400)
+            .end();
+    }
+
 }
 
 export async function getCommentList(req: Request, res: Response) {

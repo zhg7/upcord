@@ -33,6 +33,18 @@ export async function getThread(threadId: number) {
     return response.data;
 }
 
+export async function changeThread(title: string, isLocked: boolean, isPinned: boolean, subforumId: number, threadId: number) {
+    const response = await http.post(`forums/threads/thread`, {
+        "title": title,
+        "isLocked": isLocked,
+        "isPinned": isPinned,
+        "subforumId": subforumId,
+        "threadId": threadId
+    })
+
+    return response.data;
+}
+
 export async function getComments(threadId: number) {
     const response = await http.get(`forums/comments/${threadId}`);
     return response.data;

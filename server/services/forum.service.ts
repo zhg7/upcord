@@ -117,6 +117,22 @@ export async function getThread(threadId: number) {
     return thread;
 }
 
+export async function updateThread(title : string, isLocked: boolean, isPinned: boolean, subforumId : number, threadId: number){
+    const thread = await prisma.thread.update(({
+        where: {
+            id: threadId,
+        },
+        data: {
+            title: title,
+            isLocked : isLocked,
+            isPinned : isPinned,
+            subforumId : subforumId,
+        }
+    }))
+
+    return thread;
+}
+
 export async function getComments(threadId: number) {
     const comments = await prisma.post.findMany({
         where: {
