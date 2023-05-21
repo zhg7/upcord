@@ -117,16 +117,16 @@ export async function getThread(threadId: number) {
     return thread;
 }
 
-export async function updateThread(title : string, isLocked: boolean, isPinned: boolean, subforumId : number, threadId: number){
+export async function updateThread(title: string, isLocked: boolean, isPinned: boolean, subforumId: number, threadId: number) {
     const thread = await prisma.thread.update(({
         where: {
             id: threadId,
         },
         data: {
             title: title,
-            isLocked : isLocked,
-            isPinned : isPinned,
-            subforumId : subforumId,
+            isLocked: isLocked,
+            isPinned: isPinned,
+            subforumId: subforumId,
         }
     }))
 
@@ -158,6 +158,19 @@ export async function getComment(commentId: number) {
             thread: {
                 select: {
                     isLocked: true,
+                }
+            },
+            _count: {
+                select: {
+                    likes: true,
+                }
+            },
+            likes: {
+                where: {
+                    postId: commentId,
+                },
+                select: {
+                    authorId: true,
                 }
             }
         }
@@ -248,4 +261,26 @@ export async function getForumStats() {
         "comments": comments._count.id,
         "messages": messages._count.id
     };
+}
+
+export async function addLike(commentId: number, authorId: number) {
+    const like = await prisma.like.create({
+        data: {
+            postId: commentId,
+            authorId: authorId
+        }
+    });
+
+    return like;
+}
+
+export async function removeLike(commentId: number, authorId: number) {
+    const like = await prisma.like.deleteMany({
+        where: {
+            postId: commentId,
+            authorId: authorId
+        }
+    })
+
+    return like;
 }

@@ -92,3 +92,23 @@ export async function getStats() {
     const response = await http.get(`forums/stats`);
     return response.data;
 }
+
+export async function createLike(commentId: number, authorId: number) {
+    const response = await http.post(`forums/likes`, {
+        "commentId": commentId,
+        "authorId": authorId
+    });
+
+    return response.data;
+}
+
+export async function deleteLike(commentId: number, authorId: number) {
+    const response = await http.delete(`forums/likes`, {
+        data: {
+            "commentId": commentId,
+            "authorId": authorId
+        }
+    });
+
+    return response.data;
+}

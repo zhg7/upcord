@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { getCategories, getThreads, getSubforum, addThread, getThread, getComments, getComment, addComment, updateComment, updateThread, addReply, getReplies, getForumStats } from "../services/forum.service";
+import { getCategories, getThreads, getSubforum, addThread, getThread, getComments, getComment, addComment, updateComment, updateThread, addReply, getReplies, getForumStats, addLike, removeLike } from "../services/forum.service";
 import { getUserBySessionToken } from '../services/user.service';
 import { isSessionTokenValid } from '../services/auth.service';
 
@@ -173,4 +173,21 @@ export async function getStats(req: Request, res: Response) {
     return res
         .status(200)
         .json(stats);
+}
+
+export async function handleLike(req: Request, res: Response) {
+    const { commentId, authorId } = req.body;
+
+    let like;
+
+    if (req.method === "POST") {
+        like = await addLike(Number(commentId), Number(authorId));
+    } else if (req.method === "DELETE") {
+        like = await removeLike(Number(commentId), Number(authorId))
+    }
+
+    return res
+        .status(200)
+        .json(like);
+
 }

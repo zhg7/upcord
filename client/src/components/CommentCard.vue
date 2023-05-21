@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import Divider from 'primevue/divider';
 import Card from 'primevue/card';
 import Button from 'primevue/button';
@@ -10,9 +10,10 @@ import ProfilePicture from '@/components/ProfilePicture.vue'
 import useVuelidator from '@vuelidate/core';
 import { required, minLength } from '@vuelidate/validators';
 import { getTimeAgo, formatDate } from '@/utils/time';
-import { getComment, changeComment, createReply, getReplies } from '@/services/ForumService';
+import { getComment, changeComment, createReply, getReplies, createLike, deleteLike } from '@/services/ForumService';
 import { useAuth } from '@/store/auth';
 import { showSuccess, showError } from '@/services/ToastService';
+import type { Author } from '@/types/Author';
 
 const auth = useAuth();
 
@@ -78,6 +79,23 @@ async function addReply() {
     }
 }
 
+
+// Poner y quitar me gusta
+async function handleLike() {
+    if (!commentLiked.value) {
+        await createLike(comment.value.id, auth.user.value.id);
+    } else {
+        await deleteLike(comment.value.id, auth.user.value.id);
+    }
+    comment.value = await getComment(Number(props.commentId));
+}
+
+
+// Verificar si el usuario logeado ha dado me gusta.
+const commentLiked = computed(() => {
+    return comment.value?.likes.some((author: Author) => author.authorId === auth.user.value.id);
+})
+
 </script>
 
 <template>
@@ -91,7 +109,8 @@ async function addReply() {
                         <span>{{ comment?.author.username }}</span>
                     </div>
                     <div class="flex flex-column">
-                        <span v-tooltip.top="formatDate(comment?.createdAt ?? new Date())">{{ getTimeAgo(comment?.createdAt ?? new Date()) }}</span>
+                        <span v-tooltip.top="formatDate(comment?.createdAt ?? new Date())">{{ getTimeAgo(comment?.createdAt
+                            ?? new Date()) }}</span>
                     </div>
                 </section>
                 <Divider />
@@ -106,7 +125,7 @@ async function addReply() {
             </article>
         </template>
         <template #footer>
-            <section v-if="auth.isAuthenticated.value" class="flex justify-content-end gap-3">
+            <section v-if="auth.isAuthenticated.value" class="flex justify-content-end align-items-center gap-3">
                 <Button
                     v-if="(!editingMode && comment?.authorId === auth.user?.value?.id && !replyingMode) || (!editingMode && auth.isAdmin?.value && !replyingMode)"
                     label="Editar" icon="pi pi-pencil" severity="warning" text aria-label="Editar comentario"
@@ -116,8 +135,15 @@ async function addReply() {
                 <Button v-if="editingMode" label="Guardar" icon="pi pi-save" aria-label="Guardar comentario"
                     @click="saveComment" />
 
-                <Button v-if="!comment?.thread.isLocked && !editingMode && !replyingMode" label="Responder" icon="pi pi-reply" severity="help" text
-                    aria-label="Responder comentario" @click="replyingMode = true"></Button>
+                <Button v-if="!comment?.thread.isLocked && !editingMode && !replyingMode" label="Responder"
+                    icon="pi pi-reply" severity="help" text aria-label="Responder comentario"
+                    @click="replyingMode = true"></Button>
+
+                <Button text class="flex gap-2" severity="danger" @click="handleLike()">
+                    <i class="pi" :class="{ 'pi-heart-fill': commentLiked, 'pi-heart': !commentLiked }"></i>
+                    <span>{{ comment?._count.likes }}</span>
+                </Button>
+
             </section>
             <section v-if="replyingMode" class="mt-3">
                 <Textarea v-model="newComment.comment" autoResize rows="5" cols="30" class="w-full"
