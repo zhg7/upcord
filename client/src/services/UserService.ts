@@ -1,4 +1,7 @@
 import { http } from '@/services/HttpService';
+import { useAuth } from '@/store/auth';
+
+const auth = useAuth();
 
 export async function checkEmailAvailability(email: string) {
     const response = await http.get(`users/emails/${email}`);
@@ -12,6 +15,32 @@ export async function checkUsernameAvailability(username: string) {
 
 export async function getUserDetails(username: string) {
     const response = await http.get(`users/${username}`);
+    return response.data;
+}
+
+export async function getUserBan(username: string) {
+    const response = await http.get(`users/bans/${username}`);
+    return response.data;
+}
+
+export async function addUserBan(userId: number, reason: string, expiresAt: Date) {
+    const response = await http.post(`users/bans`, {
+        "targetUserId": userId,
+        "authorUserId": auth.user.value.id,
+        "reason": reason,
+        "expiresAt": expiresAt
+    });
+
+    return response.data;
+}
+
+export async function deleteUserBan(banId: number) {
+    const response = await http.delete(`users/bans`, {
+        data: {
+            "banId": banId
+        }
+    });
+
     return response.data;
 }
 

@@ -19,7 +19,7 @@ export async function getUserByUsername(username: string) {
         where: {
             username: username
         },
-        select: userData
+        select: userData,
     })
     return user;
 }
@@ -187,4 +187,27 @@ export async function updateUserPassword(userId: number, password: string) {
     });
 
     return user;
+}
+
+export async function addUserBan(targetUserId: number, authorUserId: number, reason: string, expiresAt: Date){
+    const ban = await prisma.ban.create({
+        data: {
+            targetUserId: targetUserId,
+            authorId: authorUserId,
+            reason: reason,
+            expiresAt: expiresAt
+        }
+    });
+
+    return ban;
+}
+
+export async function removeUserBan(banId: number){
+    const unban = await prisma.ban.delete({
+        where: {
+            id: banId
+        }
+    });
+
+    return unban;
 }

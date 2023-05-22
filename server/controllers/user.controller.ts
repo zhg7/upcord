@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import crypto from 'crypto';
-import { getUserByUsername, emailExists, usernameExists, validateUserAccount, updateProfile, updateUser, getUserBySessionToken, updateUserPassword } from "../services/user.service";
+import { getUserByUsername, emailExists, usernameExists, validateUserAccount, updateProfile, updateUser, getUserBySessionToken, updateUserPassword, getUserBan, addUserBan, removeUserBan } from "../services/user.service";
 import { isSessionTokenValid } from '../services/auth.service';
 import { uploadImage } from '../utils/image';
 
@@ -76,16 +76,49 @@ export async function editUserDetails(req: Request, res: Response) {
     }
 }
 
-export async function resetUserPassword(req: Request, res: Response, userId: number){
+export async function resetUserPassword(req: Request, res: Response, userId: number) {
     const newPassword = crypto.randomBytes(4).toString('hex');
-    
+
     await updateUserPassword(userId, newPassword);
 
     return res
-    .status(200)
-    .json({"new password" : newPassword});
+        .status(200)
+        .json({ "new password": newPassword });
 
 }
 
+export async function retrieveUserBan(req: Request, res: Response) {
+    const username = req.params.username;
+    const user = await getUserByUsername(username);
+    const userId = user?.id;
+
+    const ban = await getUserBan(Number(userId));
+
+    return res
+        .status(200)
+        .json(ban);
+}
+
+export async function createUserBan(req: Request, res: Response) {
+
+    const { targetUserId, authorUserId, reason, expiresAt } = req.body;
+    await addUserBan(Number(targetUserId), Number(authorUserId), reason, new Date(expiresAt));
+    return res
+        .status(200)
+        .json({ "result": "banned" });
+
+}
+
+
+export async function deleteUserBan(req: Request, res: Response) {
+
+    const banId = req.body.banId;
+    await removeUserBan(Number(banId));
+
+    return res
+        .status(200)
+        .json({ "result": "unbanned" });
+
+}
 
 

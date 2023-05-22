@@ -11,6 +11,7 @@ import { required, requiredUnless, email, helpers } from '@vuelidate/validators'
 import toast, { showError, showWarning, showSuccess, showInfo } from '@/services/ToastService';
 import { useAuth } from '@/store/auth';
 import { sendPasswordResetRequest } from '@/services/AuthService';
+import { formatDate } from '@/utils/time';
 
 enum LoginResult  {
     FAILED = "failed",
@@ -58,7 +59,7 @@ function handleLoginResult(loginResult: any) {
             showWarning('E-mail no verificado.', 'Activa la cuenta con el enlace que habíamos enviado a tu e-mail.');
             break;
         case LoginResult.BANNED:
-            showError('Cuenta expulsada', `Por ${loginResult.ban.reason}, hasta ${loginResult.ban.expiresAt}`);
+            showError('Cuenta expulsada', `Por ${loginResult.ban.reason}, hasta el ${formatDate(loginResult.ban.expiresAt)}`);
             break;
         case LoginResult.SUCCESSFUL:
             isDisabled.value = true;
