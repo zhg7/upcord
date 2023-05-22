@@ -22,10 +22,10 @@ Foro de propósito general organizado en subforos. Los usuarios registrados tien
 - ```VITE_SERVER_BASE_URL```
 
 #### ```server```
-- ```DATABASE_URL```
-- ```SENDGRID_API_KEY```
+- [```DATABASE_URL```](https://www.prisma.io/docs/reference/database-reference/connection-urls#mysql)
+- [```SENDGRID_API_KEY```](https://docs.sendgrid.com/for-developers/sending-email/quickstart-nodejs#create-and-store-a-sendgrid-api-key)
 - ```SENDGRID_SENDER```
-- ```CLOUDINARY_URL```
+- [```CLOUDINARY_URL```](https://cloudinary.com/documentation/node_integration#setting_the_cloudinary_url_environment_variable)
 - ```CLIENT_BASE_URL```
 
 ### Entorno de desarrollo
