@@ -12,7 +12,7 @@ Foro de propósito general organizado en subforos. Los usuarios registrados tien
 
 ### Requisitos
 - [Node.js](https://nodejs.org/)
-- [MySQL](https://www.mysql.com/)
+- [MySQL](https://aws.amazon.com/rds/mysql/)
 - [SendGrid](https://sendgrid.com/)
 - [Cloudinary](https://cloudinary.com/)
 - [Visual Studio Code](https://code.visualstudio.com/)
