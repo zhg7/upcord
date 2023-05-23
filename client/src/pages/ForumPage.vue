@@ -17,6 +17,7 @@ import { getSubforum, getThreads, createThread } from '@/services/ForumService';
 import { getTimeAgo, formatDate } from '@/utils/time';
 import { useAuth } from '@/store/auth';
 import { showSuccess, showError } from '@/services/ToastService';
+import { FilterMatchMode } from 'primevue/api';
 
 const route = useRoute();
 const router = useRouter();
@@ -47,6 +48,13 @@ onBeforeRouteUpdate(async (to, from) => {
     document.title = `Foro de ${subforum.value.title} - Upcord`
 
 })
+
+// Datatable
+const filters = ref({
+    title: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    'author.username': { value: null, matchMode: FilterMatchMode.CONTAINS }
+
+});
 
 //Actualización de los datos al haber cambios de ruta.
 async function updateView(id: number) {
@@ -91,8 +99,9 @@ async function handleThreadSubmission(result: any) {
                 <Toast position="bottom-center" />
                 <Button v-if="auth.isAuthenticated.value" @click="creatingThread = true" size="small" label="Nuevo hilo"
                     icon="pi pi-plus" />
-                <DataTable :value="threads" :rows="10" paginator dataKey="id" class="mt-3">
-                    <Column field="title" header="Título">
+                <DataTable :value="threads" :rows="10" paginator filterDisplay="row" v-model:filters="filters" dataKey="id" class="mt-3">
+                    <template #empty> No se han encontrado hilos. </template>
+                    <Column field="title" header="Título" :show-filter-menu="false">
                         <template #body="{ data }">
                             <section class="flex gap-2 align-items-center flex-wrap">
                                 <Tag v-if="data.isPinned" severity="success" value="📌 Fijado"></Tag>
@@ -101,8 +110,16 @@ async function handleThreadSubmission(result: any) {
                                     data.title }}</router-link>
                             </section>
                         </template>
+                        <template #filter="{ filterModel, filterCallback }">
+                            <span class="p-input-icon-left">
+                                <i class="pi pi-search" />
+                                <InputText v-model="filterModel.value" type="text" @input="filterCallback()"
+                                    class="p-column-filter" placeholder="Buscar por título" />
+                            </span>
+                        </template>
                     </Column>
-                    <Column header="Iniciado por" style="min-width: 14rem">
+                    <Column filterField="author.username" header="Iniciado por" :show-filter-menu="false"
+                        style="min-width: 14rem">
                         <template #body="{ data }">
                             <section class="flex align-items-center gap-2">
                                 <ProfilePicture :image-url=data.author.avatar :username=data.author.username
@@ -113,6 +130,13 @@ async function handleThreadSubmission(result: any) {
                                     }}</small>
                                 </div>
                             </section>
+                        </template>
+                        <template #filter="{ filterModel, filterCallback }">
+                            <span class="p-input-icon-left">
+                                <i class="pi pi-search" />
+                                <InputText v-model="filterModel.value" type="text" @input="filterCallback()"
+                                    class="p-column-filter" placeholder="Buscar por autor" />
+                            </span>
                         </template>
                     </Column>
                     <Column field="replies" header="Respuestas">

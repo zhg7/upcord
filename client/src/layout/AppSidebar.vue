@@ -72,7 +72,7 @@ onMounted(async () => {
                     <section>
                         <span class="block text-500 font-medium mb-3">Últimos hilos</span>
                         <div v-for="thread in stats?.latestThreads" class="flex">
-                            <span class="mb-2">
+                            <article class="mb-2">
                                 <router-link v-tooltip.top="thread.subforum.title" class="no-underline hover:underline text-white font-bold"
                                     :to="`/thread/${thread.id}`">{{ thread.title
                                     }}</router-link>
@@ -83,11 +83,8 @@ onMounted(async () => {
                                         }}</router-link>
                                     <span class="text-500"> {{ " " + getTimeAgo(thread.createdAt) }}</span>
                                 </small>
-                            </span>
+                            </article>
                         </div>
-                    </section>
-                    <section class="stat-icon flex align-items-center justify-content-center bg-green-100 border-round">
-                        <i class="pi pi-star text-green-500 text-xl"></i>
                     </section>
                 </div>
             </div>
