@@ -230,6 +230,7 @@ export async function setThreadLastUpdate(threadId: number) {
     return thread;
 }
 
+// Novedades en el sidebar del inicio.
 export async function getForumStats() {
     const users = await prisma.user.aggregate({
         _count: {
@@ -255,11 +256,32 @@ export async function getForumStats() {
         }
     });
 
+    const latestThreads = await prisma.thread.findMany({
+        include: {
+            subforum: {
+                select: {
+                    title: true,
+                    id: true
+                }
+            },
+            author: {
+                select: {
+                    username: true
+                }
+            }
+        },
+        orderBy: {
+            createdAt: "desc",
+        },
+        take: 5
+    })
+
     return {
         "users": users._count.id,
         "threads": threads._count.id,
         "comments": comments._count.id,
-        "messages": messages._count.id
+        "messages": messages._count.id,
+        "latestThreads" : latestThreads
     };
 }
 
