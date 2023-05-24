@@ -8,9 +8,11 @@ import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
 import Calendar from 'primevue/calendar';
 import Toast from 'primevue/toast';
+import Accordion from 'primevue/accordion';
+import AccordionTab from 'primevue/accordiontab';
 import ProfilePicture from '@/components/ProfilePicture.vue';
 import { useAuth } from '@/store/auth';
-import { getUserDetails, getUserBan, addUserBan, deleteUserBan } from '@/services/UserService';
+import { getUserDetails, getUserBan, addUserBan, deleteUserBan, getStats } from '@/services/UserService';
 import { addChat } from '@/services/ChatService';
 import { getTimeAgo, formatDate } from '@/utils/time';
 import useVuelidator from '@vuelidate/core';
@@ -22,6 +24,7 @@ const auth = useAuth();
 
 const user: any = ref({});
 const ban: any = ref({});
+const stats: any = ref({});
 
 const banningMode = ref(false);
 
@@ -51,11 +54,13 @@ async function updateView(username: string) {
     if (auth.isAdmin.value) {
         ban.value = await getUserBan(username);
     }
+
+    stats.value = await getStats(username);
 }
 
 // Ocultar envío de mensaje y mostrar ajustes en perfil propio.
 const isOwnProfile = computed(() => {
-    if (!auth.user.value){
+    if (!auth.user.value) {
         return false;
     }
 
@@ -134,7 +139,7 @@ async function unbanUser() {
 <template>
     <Card>
         <template #content>
-            <section class="flex flex-column gap-2">
+            <section class="flex flex-column gap-2 mb-4">
                 <Toast position="bottom-center" />
                 <article class="flex gap-3 align-items-center">
                     <ProfilePicture :image-url="user.avatar" :username="user.username" image-size="xlarge" />
@@ -146,11 +151,39 @@ async function unbanUser() {
                     </div>
                 </article>
 
-                <article>
+                <article class="mt-2">
                     <span v-tooltip.top="formatDate(user.createdAt ?? new Date())"><i class="pi pi-calendar mr-1"></i>Se
                         unió {{ getTimeAgo(user.createdAt ?? new Date()) }}</span>
                     <p v-if="user.biography"><i class="pi pi-info-circle mr-1"></i>{{ user.biography }}</p>
+                    <span v-if="stats.likesReceived"><i class="pi pi-heart mr-1"></i>{{ stats.likesReceived }}</span>
                 </article>
+            </section>
+            <section class="grid">
+                <Accordion class="col-12 lg:col-6" :multiple="true">
+                    <AccordionTab header="Hilos creados">
+                        <div v-for="thread in stats?.threadsCreated" class="flex">
+                            <article class="mb-2">
+                                <router-link v-tooltip.top="thread.subforum.title"
+                                    class="no-underline hover:underline text-white font-bold"
+                                    :to="`/thread/${thread.id}`">{{ thread.title
+                                    }}</router-link>
+                                <small>
+                                    <span class="text-500"> iniciado </span>
+                                    <router-link class="no-underline hover:underline text-white"
+                                        :to="`/thread/${thread.id}`"></router-link>
+                                    <span class="text-500"> {{ " " + getTimeAgo(thread.createdAt) }}</span>
+                                </small>
+                            </article>
+                        </div>
+                    </AccordionTab>
+                </Accordion>
+                <Accordion class="col-12 lg:col-6" :multiple="true">
+                    <AccordionTab header="Comentarios enviados">
+                        <div v-for="comment in stats?.commentsSent" class="flex">
+                            {{ comment.content.slice(0, 120)}}
+                        </div>
+                    </AccordionTab>
+                </Accordion>
             </section>
         </template>
     </Card>

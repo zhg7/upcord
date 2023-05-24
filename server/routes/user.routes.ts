@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { checkDuplicateEmail, checkDuplicateUsername, getUserDetails, editProfileDetails, editUserDetails, retrieveUserBan, createUserBan, deleteUserBan } from '../controllers/user.controller';
+import { checkDuplicateEmail, checkDuplicateUsername, getUserDetails, getStats, editProfileDetails, editUserDetails, retrieveUserBan, createUserBan, deleteUserBan } from '../controllers/user.controller';
 
 export const userRoutes = express.Router();
 
@@ -17,6 +17,10 @@ userRoutes.get('/:username', async (req: Request, res: Response) => {
 
 userRoutes.get('/bans/:username', async (req: Request, res: Response) => {
     retrieveUserBan(req, res);
+})
+
+userRoutes.get('/stats/:username', async (req: Request, res: Response) => {
+    getStats(req, res);
 })
 
 userRoutes.post('/profiles', async (req: Request, res: Response) => {

@@ -73,7 +73,8 @@ onMounted(async () => {
                         <span class="block text-500 font-medium mb-3">Últimos hilos</span>
                         <div v-for="thread in stats?.latestThreads" class="flex">
                             <article class="mb-2">
-                                <router-link v-tooltip.top="thread.subforum.title" class="no-underline hover:underline text-white font-bold"
+                                <router-link v-tooltip.top="thread.subforum.title"
+                                    class="no-underline hover:underline text-white font-bold"
                                     :to="`/thread/${thread.id}`">{{ thread.title
                                     }}</router-link>
                                 <small>

@@ -189,7 +189,7 @@ export async function updateUserPassword(userId: number, password: string) {
     return user;
 }
 
-export async function addUserBan(targetUserId: number, authorUserId: number, reason: string, expiresAt: Date){
+export async function addUserBan(targetUserId: number, authorUserId: number, reason: string, expiresAt: Date) {
     const ban = await prisma.ban.create({
         data: {
             targetUserId: targetUserId,
@@ -202,7 +202,7 @@ export async function addUserBan(targetUserId: number, authorUserId: number, rea
     return ban;
 }
 
-export async function removeUserBan(banId: number){
+export async function removeUserBan(banId: number) {
     const unban = await prisma.ban.delete({
         where: {
             id: banId
@@ -210,4 +210,61 @@ export async function removeUserBan(banId: number){
     });
 
     return unban;
+}
+
+export async function getUserStats(username: string) {
+    const likes = await prisma.like.count({
+        where: {
+            post: {
+                author: {
+                    username: username
+                }
+            }
+        }
+
+    });
+
+    const threads = await prisma.thread.findMany({
+        where: {
+            author: {
+                username: username
+            }
+        },
+        select: {
+            id: true,
+            title: true,
+            createdAt: true,
+            subforum: {
+                select: {
+                    id: true,
+                    title: true,
+                }
+            }
+        },
+    });
+
+    const comments = await prisma.post.findMany({
+        where: {
+            author: {
+                username: username
+            }
+        },
+        select: {
+            id: true,
+            content: true,
+            createdAt: true,
+            thread: {
+                select: {
+                    id: true,
+                    title: true,
+                }
+            }
+        },
+    })
+
+    return {
+        "likesReceived": likes,
+        "threadsCreated": threads,
+        "commentsSent" : comments
+    };
 }

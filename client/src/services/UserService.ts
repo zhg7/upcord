@@ -61,3 +61,8 @@ export async function changeUserDetails(username: string, email: string, passwor
 
     return response.data;
 }
+
+export async function getStats(username: string) {
+    const response = await http.get(`users/stats/${username}`);
+    return response.data;
+}

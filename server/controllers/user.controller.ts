@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import crypto from 'crypto';
-import { getUserByUsername, emailExists, usernameExists, validateUserAccount, updateProfile, updateUser, getUserBySessionToken, updateUserPassword, getUserBan, addUserBan, removeUserBan } from "../services/user.service";
+import { getUserByUsername, getUserStats, emailExists, usernameExists, validateUserAccount, updateProfile, updateUser, getUserBySessionToken, updateUserPassword, getUserBan, addUserBan, removeUserBan } from "../services/user.service";
 import { isSessionTokenValid } from '../services/auth.service';
 import { uploadImage } from '../utils/image';
 
@@ -119,6 +119,16 @@ export async function deleteUserBan(req: Request, res: Response) {
         .status(200)
         .json({ "result": "unbanned" });
 
+}
+
+export async function getStats(req: Request, res: Response){
+    const username = req.params.username;
+
+    const stats = await getUserStats(username);
+
+    return res
+        .status(200)
+        .json(stats);
 }
 
 
