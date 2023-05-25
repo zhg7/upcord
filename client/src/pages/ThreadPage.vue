@@ -154,10 +154,10 @@ async function handleThreadUpdate(result: any) {
                     <section v-if="item.label?.toString() === thread?.title" class="flex gap-2">
                         <Button v-if="thread.authorId === auth.user.value.id || auth.isAdmin.value" icon="pi pi-cog"
                             size="large" class="m-0 p-0" @click="editingThread = true; setEditModalDetails()" />
-                        <Tag v-if="thread?.isPinned" severity="success" value="📌 Fijado"></Tag>
+                        <Tag v-if="thread?.isPinned" severity="success" class="text-black-alpha-90" value="📌 Fijado"></Tag>
                         <Tag v-if="thread?.isLocked" severity="warning" value="🔒 Cerrado"></Tag>
                     </section>
-                    <router-link class="no-underline hover:underline text-white" :to="(item.to as RouteLocationRaw)">{{
+                    <router-link class="no-underline hover:underline text-color" :to="(item.to as RouteLocationRaw)">{{
                         item.label }}</router-link>
                 </div>
             </template>

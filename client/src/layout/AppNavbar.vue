@@ -5,9 +5,12 @@ import { ref, onMounted } from "vue";
 import { useAuth } from '@/store/auth';
 import { useRouter } from 'vue-router';
 import { getCategories } from '@/services/ForumService';
+import ThemeToggler from '@/components/ThemeToggler.vue';
+import { useDark } from '@vueuse/core';
 import type { MenuItem } from 'primevue/menuitem';
 import type { Category } from '@/types/Forum'
 
+const isDark = useDark();
 const auth = useAuth();
 const router = useRouter();
 
@@ -26,7 +29,7 @@ function populateForumList() {
         });
 
         category.subforums.forEach(subforum => { // @ts-ignore - Problema de PrimeVue.
-            items.value[0].items[index].items.push({ 
+            items.value[0].items[index].items.push({
                 label: subforum.title,
                 to: `/forum/${subforum.id}`,
             })
@@ -95,8 +98,13 @@ const items = ref([
     <nav>
         <Menubar :model="items" class="mb-2">
             <template #start>
-                <router-link to="/"><img alt="logo" src="@/assets/images/upcord-logo-dark.svg" height="40"
+                <router-link v-if="isDark" to="/"><img alt="logo" src="@/assets/images/upcord-logo-dark.svg" height="40"
                         class="mr-2" /></router-link>
+                <router-link v-else to="/"><img alt="logo" src="@/assets/images/upcord-logo-light.svg" height="40"
+                        class="mr-2" /></router-link>
+            </template>
+            <template #end>
+                <ThemeToggler />
             </template>
         </Menubar>
     </nav>

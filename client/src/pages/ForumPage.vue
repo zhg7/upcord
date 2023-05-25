@@ -104,9 +104,9 @@ async function handleThreadSubmission(result: any) {
                     <Column field="title" header="Título" :show-filter-menu="false">
                         <template #body="{ data }">
                             <section class="flex gap-2 align-items-center flex-wrap">
-                                <Tag v-if="data.isPinned" severity="success" value="📌 Fijado"></Tag>
+                                <Tag v-if="data.isPinned" severity="success" class="text-black-alpha-90" value="📌 Fijado"></Tag>
                                 <Tag v-if="data.isLocked" severity="warning" value="🔒 Cerrado"></Tag>
-                                <router-link :to="`/thread/${data.id}`" class="no-underline text-white hover:underline">{{
+                                <router-link :to="`/thread/${data.id}`" class="no-underline text-color hover:underline">{{
                                     data.title }}</router-link>
                             </section>
                         </template>
