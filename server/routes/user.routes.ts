@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { checkDuplicateEmail, checkDuplicateUsername, getUserDetails, getStats, editProfileDetails, editUserDetails, retrieveUserBan, createUserBan, deleteUserBan } from '../controllers/user.controller';
+import { checkDuplicateEmail, checkDuplicateUsername, getUserDetails, getStats, editProfileDetails, editUserDetails, retrieveUserBan, createUserBan, deleteUserBan, deleteUser } from '../controllers/user.controller';
 
 export const userRoutes = express.Router();
 
@@ -38,3 +38,7 @@ userRoutes.post('/bans', async (req: Request, res: Response) => {
 userRoutes.delete('/bans', async (req: Request, res: Response) => {
     deleteUserBan(req, res);
 })
+
+userRoutes.delete('/', async(req: Request, res: Response) => {
+    deleteUser(req, res);
+} )

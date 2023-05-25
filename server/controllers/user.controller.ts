@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import crypto from 'crypto';
-import { getUserByUsername, getUserStats, emailExists, usernameExists, validateUserAccount, updateProfile, updateUser, getUserBySessionToken, updateUserPassword, getUserBan, addUserBan, removeUserBan } from "../services/user.service";
+import { getUserByUsername, getUserStats, emailExists, usernameExists, validateUserAccount, updateProfile, updateUser, getUserBySessionToken, updateUserPassword, getUserBan, addUserBan, removeUserBan, removeUser } from "../services/user.service";
 import { isSessionTokenValid } from '../services/auth.service';
 import { uploadImage } from '../utils/image';
 
@@ -121,7 +121,7 @@ export async function deleteUserBan(req: Request, res: Response) {
 
 }
 
-export async function getStats(req: Request, res: Response){
+export async function getStats(req: Request, res: Response) {
     const username = req.params.username;
 
     const stats = await getUserStats(username);
@@ -129,6 +129,21 @@ export async function getStats(req: Request, res: Response){
     return res
         .status(200)
         .json(stats);
+}
+
+export async function deleteUser(req: Request, res: Response) {
+    const sessionToken = req.cookies.uc_session;
+    if (sessionToken && await isSessionTokenValid(sessionToken)) {
+        const user = await getUserBySessionToken(sessionToken);
+        await removeUser(Number(user?.user.id));
+        return res
+            .status(200)
+            .end();
+    } else {
+        return res
+            .status(403)
+            .end();
+    }
 }
 
 

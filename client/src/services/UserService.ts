@@ -66,3 +66,8 @@ export async function getStats(username: string) {
     const response = await http.get(`users/stats/${username}`);
     return response.data;
 }
+
+export async function deleteUser(){
+    const response = await http.delete('/users');
+    return response.data;
+}

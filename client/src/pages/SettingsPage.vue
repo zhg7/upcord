@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import Card from 'primevue/card';
 import InputText from 'primevue/inputtext';
 import Textarea from 'primevue/textarea';
@@ -8,14 +9,18 @@ import Password from 'primevue/password';
 import Button from 'primevue/button';
 import Toast from 'primevue/toast';
 import ScrollTop from 'primevue/scrolltop';
+import ConfirmPopup from 'primevue/confirmpopup';
 import FileUpload, { type FileUploadRemoveEvent } from 'primevue/fileupload';
 import ProfilePicture from '@/components/ProfilePicture.vue'
 import { useAuth } from '@/store/auth';
-import { changeProfileDetails, changeUserDetails } from '@/services/UserService';
+import { changeProfileDetails, changeUserDetails, deleteUser } from '@/services/UserService';
 import { showSuccess } from '@/services/ToastService';
 import useVuelidator from '@vuelidate/core';
 import { required, minLength, maxLength, email } from '@vuelidate/validators';
+import { useConfirm } from "primevue/useconfirm";
 
+const router = useRouter();
+const confirm = useConfirm();
 const auth = useAuth();
 
 const profileDetails = ref({
@@ -71,6 +76,25 @@ async function saveUserDetails() {
     }
 }
 
+function showDeletionWarning(event: any) {
+    confirm.require({
+        target: event.currentTarget,
+        message: 'Se eliminarán y se anonimizarán tus datos. La sesión se cerrará inmediatamente.',
+        icon: 'pi pi-exclamation-triangle',
+        acceptLabel: 'Sí',
+        acceptClass: 'p-button-danger',
+        accept: () => {
+            deactivateUser();
+        },
+    });
+}
+
+async function deactivateUser() {
+    await deleteUser();
+    auth.logout();
+    router.push("/");
+}
+
 </script>
 
 <template>
@@ -80,6 +104,7 @@ async function saveUserDetails() {
         </template>
         <template #content>
             <ScrollTop />
+            <ConfirmPopup></ConfirmPopup>
             <Toast position="bottom-center" />
             <div class="flex flex-column gap-4">
                 <section class="card flex flex-column gap-4">
@@ -149,7 +174,8 @@ async function saveUserDetails() {
                             </div>
                         </template>
                         <p class="m-0 mb-4">¡Cuidado! Estas acciones son destructivas e irreversibles.</p>
-                        <Button icon="pi pi-trash" label="Borrar cuenta" severity="danger" />
+                        <Button @click="showDeletionWarning($event)" icon="pi pi-trash" label="Desactivar cuenta"
+                            severity="danger" />
                     </Fieldset>
                 </section>
             </div>

@@ -1,4 +1,5 @@
 import prisma from '../index';
+import crypto from 'crypto';
 import { SignUpUser } from '../types/signup.type';
 import { getPasswordHash } from './auth.service';
 
@@ -267,4 +268,64 @@ export async function getUserStats(username: string) {
         "threadsCreated": threads,
         "commentsSent" : comments
     };
+}
+
+export async function removeUser(userId: number){
+
+    const randomUsername = `deleted-${crypto.randomBytes(6).toString('hex')}`;
+    const randomEmail = `deleted-${crypto.randomBytes(12).toString('hex')}@deleted.upcord`;
+
+    // Anonimizar usuario
+    await prisma.user.update({
+        where: {
+            id: userId,
+        },
+        data: {
+            username: randomUsername,
+            email: randomEmail,
+            avatar: null,
+            biography: null,
+            isActivated: false
+        }
+    });
+
+    // Anonomizar hilos y comentarios
+    await prisma.thread.updateMany({
+        where: {
+            authorId: userId
+        },
+        data: {
+            title: "***"
+        }
+    });
+
+    await prisma.post.updateMany({
+        where: {
+            authorId: userId
+        },
+        data: {
+            content: "***"
+        }
+    });
+
+    // Eliminar mensajes de chat
+    await prisma.message.deleteMany({
+        where: {
+            senderId: userId
+        }
+    });
+
+    // Eliminar me gustas dados.
+    await prisma.like.deleteMany({
+        where: {
+            authorId : userId
+        }
+    });
+
+    // Eliminar tokens de verificación
+    await prisma.verification.deleteMany({
+        where : {
+            userId: userId
+        }
+    });
 }
