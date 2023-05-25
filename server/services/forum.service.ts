@@ -60,6 +60,12 @@ export async function getThreads(subforumId: number) {
 
     });
 
+    threads.forEach(thread => { // No tener en cuenta el primer comentario, ya que es el que inicia el hilo.
+        if (thread._count.posts === 1) {
+            thread._count.posts = 0;
+        }
+    })
+
     return threads;
 }
 
@@ -281,7 +287,7 @@ export async function getForumStats() {
         "threads": threads._count.id,
         "comments": comments._count.id,
         "messages": messages._count.id,
-        "latestThreads" : latestThreads
+        "latestThreads": latestThreads
     };
 }
 

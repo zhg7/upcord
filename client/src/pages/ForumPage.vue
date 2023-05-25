@@ -99,9 +99,9 @@ async function handleThreadSubmission(result: any) {
                 <Toast position="bottom-center" />
                 <Button v-if="auth.isAuthenticated.value" @click="creatingThread = true" size="small" label="Nuevo hilo"
                     icon="pi pi-plus" />
-                <DataTable :value="threads" :rows="10" paginator filterDisplay="row" v-model:filters="filters" dataKey="id" class="mt-3">
+                <DataTable :value="threads" :rows="10" paginator filterDisplay="row" v-model:filters="filters" sortMode="multiple" removableSort dataKey="id" class="mt-3">
                     <template #empty> No se han encontrado hilos. </template>
-                    <Column field="title" header="Título" :show-filter-menu="false">
+                    <Column field="title" header="Título" sortable :show-filter-menu="false">
                         <template #body="{ data }">
                             <section class="flex gap-2 align-items-center flex-wrap">
                                 <Tag v-if="data.isPinned" severity="success" class="text-black-alpha-90" value="📌 Fijado"></Tag>
@@ -139,12 +139,12 @@ async function handleThreadSubmission(result: any) {
                             </span>
                         </template>
                     </Column>
-                    <Column field="replies" header="Respuestas">
+                    <Column field="_count.posts" sortable header="Respuestas">
                         <template #body="{ data }">
-                            {{ data._count.posts - 1 }} <!-- no tener en cuenta el primer comentario del autor -->
+                            {{ data._count.posts }}
                         </template>
                     </Column>
-                    <Column field="last-reply" header="Última actividad">
+                    <Column field="updatedAt" sortable header="Última actividad">
                         <template #body="{ data }">
                             <section class="flex align-items-center gap-2">
                                 <ProfilePicture :image-url=data.posts[0].author.avatar

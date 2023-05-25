@@ -165,10 +165,10 @@ function scrollToBottom() {
                                 <article v-for="message in messages" :key="message.createdAt.toString()">
                                     <div v-if="message.senderId === auth.user.value.id"
                                         class="flex w-full justify-content-end">
-                                        <p class="bg-primary-700 border-round p-3 mr-3 message">{{ message.message }}</p>
+                                        <p class="bg-primary-700 border-round p-3 mr-3 message text-white">{{ message.message }}</p>
                                     </div>
                                     <div v-else class="flex">
-                                        <p class="bg-bluegray-800 border-round p-3 mr-3 message">{{ message.message }}</p>
+                                        <p class="bg-bluegray-800 border-round p-3 mr-3 message text-white">{{ message.message }}</p>
                                     </div>
                                 </article>
                             </div>
