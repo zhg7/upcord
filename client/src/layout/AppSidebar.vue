@@ -75,10 +75,10 @@ onMounted(async () => {
                         <div v-for="thread in stats?.latestThreads" class="flex">
                             <article class="mb-2">
                                 <Badge /> <router-link class="no-underline hover:underline text-color font-bold"
-                                    :to="`/thread/${thread.id}`">[{{ thread.subforum.title }}] {{ thread.title
+                                    :to="`/thread/${thread.id}`">{{ thread.subforum.title }} > {{ thread.title
                                     }}</router-link>
                                 <span class="text-500"> iniciado por </span>
-                                <router-link class="no-underline hover:underline text-color" :to="`/thread/${thread.id}`">{{
+                                <router-link class="no-underline hover:underline text-color" :to="`/profile/${thread.author.username}`">{{
                                     thread.author.username
                                 }}</router-link>
                                 <span class="text-500"> {{ " " + getTimeAgo(thread.createdAt) }}</span>
