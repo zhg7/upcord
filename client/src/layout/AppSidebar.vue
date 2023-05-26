@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { RouterLink } from 'vue-router';
+import Badge from 'primevue/badge';
 import { getStats } from '@/services/ForumService';
 import { getTimeAgo } from '@/utils/time';
 
@@ -73,17 +74,14 @@ onMounted(async () => {
                         <span class="block text-500 font-medium mb-3">Últimos hilos</span>
                         <div v-for="thread in stats?.latestThreads" class="flex">
                             <article class="mb-2">
-                                <router-link v-tooltip.top="thread.subforum.title"
-                                    class="no-underline hover:underline text-color font-bold"
-                                    :to="`/thread/${thread.id}`">{{ thread.title
+                                <Badge /> <router-link class="no-underline hover:underline text-color font-bold"
+                                    :to="`/thread/${thread.id}`">[{{ thread.subforum.title }}] {{ thread.title
                                     }}</router-link>
-                                <small>
-                                    <span class="text-500"> iniciado por </span>
-                                    <router-link class="no-underline hover:underline text-color"
-                                        :to="`/thread/${thread.id}`">{{ thread.author.username
-                                        }}</router-link>
-                                    <span class="text-500"> {{ " " + getTimeAgo(thread.createdAt) }}</span>
-                                </small>
+                                <span class="text-500"> iniciado por </span>
+                                <router-link class="no-underline hover:underline text-color" :to="`/thread/${thread.id}`">{{
+                                    thread.author.username
+                                }}</router-link>
+                                <span class="text-500"> {{ " " + getTimeAgo(thread.createdAt) }}</span>
                             </article>
                         </div>
                     </section>

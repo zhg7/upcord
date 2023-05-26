@@ -18,7 +18,7 @@ import { formatDate } from '@/utils/time';
 import { FilterMatchMode } from 'primevue/api';
 import { useBase64 } from '@vueuse/core';
 import useVuelidator from '@vuelidate/core';
-import { required, minLength, maxLength, email } from '@vuelidate/validators';
+import { required, minLength, maxLength, email, alphaNum} from '@vuelidate/validators';
 import { changeUserDataAsAdmin } from '@/services/UserService';
 import { showSuccess } from '@/services/ToastService';
 import type { User } from '@/types/Author';
@@ -43,7 +43,7 @@ onMounted(async () => {
 
 const rules = {
     biography: { maxLength: maxLength(170) },
-    username: { required: required, minLength: minLength(4), maxLength: maxLength(20) },
+    username: { required: required, minLength: minLength(4), maxLength: maxLength(20), alphaNum: alphaNum },
     email: { required: required, email: email },
     password: { minLength: minLength(8) },
 };

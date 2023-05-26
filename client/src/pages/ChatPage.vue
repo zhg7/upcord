@@ -12,7 +12,7 @@ import { getUserChats, getChatMessages } from '@/services/ChatService';
 import { useAuth } from '@/store/auth';
 import type { Message } from '@/types/Message';
 import useVuelidator from '@vuelidate/core';
-import { required, minLength, maxLength, email } from '@vuelidate/validators';
+import { required, minLength } from '@vuelidate/validators';
 
 const auth = useAuth();
 

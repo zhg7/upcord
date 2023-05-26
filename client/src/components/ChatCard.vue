@@ -18,7 +18,7 @@ const emit = defineEmits(['joinChat']);
 
 <template>
     <div class="card" @click="emit('joinChat', props)">
-        <article class="bg-bluegray-700 text-white border-round p-3 m-2 mb-4 cursor-pointer flex align-items-center gap-2">
+        <article class="bg-primary-700 text-white border-round p-3 m-2 mb-4 cursor-pointer flex align-items-center gap-2">
             <ProfilePicture :image-url=props.avatar :username=props.username image-size="large" />
             <span>{{ props.username }}</span>
         </article>

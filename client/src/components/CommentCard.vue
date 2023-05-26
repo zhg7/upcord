@@ -40,6 +40,7 @@ const editedComment = ref({
 });
 
 const v$ = useVuelidator(rules, editedComment, { $stopPropagation: true });
+const v_new$ = useVuelidator(rules, newComment, { $stopPropagation: true });
 
 onMounted(async () => {
     comment.value = await getComment(Number(props.commentId));
@@ -69,14 +70,20 @@ async function saveComment() {
 }
 
 async function addReply() {
-    const result = await createReply(comment.value.threadId, newComment.value.comment, comment.value.id);
-    if (result) {
-        showSuccess('Respuesta añadida', "");
-        replyingMode.value = false;
-        replies.value = await getReplies(Number(props.commentId));
-    } else {
-        showError('Error interno', "No se podido añadir la respuesta.");
+
+    const validationPassed = await v_new$.value.$validate();
+
+    if (validationPassed) {
+        const result = await createReply(comment.value.threadId, newComment.value.comment, comment.value.id);
+        if (result) {
+            showSuccess('Respuesta añadida', "");
+            replyingMode.value = false;
+            replies.value = await getReplies(Number(props.commentId));
+        } else {
+            showError('Error interno', "No se podido añadir la respuesta.");
+        }
     }
+
 }
 
 
@@ -147,7 +154,7 @@ const commentLiked = computed(() => {
             </section>
             <section v-if="replyingMode" class="mt-3">
                 <Textarea v-model="newComment.comment" autoResize rows="5" cols="30" class="w-full"
-                    :class="{ 'p-invalid': v$.comment.$errors.length }" />
+                    :class="{ 'p-invalid': v_new$.comment.$errors.length }" />
                 <small class="block mt-2">Mínimo 1 carácter.</small>
                 <div class="mt-5 flex justify-content-end align-items-end">
                     <Button label="Cancelar" icon="pi pi-times" text severity="danger" aria-label="Guardar comentario"

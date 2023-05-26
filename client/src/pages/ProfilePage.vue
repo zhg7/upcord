@@ -141,7 +141,7 @@ async function unbanUser() {
                         <template #content>
                             <article class="flex gap-3 align-items-center">
                                 <ProfilePicture :image-url="user.avatar" :username="user.username" image-size="xlarge" />
-                                <h1>{{ user.username }}</h1>
+                                <h1 class="text-2xl">{{ user.username }}</h1>
                                 <div v-if="!isOwnProfile">
                                     <Button v-if="auth.isAuthenticated.value" type="button" icon="pi pi-bars"
                                         label="Opciones" size="small" @click="toggleMenu" aria-haspopup="true"
