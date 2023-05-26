@@ -101,7 +101,7 @@ async function handleThreadSubmission(result: any) {
                     icon="pi pi-plus" />
                 <DataTable :value="threads" :rows="10" paginator filterDisplay="row" v-model:filters="filters" sortMode="multiple" removableSort dataKey="id" class="mt-3">
                     <template #empty> No se han encontrado hilos. </template>
-                    <Column field="title" header="Título" sortable :show-filter-menu="false">
+                    <Column field="title" header="Título" sortable :show-filter-menu="false" class="max-w-20rem">
                         <template #body="{ data }">
                             <section class="flex gap-2 align-items-center flex-wrap">
                                 <Tag v-if="data.isPinned" severity="success" class="text-black-alpha-90" value="📌 Fijado"></Tag>
@@ -118,8 +118,7 @@ async function handleThreadSubmission(result: any) {
                             </span>
                         </template>
                     </Column>
-                    <Column filterField="author.username" header="Iniciado por" :show-filter-menu="false"
-                        style="min-width: 14rem">
+                    <Column filterField="author.username" header="Iniciado por" :show-filter-menu="false" class="min-w-20rem">
                         <template #body="{ data }">
                             <section class="flex align-items-center gap-2">
                                 <ProfilePicture :image-url=data.author.avatar :username=data.author.username

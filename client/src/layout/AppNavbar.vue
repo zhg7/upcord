@@ -81,6 +81,7 @@ const items = ref([
                 label: 'Usuarios',
                 icon: 'pi pi-fw pi-users',
                 to: `/user-manager`,
+                visible: auth.isAdmin
             },
             {
                 separator: true

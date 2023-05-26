@@ -10,6 +10,8 @@ import Calendar from 'primevue/calendar';
 import Toast from 'primevue/toast';
 import Accordion from 'primevue/accordion';
 import AccordionTab from 'primevue/accordiontab';
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
 import ProfilePicture from '@/components/ProfilePicture.vue';
 import { useAuth } from '@/store/auth';
 import { getUserDetails, getUserBan, addUserBan, deleteUserBan, getStats } from '@/services/UserService';
@@ -134,46 +136,66 @@ async function unbanUser() {
         <template #content>
             <section class="flex flex-column gap-2 mb-4">
                 <Toast position="bottom-center" />
-                <article class="flex gap-3 align-items-center">
-                    <ProfilePicture :image-url="user.avatar" :username="user.username" image-size="xlarge" />
-                    <h1>{{ user.username }}</h1>
-                    <div v-if="!isOwnProfile">
-                        <Button v-if="auth.isAuthenticated.value" type="button" icon="pi pi-bars" label="Opciones"
-                            size="small" @click="toggleMenu" aria-haspopup="true" aria-controls="overlay_menu" />
-                        <Menu ref="menu" id="overlay_menu" :model="items" :popup="true" />
-                    </div>
-                </article>
-
-                <article class="mt-2">
-                    <span v-tooltip.top="formatDate(user.createdAt ?? new Date())"><i class="pi pi-calendar mr-1"></i>Se
-                        unió {{ getTimeAgo(user.createdAt ?? new Date()) }}</span>
-                    <p v-if="user.biography"><i class="pi pi-info-circle mr-1"></i>{{ user.biography }}</p>
-                    <span v-if="stats.likesReceived"><i class="pi pi-heart mr-1"></i>{{ stats.likesReceived }}</span>
+                <article class="flex flex-column gap-5">
+                    <Card>
+                        <template #content>
+                            <article class="flex gap-3 align-items-center">
+                                <ProfilePicture :image-url="user.avatar" :username="user.username" image-size="xlarge" />
+                                <h1>{{ user.username }}</h1>
+                                <div v-if="!isOwnProfile">
+                                    <Button v-if="auth.isAuthenticated.value" type="button" icon="pi pi-bars"
+                                        label="Opciones" size="small" @click="toggleMenu" aria-haspopup="true"
+                                        aria-controls="overlay_menu" />
+                                    <Menu ref="menu" id="overlay_menu" :model="items" :popup="true" />
+                                </div>
+                            </article>
+                            <p class="m-0 biography mt-4">
+                                {{ user.biography }}
+                            </p>
+                        </template>
+                    </Card>
+                    <section class="ml-2 flex flex-column gap-3 max-w-max">
+                        <span v-tooltip.top="formatDate(user.createdAt ?? new Date())"><i class="pi pi-calendar mr-1"></i>Se
+                            unió {{ getTimeAgo(user.createdAt ?? new Date()) }}</span>
+                        <span v-if="stats.likesReceived"><i class="pi pi-heart mr-1"></i>{{ stats.likesReceived
+                        }}</span>
+                    </section>
                 </article>
             </section>
             <section class="grid">
                 <Accordion class="col-12 lg:col-6" :multiple="true">
-                    <AccordionTab header="Hilos creados">
-                        <div v-for="thread in stats?.threadsCreated" class="flex">
-                            <article class="mb-2">
-                                <router-link v-tooltip.top="thread.subforum.title"
-                                    class="no-underline hover:underline text-white font-bold"
-                                    :to="`/thread/${thread.id}`">{{ thread.title
-                                    }}</router-link>
-                                <small>
-                                    <span class="text-500"> iniciado </span>
-                                    <router-link class="no-underline hover:underline text-white"
-                                        :to="`/thread/${thread.id}`"></router-link>
-                                    <span class="text-500"> {{ " " + getTimeAgo(thread.createdAt) }}</span>
-                                </small>
-                            </article>
-                        </div>
+                    <AccordionTab :header="`Hilos creados (${stats?.threadsCreated?.length})`">
+                        <DataTable :value="stats.threadsCreated" :rows="5" paginator sortMode="multiple" removableSort
+                            dataKey="id" class="mt-3">
+                            <template #empty> No se han encontrado hilos. </template>
+                            <Column field="title" header="Título" sortable class="max-w-20rem">
+                                <template #body="{ data }">
+                                    <section class="flex gap-2 align-items-center flex-wrap">
+                                        <router-link :to="`/thread/${data.id}`"
+                                            class="no-underline text-color hover:underline">{{
+                                                data.title }}</router-link>
+                                    </section>
+                                </template>
+                            </Column>
+                            <Column field="subforum.title" header="Foro" sortable class="max-w-20rem">
+                                <template #body="{ data }">
+                                    <router-link :to="`/forum/${data.subforum.id}`"
+                                        class="no-underline text-color hover:underline">{{
+                                            data.subforum.title }}</router-link>
+                                </template>
+                            </Column>
+                            <Column field="createdAt" header="Fecha de apertura" sortable class="max-w-20rem">
+                                <template #body="{ data }">
+                                    {{ formatDate(data.createdAt) }}
+                                </template>
+                            </Column>
+                        </DataTable>
                     </AccordionTab>
                 </Accordion>
                 <Accordion class="col-12 lg:col-6" :multiple="true">
                     <AccordionTab header="Comentarios enviados">
                         <div v-for="comment in stats?.commentsSent" class="flex">
-                            {{ comment.content.slice(0, 120)}}
+                            {{ comment.content.slice(0, 120) }}
                         </div>
                     </AccordionTab>
                 </Accordion>
@@ -200,4 +222,12 @@ async function unbanUser() {
         </template>
     </Dialog>
 </template>
+
+<style scoped>
+.biography {
+    word-break: break-all;
+    white-space: pre-wrap;
+}
+</style>
+
 

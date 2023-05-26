@@ -15,10 +15,10 @@ const userData = {
     isActivated: true,
 }
 
-export async function getAllUsers(){
+export async function getAllUsers() {
     const users = await prisma.user.findMany({
         where: {
-            createdAt : {
+            createdAt: {
                 gt: new Date(+0) // Ignorar usuarios 'eliminados';
             }
         },
@@ -188,7 +188,7 @@ export async function updateUser(userId: number, username: string, email: string
     return user;
 }
 
-export async function updateUserStatus(userId: number, isActivated : boolean, isAdmin: boolean){
+export async function updateUserStatus(userId: number, isActivated: boolean, isAdmin: boolean) {
 
     const user = await prisma.user.update({
         where: {
@@ -270,6 +270,9 @@ export async function getUserStats(username: string) {
                 }
             }
         },
+        orderBy: {
+            createdAt: 'desc'
+        }
     });
 
     const comments = await prisma.post.findMany({
@@ -294,11 +297,11 @@ export async function getUserStats(username: string) {
     return {
         "likesReceived": likes,
         "threadsCreated": threads,
-        "commentsSent" : comments
+        "commentsSent": comments
     };
 }
 
-export async function removeUser(userId: number){
+export async function removeUser(userId: number) {
 
     const randomUsername = `deleted-${crypto.randomBytes(6).toString('hex')}`;
     const randomEmail = `deleted-${crypto.randomBytes(12).toString('hex')}@deleted.upcord`;
@@ -347,13 +350,13 @@ export async function removeUser(userId: number){
     // Eliminar me gustas dados.
     await prisma.like.deleteMany({
         where: {
-            authorId : userId
+            authorId: userId
         }
     });
 
     // Eliminar tokens de verificación
     await prisma.verification.deleteMany({
-        where : {
+        where: {
             userId: userId
         }
     });

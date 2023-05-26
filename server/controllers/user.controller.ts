@@ -94,8 +94,13 @@ export async function editUserDataAsAdmin(req: Request, res: Response) {
 
             await updateUser(Number(user.id), username, email, password || undefined);
 
-            const avatarUrl = await uploadImage(avatar);
-            await updateProfile(Number(user.id), avatarUrl as string, biography);
+            // Por si no hay foto
+            let avatarUrl = null;
+            if (avatar) {
+                avatarUrl = await uploadImage(avatar);
+            }
+
+            await updateProfile(Number(user.id), avatarUrl as string ?? undefined, biography);
 
             await updateUserStatus(Number(user.id), isActivated, isAdmin)
 

@@ -109,7 +109,11 @@ const router = createRouter({
     {
       path: '/user-manager',
       name: 'user-manager',
-      component: UserManagerPage
+      component: UserManagerPage,
+      meta: {
+        title: `Gestor de usuarios - ${DEFAULT_TITLE}`
+      },
+      beforeEnter: checkAdminRights
     },
     {
       path: "/:pathMatch(.*)*",
@@ -134,6 +138,12 @@ router.beforeEach(async (to, from) => {
 function checkAuthentication() {
   if (!auth.isAuthenticated.value) {
     return { name: 'login' }
+  }
+}
+
+function checkAdminRights(){
+  if(!auth.isAdmin.value){
+    return { name: 'home' }
   }
 }
 
