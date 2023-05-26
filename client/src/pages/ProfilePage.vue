@@ -149,7 +149,7 @@ async function unbanUser() {
                                     <Menu ref="menu" id="overlay_menu" :model="items" :popup="true" />
                                 </div>
                             </article>
-                            <p class="m-0 biography mt-4">
+                            <p class="m-0 content mt-4">
                                 {{ user.biography }}
                             </p>
                         </template>
@@ -165,7 +165,7 @@ async function unbanUser() {
             <section class="grid">
                 <Accordion class="col-12 lg:col-6" :multiple="true">
                     <AccordionTab :header="`Hilos creados (${stats?.threadsCreated?.length})`">
-                        <DataTable :value="stats.threadsCreated" :rows="5" paginator sortMode="multiple" removableSort
+                        <DataTable :value="stats.threadsCreated" :rows="7" paginator sortMode="multiple" removableSort
                             dataKey="id" class="mt-3">
                             <template #empty> No se han encontrado hilos. </template>
                             <Column field="title" header="Título" sortable class="max-w-20rem">
@@ -184,7 +184,7 @@ async function unbanUser() {
                                             data.subforum.title }}</router-link>
                                 </template>
                             </Column>
-                            <Column field="createdAt" header="Fecha de apertura" sortable class="max-w-20rem">
+                            <Column field="createdAt" header="Abierto el" sortable class="max-w-20rem">
                                 <template #body="{ data }">
                                     {{ formatDate(data.createdAt) }}
                                 </template>
@@ -193,10 +193,28 @@ async function unbanUser() {
                     </AccordionTab>
                 </Accordion>
                 <Accordion class="col-12 lg:col-6" :multiple="true">
-                    <AccordionTab header="Comentarios enviados">
-                        <div v-for="comment in stats?.commentsSent" class="flex">
-                            {{ comment.content.slice(0, 120) }}
-                        </div>
+                    <AccordionTab :header="`Comentarios enviados (${stats?.commentsSent?.length})`">
+                        <DataTable :value="stats.commentsSent" :rows="5" paginator sortMode="multiple" removableSort
+                            dataKey="id" class="mt-3 max-h-30rem overflow-y-auto">
+                            <template #empty> No se han encontrado hilos. </template>
+                            <Column field="content" header="Comentario" sortable class="max-w-20rem">
+                                <template #body="{ data }">
+                                    <p class="content">{{ data.content }}</p>
+                                </template>
+                            </Column>
+                            <Column field="createdAt" header="En" sortable class="max-w-20rem">
+                                <template #body="{ data }">
+                                    <router-link :to="`/thread/${data.thread.id}`"
+                                        class="no-underline text-color hover:underline">{{
+                                            data.thread.title }}</router-link>
+                                </template>
+                            </Column>
+                            <Column field="createdAt" header="Enviado el" sortable class="max-w-20rem">
+                                <template #body="{ data }">
+                                    {{ formatDate(data.createdAt) }}
+                                </template>
+                            </Column>
+                        </DataTable>
                     </AccordionTab>
                 </Accordion>
             </section>
@@ -224,7 +242,7 @@ async function unbanUser() {
 </template>
 
 <style scoped>
-.biography {
+.content {
     word-break: break-all;
     white-space: pre-wrap;
 }

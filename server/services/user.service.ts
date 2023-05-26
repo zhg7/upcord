@@ -292,6 +292,9 @@ export async function getUserStats(username: string) {
                 }
             }
         },
+        orderBy: {
+            createdAt: 'desc'
+        }
     })
 
     return {
