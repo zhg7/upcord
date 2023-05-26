@@ -24,9 +24,6 @@ model User {
   threads          Thread[]
   posts            Post[]
   likes            Like[]
-  reportsSent      Report[]       @relation("ReportSender")
-  reportsReceived  Report[]       @relation("ReportedUser")
-  reportsHandled   Report[]
   bansReceived     Ban[]          @relation("BannedUser")
   bansIssued       Ban[]
   sessions         Session[]
@@ -95,21 +92,6 @@ model Like {
   authorId Int
   post     Post @relation(fields: [postId], references: [id])
   postId   Int
-}
-
-model Report {
-  id            Int      @id @default(autoincrement())
-  targetUser    User     @relation("ReportedUser", fields: [targetUserId], references: [id])
-  targetUserId  Int
-  author        User     @relation("ReportSender", fields: [authorId], references: [id])
-  authorId      Int
-  reason        String   @db.VarChar(1024)
-  handledBy     User?    @relation(fields: [handledById], references: [id])
-  handledById   Int?
-  notes         String?  @db.VarChar(1024)
-  isActionTaken Boolean?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
 }
 
 model Ban {

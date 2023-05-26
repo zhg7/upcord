@@ -16,6 +16,7 @@ import { useAuth } from '@/store/auth';
 import { changeProfileDetails, changeUserDetails, deleteUser } from '@/services/UserService';
 import { showSuccess } from '@/services/ToastService';
 import useVuelidator from '@vuelidate/core';
+import { useBase64 } from '@vueuse/core';
 import { required, minLength, maxLength, email } from '@vuelidate/validators';
 import { useConfirm } from "primevue/useconfirm";
 
@@ -47,14 +48,11 @@ const userRules = {
 const v_profile$ = useVuelidator(profileRules, profileDetails);
 const v_user$ = useVuelidator(userRules, userDetails);
 
-
 function convertImageBase64(event: FileUploadRemoveEvent) {
     const imageFile = event.files[0];
-    const fileReader = new FileReader();
-    fileReader.onloadend = function () {
-        profileDetails.value.avatar = fileReader.result; // Mostrar previsualización antes de subir.
-    }
-    fileReader.readAsDataURL(imageFile);
+    const { base64 } = useBase64(imageFile);
+
+    profileDetails.value.avatar = base64; // Mostrar previsualización antes de subir.
 }
 
 async function saveProfileDetails() {
@@ -173,8 +171,8 @@ async function deactivateUser() {
                                 <span class="font-bold text-lg">Zona peligrosa</span>
                             </div>
                         </template>
-                        <p class="m-0 mb-4">¡Cuidado! Estas acciones son destructivas e irreversibles.</p>
-                        <Button @click="showDeletionWarning($event)" icon="pi pi-trash" label="Desactivar cuenta"
+                        <p class="m-0 mb-4"><strong>¡Cuidado! La siguiente acción es destructiva e irreversible:</strong>
+                        </p> <Button @click="showDeletionWarning($event)" icon="pi pi-trash" label="Desactivar cuenta"
                             severity="danger" />
                     </Fieldset>
                 </section>
