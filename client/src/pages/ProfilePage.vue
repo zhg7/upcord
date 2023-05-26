@@ -166,7 +166,7 @@ async function unbanUser() {
                 <Accordion class="col-12 lg:col-6" :multiple="true">
                     <AccordionTab :header="`Hilos creados (${stats?.threadsCreated?.length})`">
                         <DataTable :value="stats.threadsCreated" :rows="7" paginator sortMode="multiple" removableSort
-                            dataKey="id" class="mt-3">
+                            dataKey="id" scrollable class="mt-3">
                             <template #empty> No se han encontrado hilos. </template>
                             <Column field="title" header="Título" sortable class="max-w-20rem">
                                 <template #body="{ data }">
@@ -195,7 +195,7 @@ async function unbanUser() {
                 <Accordion class="col-12 lg:col-6" :multiple="true">
                     <AccordionTab :header="`Comentarios enviados (${stats?.commentsSent?.length})`">
                         <DataTable :value="stats.commentsSent" :rows="5" paginator sortMode="multiple" removableSort
-                            dataKey="id" class="mt-3 max-h-30rem overflow-y-auto">
+                            dataKey="id" scrollable scrollHeight="400px" class="mt-3 max-h-30rem overflow-y-auto">
                             <template #empty> No se han encontrado hilos. </template>
                             <Column field="content" header="Comentario" sortable class="max-w-20rem">
                                 <template #body="{ data }">
