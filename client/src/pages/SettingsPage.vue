@@ -15,8 +15,8 @@ import ProfilePicture from '@/components/ProfilePicture.vue'
 import { useAuth } from '@/store/auth';
 import { changeProfileDetails, changeUserDetails, deleteUser } from '@/services/UserService';
 import { showSuccess } from '@/services/ToastService';
-import useVuelidator from '@vuelidate/core';
 import { useBase64 } from '@vueuse/core';
+import useVuelidator from '@vuelidate/core';
 import { required, minLength, maxLength, email } from '@vuelidate/validators';
 import { useConfirm } from "primevue/useconfirm";
 
@@ -172,7 +172,7 @@ async function deactivateUser() {
                             </div>
                         </template>
                         <p class="m-0 mb-4"><strong>¡Cuidado! La siguiente acción es destructiva e irreversible:</strong>
-                        </p> <Button @click="showDeletionWarning($event)" icon="pi pi-trash" label="Desactivar cuenta"
+                        </p> <Button @click="showDeletionWarning($event)" icon="pi pi-trash" label="Eliminar cuenta"
                             severity="danger" />
                     </Fieldset>
                 </section>

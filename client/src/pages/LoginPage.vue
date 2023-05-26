@@ -56,7 +56,7 @@ function handleLoginResult(loginResult: any) {
             showError('Credenciales inválidas.', 'Revisa los datos introducidos.');
             break;
         case LoginResult.UNVERIFIED:
-            showWarning('E-mail no verificado.', 'Activa la cuenta con el enlace que habíamos enviado a tu e-mail.');
+            showWarning('Cuenta no activada', 'Email no verificado o acceso restringido por un administrador.');
             break;
         case LoginResult.BANNED:
             showError('Cuenta expulsada', `Por ${loginResult.ban.reason}, hasta el ${formatDate(loginResult.ban.expiresAt)}`);

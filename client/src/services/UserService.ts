@@ -1,7 +1,13 @@
 import { http } from '@/services/HttpService';
 import { useAuth } from '@/store/auth';
+import type { User } from '@/types/Author';
 
 const auth = useAuth();
+
+export async function getUsers(){
+    const response = await http.get('users');
+    return response.data;
+}
 
 export async function checkEmailAvailability(email: string) {
     const response = await http.get(`users/emails/${email}`);
@@ -59,6 +65,13 @@ export async function changeUserDetails(username: string, email: string, passwor
         "password": password
     });
 
+    return response.data;
+}
+
+export async function changeUserDataAsAdmin(user: User){
+    const response = await http.post(`users/admin/manager`, {
+        "user": user,
+    });
     return response.data;
 }
 

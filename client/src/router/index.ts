@@ -14,6 +14,7 @@ const ProfilePage = () => import('@/pages/ProfilePage.vue');
 const ForumPage = () => import('@/pages/ForumPage.vue');
 const ThreadPage = () => import('@/pages/ThreadPage.vue');
 const ChatPage = () => import('@/pages/ChatPage.vue');
+const UserManagerPage = () => import('@/pages/UserManagerPage.vue');
 
 const DEFAULT_TITLE = 'Upcord';
 
@@ -104,6 +105,11 @@ const router = createRouter({
           document.title = `${thread.title} - ${DEFAULT_TITLE}`
         }
       }
+    },
+    {
+      path: '/user-manager',
+      name: 'user-manager',
+      component: UserManagerPage
     },
     {
       path: "/:pathMatch(.*)*",

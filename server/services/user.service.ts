@@ -15,6 +15,19 @@ const userData = {
     isActivated: true,
 }
 
+export async function getAllUsers(){
+    const users = await prisma.user.findMany({
+        where: {
+            createdAt : {
+                gt: new Date(+0) // Ignorar usuarios 'eliminados';
+            }
+        },
+        select: userData
+    });
+
+    return users;
+}
+
 export async function getUserByUsername(username: string) {
     const user = await prisma.user.findUnique({
         where: {
@@ -175,6 +188,21 @@ export async function updateUser(userId: number, username: string, email: string
     return user;
 }
 
+export async function updateUserStatus(userId: number, isActivated : boolean, isAdmin: boolean){
+
+    const user = await prisma.user.update({
+        where: {
+            id: userId
+        },
+        data: {
+            isActivated: isActivated,
+            isAdmin: isAdmin
+        }
+    });
+
+    return user;
+}
+
 export async function updateUserPassword(userId: number, password: string) {
     password = await getPasswordHash(password);
 
@@ -285,7 +313,8 @@ export async function removeUser(userId: number){
             email: randomEmail,
             avatar: null,
             biography: null,
-            isActivated: false
+            isActivated: false,
+            createdAt: new Date(+0)
         }
     });
 

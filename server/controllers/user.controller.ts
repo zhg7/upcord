@@ -1,8 +1,15 @@
 import express, { Request, Response } from 'express';
 import crypto from 'crypto';
-import { getUserByUsername, getUserStats, emailExists, usernameExists, validateUserAccount, updateProfile, updateUser, getUserBySessionToken, updateUserPassword, getUserBan, addUserBan, removeUserBan, removeUser } from "../services/user.service";
-import { isSessionTokenValid } from '../services/auth.service';
+import { getAllUsers, getUserByUsername, getUserStats, emailExists, usernameExists, validateUserAccount, updateProfile, updateUser, updateUserStatus, getUserBySessionToken, updateUserPassword, getUserBan, addUserBan, removeUserBan, removeUser } from "../services/user.service";
+import { isSessionTokenValid, hasAdminRights } from '../services/auth.service';
 import { uploadImage } from '../utils/image';
+
+export async function getUsers(req: Request, res: Response) {
+    const users = await getAllUsers();
+    return res
+        .status(200)
+        .json(users);
+}
 
 export async function checkDuplicateEmail(req: Request, res: Response) {
     const email = req.params.email;
@@ -74,6 +81,34 @@ export async function editUserDetails(req: Request, res: Response) {
             .status(403)
             .end();
     }
+}
+
+export async function editUserDataAsAdmin(req: Request, res: Response) {
+    const user = req.body.user;
+    const sessionToken = req.cookies.uc_session;
+    if (sessionToken && await isSessionTokenValid(sessionToken)) {
+
+        const admin = await getUserBySessionToken(sessionToken);
+        if (await hasAdminRights(Number(admin?.user.id))) {
+            const { username, email, password, biography, avatar, isActivated, isAdmin } = user;
+
+            await updateUser(Number(user.id), username, email, password || undefined);
+
+            const avatarUrl = await uploadImage(avatar);
+            await updateProfile(Number(user.id), avatarUrl as string, biography);
+
+            await updateUserStatus(Number(user.id), isActivated, isAdmin)
+
+            return res
+                .status(200)
+                .end();
+        }
+    }
+
+    return res
+        .status(403)
+        .end();
+
 }
 
 export async function resetUserPassword(req: Request, res: Response, userId: number) {

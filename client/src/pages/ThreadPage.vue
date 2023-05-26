@@ -186,7 +186,7 @@ async function handleThreadUpdate(result: any) {
             <InputText id="thread-title" type="text" v-model="formData.title"
                 :class="{ 'p-invalid': v_thread$.title.$errors.length }" />
             <small class="block">Entre 1 y 170 carácteres.</small>
-            <section v-if="auth.isAdmin.value" class="flex flex-column  gap-5">
+            <section v-if="auth.isAdmin.value" class="flex flex-column gap-5">
                 <Divider />
                 <div class="flex flex-row gap-3">
                     <div class="flex align-items-center gap-2">

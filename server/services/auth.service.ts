@@ -25,6 +25,17 @@ async function passwordHashMatches(plaintextPassword: string, hash: string) {
     return await bcrypt.compare(plaintextPassword, hash);
 }
 
+export async function hasAdminRights(userId: number) {
+    const user = await prisma.user.findFirst({
+        where: {
+            id: userId,
+            isAdmin: true
+        }
+    })
+
+    return user !== null;
+}
+
 export async function storeSessionToken(sessionToken: string, userId: number, expirationDate: Date) {
     await prisma.session.create({
         data: {
@@ -70,3 +81,4 @@ export async function storeVerificationToken(vericationToken: string, expiration
         }
     })
 }
+

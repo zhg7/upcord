@@ -78,6 +78,11 @@ const items = ref([
                 to: "/settings"
             },
             {
+                label: 'Usuarios',
+                icon: 'pi pi-fw pi-users',
+                to: `/user-manager`,
+            },
+            {
                 separator: true
             },
             {

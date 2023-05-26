@@ -83,13 +83,6 @@ const items = ref([
         command: createChat
     },
     {
-        label: 'Reportar',
-        icon: 'pi pi-exclamation-triangle',
-        command: () => {
-
-        }
-    },
-    {
         label: 'Expulsar',
         icon: 'pi pi-ban',
         separator: !auth.isAdmin || isUserBanned,
