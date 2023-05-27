@@ -1,5 +1,3 @@
-import type { Ref } from "vue";
-
 export type Author = {
     authorId: number;
     username?: string

@@ -12,6 +12,8 @@ import Accordion from 'primevue/accordion';
 import AccordionTab from 'primevue/accordiontab';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
+import InlineMessage from 'primevue/inlinemessage';
+import Tag from 'primevue/tag';
 import ProfilePicture from '@/components/ProfilePicture.vue';
 import { useAuth } from '@/store/auth';
 import { getUserDetails, getUserBan, addUserBan, deleteUserBan, getStats } from '@/services/UserService';
@@ -139,9 +141,12 @@ async function unbanUser() {
                 <article class="flex flex-column gap-5">
                     <Card>
                         <template #content>
+                            <InlineMessage v-if="auth.isAdmin.value && ban" class="mb-5" severity="warn">{{ `Usuario expulsado hasta el
+                                ${formatDate(ban.expiresAt ?? new Date())} por ${ban.reason}` }}</InlineMessage>
                             <article class="flex gap-3 align-items-center">
                                 <ProfilePicture :image-url="user.avatar" :username="user.username" image-size="xlarge" />
                                 <h1 class="text-2xl">{{ user.username }}</h1>
+                                <Tag v-if="user.isAdmin" icon="pi pi-shield" severity="danger" value="Admin"></Tag>
                                 <div v-if="!isOwnProfile">
                                     <Button v-if="auth.isAuthenticated.value" type="button" icon="pi pi-bars"
                                         label="Opciones" size="small" @click="toggleMenu" aria-haspopup="true"

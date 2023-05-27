@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import { Request, Response } from 'express';
 import crypto from 'crypto';
 import { getAllUsers, getUserByUsername, getUserStats, emailExists, usernameExists, validateUserAccount, updateProfile, updateUser, updateUserStatus, getUserBySessionToken, updateUserPassword, getUserBan, addUserBan, removeUserBan, removeUser } from "../services/user.service";
 import { isSessionTokenValid, hasAdminRights } from '../services/auth.service';

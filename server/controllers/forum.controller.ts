@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { getCategories, getThreads, getSubforum, addThread, getThread, getComments, getComment, addComment, updateComment, updateThread, addReply, getReplies, getForumStats, addLike, removeLike } from "../services/forum.service";
 import { getUserBySessionToken } from '../services/user.service';
 import { isSessionTokenValid } from '../services/auth.service';

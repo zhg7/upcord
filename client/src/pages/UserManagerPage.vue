@@ -10,6 +10,7 @@ import Fieldset from 'primevue/fieldset';
 import FileUpload, { type FileUploadRemoveEvent } from 'primevue/fileupload';
 import Password from 'primevue/password';
 import Dialog from 'primevue/dialog';
+import TriStateCheckbox from 'primevue/tristatecheckbox';
 import Toast from 'primevue/toast';
 import InputSwitch from 'primevue/inputswitch';
 import ProfilePicture from '@/components/ProfilePicture.vue';
@@ -18,7 +19,7 @@ import { formatDate } from '@/utils/time';
 import { FilterMatchMode } from 'primevue/api';
 import { useBase64 } from '@vueuse/core';
 import useVuelidator from '@vuelidate/core';
-import { required, minLength, maxLength, email, alphaNum} from '@vuelidate/validators';
+import { required, minLength, maxLength, email, alphaNum } from '@vuelidate/validators';
 import { changeUserDataAsAdmin } from '@/services/UserService';
 import { showSuccess } from '@/services/ToastService';
 import type { User } from '@/types/Author';
@@ -52,8 +53,9 @@ const v$ = useVuelidator(rules, userData);
 
 const filters = ref({
     username: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    email: { value: null, matchMode: FilterMatchMode.CONTAINS }
-
+    email: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    isActivated: { value: null, matchMode: FilterMatchMode.EQUALS },
+    isAdmin: { value: null, matchMode: FilterMatchMode.EQUALS }
 });
 
 function toggleEdit(user: User) {
@@ -79,7 +81,7 @@ function convertImageBase64(event: FileUploadRemoveEvent) {
 async function saveChanges() {
     const result = await v$.value.$validate();
 
-    if (result){
+    if (result) {
         await changeUserDataAsAdmin(userData.value);
         showSuccess("Usuario modificado correctamente.", "");
         editingMode.value = false;
@@ -117,7 +119,7 @@ async function saveChanges() {
                             </span>
                         </template>
                     </Column>
-                    <Column filterField="email" header="E-mail" sortable :show-filter-menu="false">
+                    <Column field="email" header="E-mail" sortable :show-filter-menu="false">
                         <template #body="{ data }">
                             {{ data.email }}
                         </template>
@@ -129,16 +131,19 @@ async function saveChanges() {
                             </span>
                         </template>
                     </Column>
-                    <Column field="isAdmin" header="Rol" sortable :show-filter-menu="false">
+                    <Column field="isAdmin" header="Rol" dataType="boolean" sortable :show-filter-menu="false">
                         <template #body="{ data }">
                             <span v-if="data.isAdmin">Administrador</span>
                             <span v-else>Usuario</span>
                         </template>
                     </Column>
-                    <Column field="isActivated" header="Activado" :show-filter-menu="false">
+                    <Column field="isActivated" header="Activado" dataType="boolean" :show-filter-menu="false">
                         <template #body="{ data }">
                             <i class="pi"
                                 :class="{ 'pi-check-circle text-green-500': data.isActivated, 'pi-times-circle text-red-400': !data.isActivated }"></i>
+                        </template>
+                        <template #filter="{ filterModel, filterCallback }">
+                            <TriStateCheckbox v-model="filterModel.value" @change="filterCallback()" />
                         </template>
                     </Column>
                     <Column field="createdAt" header="Fecha de registro" sortable :show-filter-menu="false">
@@ -153,7 +158,7 @@ async function saveChanges() {
                     </Column>
                     <Column>
                         <template #body="{ data }">
-                            <Button @click="toggleEdit(data)" label="Editar" icon="pi pi-pencil" severity="warning"
+                            <Button @click="toggleEdit(data)" label="Editar" icon="pi pi-user-edit" severity="warning"
                                 aria-label="Editar" />
                         </template>
                     </Column>
@@ -180,8 +185,7 @@ async function saveChanges() {
                                 <div class="lg:col-6">
                                     <label for="biography" class="block mb-3">Biografía</label>
                                     <Textarea id="biography" v-model="userData.biography" autoResize rows="5" cols="30"
-                                        class="w-full" 
-                                        :class="{ 'p-invalid': v$.biography.$errors.length }"/>
+                                        class="w-full" :class="{ 'p-invalid': v$.biography.$errors.length }" />
                                     <small class="block mt-2">Máximo 170 carácteres.</small>
                                 </div>
                             </section>
@@ -192,19 +196,20 @@ async function saveChanges() {
                                     <div class="mb-3 w-full">
                                         <label for="username">Nombre de usuario</label>
                                         <InputText id="username" v-model="userData.username" type="text"
-                                            class="w-full mb-2 mt-3" :class="{ 'p-invalid': v$.username.$errors.length }"/>
+                                            class="w-full mb-2 mt-3" :class="{ 'p-invalid': v$.username.$errors.length }" />
                                         <small class="block">De 4 a 20 caracteres alfanuméricos.</small>
                                     </div>
                                 </div>
                                 <div class="lg:col-4">
                                     <label for="email">Dirección de e-mail</label>
-                                    <InputText id="email" v-model="userData.email" type="text" class="w-full mb-3 mt-3" 
-                                    :class="{ 'p-invalid': v$.email.$errors.length }"/>
+                                    <InputText id="email" v-model="userData.email" type="text" class="w-full mb-3 mt-3"
+                                        :class="{ 'p-invalid': v$.email.$errors.length }" />
                                 </div>
                                 <div class="lg:col-4">
                                     <label for="password">Contraseña</label>
                                     <Password id="pw" v-model="userData.password" type="password" class="w-full mb-2 mt-3"
-                                        inputId="password" inputClass="w-full" :feedback=false toggleMask :class="{ 'p-invalid': v$.password.$errors.length }"/>
+                                        inputId="password" inputClass="w-full" :feedback=false toggleMask
+                                        :class="{ 'p-invalid': v$.password.$errors.length }" />
                                     <small class="block">Mínimo 8 caracteres.</small>
                                 </div>
                             </section>
