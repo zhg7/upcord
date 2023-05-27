@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, computed } from 'vue';
+import { onMounted, ref, computed, createBlock } from 'vue';
 import { useRoute, onBeforeRouteUpdate } from 'vue-router';
 import Card from 'primevue/card';
 import Menu from 'primevue/menu';
@@ -17,7 +17,7 @@ import Tag from 'primevue/tag';
 import ProfilePicture from '@/components/ProfilePicture.vue';
 import { useAuth } from '@/store/auth';
 import { getUserDetails, getUserBan, addUserBan, deleteUserBan, getStats } from '@/services/UserService';
-import { addChat } from '@/services/ChatService';
+import { addChat, checkBlock, addBlock, deleteBlock } from '@/services/ChatService';
 import { getTimeAgo, formatDate } from '@/utils/time';
 import useVuelidator from '@vuelidate/core';
 import { required, minValue, minLength } from '@vuelidate/validators';
@@ -29,6 +29,7 @@ const auth = useAuth();
 const user: any = ref({});
 const ban: any = ref({});
 const stats: any = ref({});
+const blocked = ref(false);
 
 const banningMode = ref(false);
 
@@ -60,6 +61,11 @@ async function updateView(username: string) {
     }
 
     stats.value = await getStats(username);
+
+    // Solo si está logueado.
+    if (auth.user.value) {
+        blocked.value = await checkBlock(username);
+    }
 }
 
 // Ocultar envío de mensaje y mostrar ajustes en perfil propio.
@@ -76,6 +82,10 @@ const isUserBanned = computed(() => {
     return ban.value !== null;
 })
 
+const isUserBlocked = computed(() => {
+    return blocked.value;
+})
+
 const menu = ref();
 
 const items = ref([
@@ -84,7 +94,20 @@ const items = ref([
         label: 'Enviar mensaje',
         icon: 'pi pi-envelope',
         to: '/chats',
+        separator: isUserBlocked,
         command: createChat
+    },
+    {
+        label: "Bloquear",
+        icon: 'pi pi-lock',
+        separator: isUserBlocked,
+        command: blockUser
+    },
+    {
+        label: "Desbloquear",
+        icon: 'pi pi-unlock',
+        visible: isUserBlocked,
+        command: unblockUser
     },
     {
         label: 'Expulsar',
@@ -111,6 +134,18 @@ function toggleMenu(event: MouseEvent) {
 
 function createChat() {
     addChat(user.value.id)
+}
+
+async function blockUser() {
+    await addBlock(user.value.id);
+    showSuccess("Usuario bloqueado", `${user.value.username} ya no podrá enviarte mensajes.`);
+    await updateView(route.params.username as string);
+}
+
+async function unblockUser() {
+    await deleteBlock(user.value.id);
+    showSuccess("Usuario desbloqueado", `${user.value.username} ya puede enviarte mensajes.`)
+    await updateView(route.params.username as string);
 }
 
 async function banUser() {
@@ -141,8 +176,13 @@ async function unbanUser() {
                 <article class="flex flex-column gap-5">
                     <Card>
                         <template #content>
-                            <InlineMessage v-if="auth.isAdmin.value && ban" class="mb-5" severity="warn">{{ `Usuario expulsado hasta el
-                                ${formatDate(ban.expiresAt ?? new Date())} por ${ban.reason}` }}</InlineMessage>
+                            <section class="flex flex-column max-w-max">
+                                <InlineMessage v-if="auth.isAdmin.value && ban?.expiresAt" class="mb-3" severity="error">{{
+                                    `Usuario expulsado hasta el
+                                    ${formatDate(ban.expiresAt ?? new Date())} por ${ban.reason}` }}</InlineMessage>
+                                <InlineMessage v-if="isUserBlocked" class="mb-5" severity="warn">{{ `Has bloqueado las
+                                    comunicaciones de chat con este usuario` }}</InlineMessage>
+                            </section>
                             <article class="flex gap-3 align-items-center">
                                 <ProfilePicture :image-url="user.avatar" :username="user.username" image-size="xlarge" />
                                 <h1 class="text-2xl">{{ user.username }}</h1>
@@ -201,7 +241,7 @@ async function unbanUser() {
                     <AccordionTab :header="`Comentarios enviados (${stats?.commentsSent?.length})`">
                         <DataTable :value="stats.commentsSent" :rows="5" paginator sortMode="multiple" removableSort
                             dataKey="id" scrollable scrollHeight="400px" class="mt-3 max-h-30rem overflow-y-auto">
-                            <template #empty> No se han encontrado hilos. </template>
+                            <template #empty> No se han encontrado comentarios. </template>
                             <Column field="content" header="Comentario" sortable class="max-w-20rem">
                                 <template #body="{ data }">
                                     <p class="content">{{ data.content }}</p>

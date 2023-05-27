@@ -119,3 +119,38 @@ export async function getMessages(chatId: number) {
 
     return messages;
 }
+
+export async function isBlocked(userId: number, targetUserId: number) {
+    const block = await prisma.block.findFirst({
+        where: {
+            blockedId: userId,
+            blockerId: targetUserId
+        }
+    })
+
+    return block !== null;
+}
+
+export async function addBlock(userId: number, blockedId: number) {
+
+    const block = await prisma.block.create({
+        data: {
+            blockerId: userId,
+            blockedId: blockedId
+        }
+    })
+
+    return block;
+}
+
+export async function removeBlock(userId: number, blockedId: number) {
+
+    const block = await prisma.block.deleteMany({
+        where: {
+            blockerId: userId,
+            blockedId: blockedId
+        }
+    })
+
+    return block;
+}
