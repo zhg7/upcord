@@ -5,6 +5,7 @@ import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import Divider from 'primevue/divider';
 import Badge from 'primevue/badge';
+import InlineMessage from 'primevue/inlinemessage';
 import { io } from "socket.io-client";
 import ProfilePicture from '@/components/ProfilePicture.vue';
 import ChatCard from '@/components/ChatCard.vue';
@@ -13,6 +14,7 @@ import { useAuth } from '@/store/auth';
 import type { Message } from '@/types/Message';
 import useVuelidator from '@vuelidate/core';
 import { required, minLength } from '@vuelidate/validators';
+import { checkBlock } from '@/services/ChatService';
 
 const auth = useAuth();
 
@@ -20,6 +22,7 @@ const socket = io(import.meta.env.VITE_SERVER_BASE_URL);
 
 const chat = ref(0);
 const chats = ref();
+const blocked = ref(false);
 
 const message = ref({
     content: "",
@@ -117,8 +120,9 @@ async function joinChat(chatId: number, username: string, avatar: string) {
     receiverData.value.avatar = avatar;
     receiverData.value.username = username;
 
-    const chatMessages = await getChatMessages(chat.value);
-    messages.value = chatMessages;
+    blocked.value = await isBlocked(username);
+
+    messages.value = await getChatMessages(chat.value);
 
     socket.emit('join', chat.value);
 
@@ -129,6 +133,11 @@ async function joinChat(chatId: number, username: string, avatar: string) {
 function scrollToBottom() {
     const chatHeight = messagesDiv.value!.scrollHeight;
     messagesDiv.value!.scrollTop = chatHeight;
+}
+
+async function isBlocked(username: string) {
+    const blockData = await checkBlock(username)
+    return blockData.blockedByMyself || blockData.blockedBy;
 }
 
 
@@ -156,8 +165,10 @@ function scrollToBottom() {
                             <ProfilePicture :imageUrl="receiverData.avatar" :username="receiverData.username"
                                 image-size="large" />
                             <span>{{ receiverData.username }}</span>
-                            <Badge v-if="receiverData.isOnline" severity="success"></Badge>
-                            <Badge v-else severity="danger"></Badge>
+                            <div v-if="!blocked">
+                                <Badge v-if="receiverData.isOnline" severity="success"></Badge>
+                                <Badge v-else severity="danger"></Badge>
+                            </div>
                         </section>
                         <Divider />
                         <section>
@@ -165,19 +176,27 @@ function scrollToBottom() {
                                 <article v-for="message in messages" :key="message.createdAt.toString()">
                                     <div v-if="message.senderId === auth.user.value.id"
                                         class="flex w-full justify-content-end">
-                                        <p class="bg-primary-700 border-round p-3 mr-3 message text-white">{{ message.message }}</p>
+                                        <p class="bg-primary-700 border-round p-3 mr-3 message text-white">{{
+                                            message.message }}</p>
                                     </div>
                                     <div v-else class="flex">
-                                        <p class="bg-bluegray-800 border-round p-3 mr-3 message text-white">{{ message.message }}</p>
+                                        <p class="bg-bluegray-800 border-round p-3 mr-3 message text-white">{{
+                                            message.message }}</p>
                                     </div>
                                 </article>
                             </div>
                         </section>
                         <Divider />
-                        <section class="flex gap-3">
+                        <section v-if="!blocked" class="flex gap-3">
                             <InputText type="text" v-model="message.content" class="w-full" @keyup.enter="sendMessage()"
                                 :class="{ 'p-invalid': v$.content.$errors.length }" />
                             <Button label="Enviar" icon="pi pi-send" @click="sendMessage()" class="min-w-max" />
+                        </section>
+                        <section v-else>
+                            <p class="text-center text-lg text-color-secondary">
+                                <i class="pi pi-minus-circle mr-2"></i>No tienes permiso para enviar mensajes. Has sido
+                                bloqueado por este usuario y/o lo has bloqueado.
+                            </p>
                         </section>
                     </div>
                 </template>

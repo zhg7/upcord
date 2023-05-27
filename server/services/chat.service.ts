@@ -120,15 +120,27 @@ export async function getMessages(chatId: number) {
     return messages;
 }
 
+
+//Comprobar tanto si el bloqueo es emitido por el propio usuario o si es afectado por éste.
 export async function isBlocked(userId: number, targetUserId: number) {
-    const block = await prisma.block.findFirst({
+    const blocked = await prisma.block.findFirst({
         where: {
             blockedId: userId,
             blockerId: targetUserId
         }
     })
 
-    return block !== null;
+    const blockedBy = await prisma.block.findFirst({
+        where: {
+            blockedId: targetUserId,
+            blockerId: userId
+        }
+    })
+
+    return {
+        blockedByMyself: blocked !== null,
+        blockedBy: blockedBy !== null
+    }
 }
 
 export async function addBlock(userId: number, blockedId: number) {

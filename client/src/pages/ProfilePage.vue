@@ -64,7 +64,8 @@ async function updateView(username: string) {
 
     // Solo si está logueado.
     if (auth.user.value) {
-        blocked.value = await checkBlock(username);
+        const blockData = await checkBlock(username)
+        blocked.value = blockData.blockedByMyself;
     }
 }
 
@@ -161,7 +162,7 @@ async function banUser() {
 
 async function unbanUser() {
     await deleteUserBan(ban.value.id);
-    showSuccess("Expulsión retirada.", `${user.value.username} ya puede volver a iniciar sesión.`);
+    showSuccess("Expulsión retirada", `${user.value.username} ya puede volver a iniciar sesión.`);
     await updateView(route.params.username as string)
 }
 
