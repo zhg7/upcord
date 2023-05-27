@@ -1,27 +1,28 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { useRoute } from 'vue-router';
 import Card from 'primevue/card';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import Divider from 'primevue/divider';
 import Badge from 'primevue/badge';
-import InlineMessage from 'primevue/inlinemessage';
 import { io } from "socket.io-client";
 import ProfilePicture from '@/components/ProfilePicture.vue';
 import ChatCard from '@/components/ChatCard.vue';
 import { getUserChats, getChatMessages } from '@/services/ChatService';
 import { useAuth } from '@/store/auth';
-import type { Message } from '@/types/Message';
+import type { Chat, Message } from '@/types/Chat';
 import useVuelidator from '@vuelidate/core';
 import { required, minLength } from '@vuelidate/validators';
 import { checkBlock } from '@/services/ChatService';
 
+const route = useRoute();
 const auth = useAuth();
 
 const socket = io(import.meta.env.VITE_SERVER_BASE_URL);
 
 const chat = ref(0);
-const chats = ref();
+const chats = ref<Chat[]>([]);
 const blocked = ref(false);
 
 const message = ref({
@@ -45,6 +46,14 @@ const messagesDiv = ref<HTMLDivElement | null>(null);
 
 onMounted(async () => {
     chats.value = await getUserChats();
+
+    if (route.query.id) {
+        const chat = chats.value.find((chat) => chat.id === Number(route.query.id));
+        if (chat) {
+            joinChat(Number(route.query.id), getReceiverUsername(chat), getReceiverAvatar(chat))
+        }
+    }
+
 })
 
 onBeforeUnmount(() => {
@@ -96,19 +105,19 @@ socket.on('offline', () => {
 })
 
 
-function getReceiverUsername(chat: any) {
+function getReceiverUsername(chat: Chat) {
     if (chat.userOne.username === auth.user.value.username) {
-        return chat.userTwo.username;
+        return chat.userTwo.username as string;
     } else {
-        return chat.userOne.username;
+        return chat.userOne.username as string;
     }
 }
 
-function getReceiverAvatar(chat: any) {
+function getReceiverAvatar(chat: Chat) {
     if (chat.userOne.avatar === auth.user.value.avatar) {
-        return chat.userTwo.avatar;
+        return chat.userTwo.avatar as string;
     } else {
-        return chat.userOne.avatar;
+        return chat.userOne.avatar as string;
     }
 }
 
@@ -146,7 +155,7 @@ async function isBlocked(username: string) {
 <template>
     <div class="card grid">
         <aside class="col-12 sm:col-12 md:col-5 lg:col-4">
-            <Card style="height: 40rem">
+            <Card style="height: 40rem" class="overflow-y-auto">
                 <template #title> Chats </template>
                 <template #content>
                     <section v-for="chat in chats" :key="chat.id">
@@ -193,11 +202,17 @@ async function isBlocked(username: string) {
                             <Button label="Enviar" icon="pi pi-send" @click="sendMessage()" class="min-w-max" />
                         </section>
                         <section v-else>
-                            <p class="text-center text-lg text-color-secondary">
+                            <p class="text-center text-base lg:text-lg text-color-secondary">
                                 <i class="pi pi-minus-circle mr-2"></i>No tienes permiso para enviar mensajes. Has sido
                                 bloqueado por este usuario y/o lo has bloqueado.
                             </p>
                         </section>
+                    </div>
+                    <div v-else class="flex justify-content-center align-items-center">
+                        <p class="text-lg lg:text-2xl text-color-secondary"> <i
+                                class="pi pi-info-circle mr-2 text-lg"></i>Selecciona un chat para ver la
+                            conversación.
+                        </p>
                     </div>
                 </template>
             </Card>

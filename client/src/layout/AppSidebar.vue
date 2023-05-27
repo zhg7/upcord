@@ -16,7 +16,7 @@ onMounted(async () => {
 <template>
     <div class="card grid">
         <article class="col-12 md:col-6 lg:col-3">
-            <div class="surface-card shadow-2 p-3 border-round">
+            <div class="p-3 border-round border-2 surface-border">
                 <div class="flex justify-content-between mb-3">
                     <section>
                         <span class="block text-500 font-medium mb-3">Registrados</span>
@@ -29,7 +29,7 @@ onMounted(async () => {
             </div>
         </article>
         <article class="col-12 md:col-6 lg:col-3">
-            <div class="surface-card shadow-2 p-3 border-round">
+            <div class="p-3 border-round border-2 surface-border">
                 <div class="flex justify-content-between mb-3">
                     <section>
                         <span class="block text-500 font-medium mb-3">Hilos</span>
@@ -42,7 +42,7 @@ onMounted(async () => {
             </div>
         </article>
         <article class="col-12 md:col-6 lg:col-3">
-            <div class="surface-card shadow-2 p-3 border-round">
+            <div class="p-3 border-round border-2 surface-border">
                 <div class="flex justify-content-between mb-3">
                     <section>
                         <span class="block text-500 font-medium mb-3">Comentarios</span>
@@ -55,7 +55,7 @@ onMounted(async () => {
             </div>
         </article>
         <article class="col-12 md:col-6 lg:col-3">
-            <div class="surface-card shadow-2 p-3 border-round">
+            <div class="p-3 border-round border-2 surface-border">
                 <div class="flex justify-content-between mb-3">
                     <section>
                         <span class="block text-500 font-medium mb-3">Mensajes</span>
@@ -68,7 +68,7 @@ onMounted(async () => {
             </div>
         </article>
         <article class="col-12">
-            <div class="surface-card shadow-2 p-3 border-round">
+            <div class="p-3 border-round border-2 surface-border">
                 <div class="flex justify-content-between mb-3">
                     <section>
                         <span class="block text-500 font-medium mb-3">Últimos hilos</span>

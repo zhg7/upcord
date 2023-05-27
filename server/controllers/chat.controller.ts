@@ -6,10 +6,11 @@ import { getUserBySessionToken, getUserByUsername } from '../services/user.servi
 export async function createChat(req: Request, res: Response) {
     const userOneId = Number(req.body.userOneId);
     const userTwoId = Number(req.body.userTwoId);
-    const chat = await getUsersChat(userOneId, userTwoId)
+    let chat;
+    chat = await getUsersChat(userOneId, userTwoId)
 
     if (!chat) {
-        await addChat(userOneId, userTwoId);
+        chat = await addChat(userOneId, userTwoId);
     }
 
     return res

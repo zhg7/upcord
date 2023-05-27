@@ -165,7 +165,7 @@ async function handleThreadUpdate(result: any) {
         <section v-for="comment in comments" :key="comment.id">
             <CommentCard :commentId="comment.id" />
         </section>
-        <Card v-if="auth.isAuthenticated.value && !thread?.isLocked">
+        <Card v-if="auth.isAuthenticated.value && !thread?.isLocked" class="border-round border-1 surface-border">
             <template #content>
                 <section>
                     <Textarea v-model="newComment.comment" autoResize rows="5" cols="30" class="w-full"

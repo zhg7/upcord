@@ -15,7 +15,7 @@ defineProps({
 
 <template>
     <router-link :to="`/forum/${id}`"
-        class="card no-underline bg-primary-700 text-white border-round col-12 p-3 m-2 flex align-items-center justify-content-center gap-2">
+        class="card no-underline bg-primary-700 hover:bg-primary-600 text-white border-round col-12 p-3 m-2 flex align-items-center justify-content-center gap-2">
         <article class="flex flex-column align-items-center gap-1">
             <div class="flex align-items-center gap-2">
                 <Avatar v-if="logo" :image=logo  />

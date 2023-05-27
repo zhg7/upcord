@@ -4,12 +4,12 @@ export type Author = {
 }
 
 export type User = {
-    id: number,
-    username: string,
-    password: string,
-    email: string,
-    isAdmin: boolean,
-    avatar: string
-    biography: string,
-    isActivated: boolean
+    id?: number,
+    username?: string,
+    password?: string,
+    email?: string,
+    isAdmin?: boolean,
+    avatar?: string
+    biography?: string,
+    isActivated?: boolean
 }

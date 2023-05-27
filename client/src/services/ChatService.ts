@@ -14,10 +14,12 @@ export async function getChatMessages(chatId: number) {
 }
 
 export async function addChat(userTwoId: number) {
-    await http.post('chats', {
+    const response = await http.post('chats', {
         userOneId: auth.user.value.id,
         userTwoId: userTwoId
-    })
+    });
+
+    return response.data;
 }
 
 export async function checkBlock(username: string) {

@@ -15,7 +15,7 @@ onMounted(async () => {
 </script>
 
 <template>
-    <Card>
+    <Card class="surface-card">
         <template #title>
             <h3 class="text-start m-0">Foros</h3>
         </template>

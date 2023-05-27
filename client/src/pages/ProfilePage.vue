@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { onMounted, ref, computed, createBlock } from 'vue';
-import { useRoute, onBeforeRouteUpdate } from 'vue-router';
+import { onMounted, ref, computed } from 'vue';
+import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router';
 import Card from 'primevue/card';
 import Menu from 'primevue/menu';
 import Button from 'primevue/button';
@@ -24,6 +24,7 @@ import { required, minValue, minLength } from '@vuelidate/validators';
 import { showSuccess } from '@/services/ToastService';
 
 const route = useRoute();
+const router = useRouter();
 const auth = useAuth();
 
 const user: any = ref({});
@@ -94,7 +95,6 @@ const items = ref([
     {
         label: 'Enviar mensaje',
         icon: 'pi pi-envelope',
-        to: '/chats',
         separator: isUserBlocked,
         command: createChat
     },
@@ -133,8 +133,9 @@ function toggleMenu(event: MouseEvent) {
     menu.value.toggle(event);
 };
 
-function createChat() {
-    addChat(user.value.id)
+async function createChat() {
+    const chatData = await addChat(user.value.id);
+    router.push(`/chats?id=${chatData.id}`);
 }
 
 async function blockUser() {
@@ -175,7 +176,7 @@ async function unbanUser() {
             <section class="flex flex-column gap-2 mb-4">
                 <Toast position="bottom-center" />
                 <article class="flex flex-column gap-5">
-                    <Card>
+                    <Card class="border-round border-2 surface-border">
                         <template #content>
                             <section class="flex flex-column max-w-max">
                                 <InlineMessage v-if="auth.isAdmin.value && ban?.expiresAt" class="mb-3" severity="error">{{

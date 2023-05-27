@@ -106,7 +106,7 @@ const commentLiked = computed(() => {
 </script>
 
 <template>
-    <Card>
+    <Card class="border-round border-1 surface-border">
         <template #content>
             <article class="flex flex-column">
                 <section class="flex flex-row align-items-center justify-content-between gap-2">

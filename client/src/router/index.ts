@@ -55,6 +55,7 @@ const router = createRouter({
     {
       path: '/chats',
       name: 'chats',
+      props: true,
       component: ChatPage,
       meta: {
         title: `Chats - ${DEFAULT_TITLE}`
