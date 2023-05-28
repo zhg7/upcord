@@ -13,6 +13,16 @@ export async function getSubforum(subforumId: number) {
     return response.data;
 }
 
+export async function changeSubforum(subforumId: number, title: string, description: string) {
+    const response = await http.post(`forums`, {
+        "subforumId": subforumId,
+        "title": title,
+        "description": description
+    });
+
+    return response.data;
+}
+
 export async function getThreads(subforumId: number) {
     const response = await http.get(`forums/threads/${subforumId}`);
     return response.data;

@@ -61,14 +61,14 @@ const filters = ref({
 function toggleEdit(user: User) {
     editingMode.value = true;
 
-    userData.value.id = user.id;
-    userData.value.avatar = user.avatar;
-    userData.value.biography = user.biography;
-    userData.value.username = user.username;
-    userData.value.email = user.email;
-    userData.value.password = user.password;
-    userData.value.isActivated = user.isActivated;
-    userData.value.isAdmin = user.isAdmin;
+    userData.value.id = user.id as number;
+    userData.value.avatar = user.avatar as string;
+    userData.value.biography = user.biography as string;
+    userData.value.username = user.username as string;
+    userData.value.email = user.email as string;
+    userData.value.password = user.password as string;
+    userData.value.isActivated = user.isActivated as boolean;
+    userData.value.isAdmin = user.isAdmin as boolean;
 
 }
 

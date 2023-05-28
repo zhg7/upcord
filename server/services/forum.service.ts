@@ -79,6 +79,20 @@ export async function getSubforum(subforumId: number) {
     return subforum;
 }
 
+export async function updateSubforum(subforumId: number, title: string, description: string) {
+    const subforum = await prisma.subforum.update({
+        where: {
+            id: subforumId,
+        },
+        data: {
+            title: title,
+            description: description
+        }
+    });
+
+    return subforum;
+}
+
 export async function addThread(title: string, content: string, subforumId: number, authorId: number) {
     const thread = await prisma.thread.create({
         data: {
