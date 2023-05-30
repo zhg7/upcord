@@ -1,5 +1,6 @@
 import { http } from '@/services/HttpService';
 import { useAuth } from '@/store/auth';
+import { getUserDetails } from './UserService';
 
 const auth = useAuth();
 
@@ -23,8 +24,15 @@ export async function addChat(userTwoId: number) {
 }
 
 export async function checkBlock(username: string) {
-    const response = await http.get(`chats/blocks/${username}`);
-    return response.data.blocked;
+    // Tratar usuarios eliminados.
+    try {
+        await getUserDetails(username);
+        const response = await http.get(`chats/blocks/${username}`);
+        return response.data.blocked;
+    } catch {
+        return false;
+    }
+
 }
 
 export async function addBlock(userId: number) {
