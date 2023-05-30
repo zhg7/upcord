@@ -16,6 +16,7 @@ const ThreadPage = () => import('@/pages/ThreadPage.vue');
 const ChatPage = () => import('@/pages/ChatPage.vue');
 const UserManagerPage = () => import('@/pages/UserManagerPage.vue');
 const PrivacyPage = () => import('@/pages/PrivacyPage.vue');
+const TermsPage = () => import('@/pages/TermsPage.vue');
 
 const DEFAULT_TITLE = 'Upcord';
 
@@ -125,6 +126,14 @@ const router = createRouter({
       component: PrivacyPage,
       meta: {
         title: `Política de privacidad - ${DEFAULT_TITLE}`
+      },
+    },
+    {
+      path: '/terms',
+      name: 'terms',
+      component: TermsPage,
+      meta: {
+        title: `Términos de uso - ${DEFAULT_TITLE}`
       },
     },
     {

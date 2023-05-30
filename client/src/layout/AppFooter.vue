@@ -11,7 +11,7 @@ import Card from 'primevue/card';
                 <ul class="list-none flex justify-content-center">
                     <li class="mr-5"><router-link class="text-primary no-underline hover:underline"
                             to="/">Inicio</router-link></li>
-                    <li class="mr-5"><router-link class="text-primary no-underline hover:underline" to="/">Términos de
+                    <li class="mr-5"><router-link class="text-primary no-underline hover:underline" to="/terms">Términos de
                             uso</router-link></li>
                     <li class="mr-5"><router-link class="text-primary no-underline hover:underline" to="/privacy">Política de
                             privacidad</router-link></li>
