@@ -9,7 +9,7 @@ import { ref } from 'vue';
 import useVuelidator from '@vuelidate/core';
 import { required, sameAs, minLength, maxLength, email, alphaNum, helpers } from '@vuelidate/validators';
 import { sendSignupRequest } from '@/services/AuthService';
-import { checkEmailAvailability, checkUsernameAvailability} from '@/services/UserService';
+import { checkEmailAvailability, checkUsernameAvailability } from '@/services/UserService';
 
 const formData = ref({
     email: "",
@@ -84,8 +84,11 @@ async function submitForm() {
                     <div class="flex align-items-center">
                         <Checkbox inputId="acceptTerms" v-model="formData.agreeTerms"
                             :class="{ 'p-invalid': v$.agreeTerms.$errors.length }" :binary="true" />
-                        <label for="acceptTerms" class="ml-2"><small>Acepto los términos de uso y la política de
-                                privacidad.</small></label>
+                        <label for="acceptTerms" class="ml-2"><small>Acepto los <a href="/terms" target="_blank"
+                                    class="text-primary no-underline hover:underline">términos de
+                                    uso</a> y la <a href="/privacy" target="_blank"
+                                    class="text-primary no-underline hover:underline">política de
+                                    privacidad</a>.</small></label>
                     </div>
                     <small v-for="error in v$.agreeTerms.$errors" :key="error.$uid" class="p-error" id="text-error">
                         {{ error.$message }}

@@ -27,7 +27,7 @@ import Fieldset from 'primevue/fieldset';
                     <li class="mb-2">Respeta a todos los usuarios. No hagas ataques personales.</li>
                     <li class="mb-2">No se admitirán mensajes de odio.</li>
                     <li class="mb-2">Respeta la temática de cada subforo.</li>
-                    <li class="mb-2">Evita crear hilos duplicados. Usa el buscador antes de crear un nuevo hilo.</li>
+                    <li class="mb-2">Evita crear hilos duplicados. Usa el buscador antes de crear uno nuevo.</li>
                     <li class="mb-2">Abstente de reflotar hilos antiguos sin un buen motivo.</li>
                 </ul>
                 <p>El incumplimiento de las normas acarreará la expulsión de la cuenta infractora, ya sea temporal o
