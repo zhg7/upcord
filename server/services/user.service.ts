@@ -29,9 +29,12 @@ export async function getAllUsers() {
 }
 
 export async function getUserByUsername(username: string) {
-    const user = await prisma.user.findUnique({
+    const user = await prisma.user.findFirst({
         where: {
-            username: username
+            username: username,
+            createdAt: {
+                gt: new Date(+0) // Ignorar usuarios 'eliminados';
+            }
         },
         select: userData,
     })
@@ -306,8 +309,8 @@ export async function getUserStats(username: string) {
 
 export async function removeUser(userId: number) {
 
-    const randomUsername = `deleted-${crypto.randomBytes(6).toString('hex')}`;
-    const randomEmail = `deleted-${crypto.randomBytes(12).toString('hex')}@deleted.upcord`;
+    const randomUsername = `deleted${crypto.randomBytes(6).toString('hex')}`;
+    const randomEmail = `deleted${crypto.randomBytes(12).toString('hex')}@deleted.upcord`;
 
     // Anonimizar usuario
     await prisma.user.update({

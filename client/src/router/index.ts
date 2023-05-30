@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { useAuth } from '@/store/auth';
-import { checkUsernameAvailability } from '@/services/UserService';
+import { getUserDetails } from '@/services/UserService';
 import { getSubforum, getThread } from '@/services/ForumService';
 
 const auth = useAuth();
@@ -70,11 +70,13 @@ const router = createRouter({
       beforeEnter: async (to, from) => {
         // Comprobar que existe el nombre de usuario del perfil
         const username = to.params.username as string;
-        if (!await checkUsernameAvailability(username)) {
-          return { name: 'notfound', params: { pathMatch: to.path.split('/').slice(1) }, }; // Evitar modificación URL
-        } else {
+        try {
+          await getUserDetails(username);
           document.title = `Perfil de ${username} - ${DEFAULT_TITLE}`
+        } catch {
+          return { name: 'notfound', params: { pathMatch: to.path.split('/').slice(1) }, }; // Evitar modificación URL
         }
+
       }
     },
     {
@@ -142,8 +144,8 @@ function checkAuthentication() {
   }
 }
 
-function checkAdminRights(){
-  if(!auth.isAdmin.value){
+function checkAdminRights() {
+  if (!auth.isAdmin.value) {
     return { name: 'home' }
   }
 }

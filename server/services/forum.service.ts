@@ -255,6 +255,11 @@ export async function getForumStats() {
     const users = await prisma.user.aggregate({
         _count: {
             id: true
+        },
+        where: {
+            createdAt: {
+                gt: new Date(+0) // Ignorar usuarios 'eliminados';
+            }
         }
     });
 
