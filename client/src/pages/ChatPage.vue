@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import { useRoute } from 'vue-router';
 import Card from 'primevue/card';
 import InputText from 'primevue/inputtext';
@@ -80,7 +80,7 @@ async function sendMessage() {
 
         v$.value.$reset();
 
-        setTimeout(scrollToBottom);
+        nextTick(scrollToBottom);
     }
 }
 
@@ -93,7 +93,7 @@ socket.on('message', (data) => {
         createdAt: data.createdAt,
     });
 
-    setTimeout(scrollToBottom);
+    nextTick(scrollToBottom);
 });
 
 socket.on('online', () => {
@@ -135,7 +135,7 @@ async function joinChat(chatId: number, username: string, avatar: string) {
 
     socket.emit('join', chat.value);
 
-    setTimeout(scrollToBottom);
+    nextTick(scrollToBottom);
 }
 
 //Flujo del chat: mantener siempre el scroll abajo
