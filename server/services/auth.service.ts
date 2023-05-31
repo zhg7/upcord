@@ -82,3 +82,19 @@ export async function storeVerificationToken(vericationToken: string, expiration
     })
 }
 
+export async function removeSessionTokens(userId: number) {
+    await prisma.session.deleteMany({
+        where: {
+            userId: userId
+        }
+    });
+}
+
+export async function removeVerificationTokens(userId: number) {
+    await prisma.verification.deleteMany({
+        where: {
+            userId: userId
+        }
+    })
+}
+

@@ -2,6 +2,7 @@ import prisma from '../index';
 import crypto from 'crypto';
 import { SignUpUser } from '../types/signup.type';
 import { getPasswordHash } from './auth.service';
+import { removeSessionTokens, removeVerificationTokens } from './auth.service';
 
 const userData = {
     id: true,
@@ -231,6 +232,8 @@ export async function addUserBan(targetUserId: number, authorUserId: number, rea
         }
     });
 
+    await removeSessionTokens(targetUserId);
+
     return ban;
 }
 
@@ -360,10 +363,6 @@ export async function removeUser(userId: number) {
         }
     });
 
-    // Eliminar tokens de verificación
-    await prisma.verification.deleteMany({
-        where: {
-            userId: userId
-        }
-    });
+    await removeSessionTokens(userId);
+    await removeVerificationTokens(userId);
 }
