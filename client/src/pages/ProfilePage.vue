@@ -14,6 +14,7 @@ import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import InlineMessage from 'primevue/inlinemessage';
 import Tag from 'primevue/tag';
+import Skeleton from 'primevue/skeleton';
 import ProfilePicture from '@/components/ProfilePicture.vue';
 import { useAuth } from '@/store/auth';
 import { getUserDetails, getUserBan, addUserBan, deleteUserBan, getStats } from '@/services/UserService';
@@ -27,6 +28,7 @@ const route = useRoute();
 const router = useRouter();
 const auth = useAuth();
 
+const isLoading = ref(true);
 const user: any = ref({});
 const ban: any = ref({});
 const stats: any = ref({});
@@ -48,10 +50,12 @@ const v_ban$ = useVuelidator(banRules, banFormData);
 
 onMounted(async () => {
     await updateView(route.params.username as string);
+    isLoading.value = false;
 })
 
 onBeforeRouteUpdate(async (to, from) => {
     await updateView(to.params.username as string);
+    isLoading.value = false;
 })
 
 async function updateView(username: string) {
@@ -186,8 +190,10 @@ async function unbanUser() {
                                     comunicaciones de chat con este usuario` }}</InlineMessage>
                             </section>
                             <article class="flex gap-3 align-items-center">
-                                <ProfilePicture :image-url="user.avatar" :username="user.username" image-size="xlarge" />
-                                <h1 class="text-2xl">{{ user.username }}</h1>
+                                <Skeleton v-if="isLoading" shape="circle" size="4rem" class="mr-2"></Skeleton>
+                                <ProfilePicture v-else :image-url="user.avatar" :username="user.username" image-size="xlarge" />
+                                <Skeleton v-if="isLoading" height="2rem" class="mb-2 max-w-15rem"></Skeleton>
+                                <h1 v-else class="text-2xl">{{ user.username }}</h1>
                                 <Tag v-if="user.isAdmin" icon="pi pi-shield" severity="danger" value="Admin"></Tag>
                                 <div v-if="!isOwnProfile">
                                     <Button v-if="auth.isAuthenticated.value" type="button" icon="pi pi-bars"
@@ -196,12 +202,22 @@ async function unbanUser() {
                                     <Menu ref="menu" id="overlay_menu" :model="items" :popup="true" />
                                 </div>
                             </article>
-                            <p class="m-0 content mt-4">
+                            <div v-if="isLoading" class="mt-4">
+                                <Skeleton class="mb-2"></Skeleton>
+                                <Skeleton class="mb-2"></Skeleton>
+                                <Skeleton class="mb-2"></Skeleton>
+                                <Skeleton class="mb-2"></Skeleton>
+                            </div>
+                            <p v-else class="m-0 content mt-4">
                                 {{ user.biography }}
                             </p>
                         </template>
                     </Card>
-                    <section class="ml-2 flex flex-column gap-3 max-w-max">
+                    <div v-if="isLoading">
+                        <Skeleton width="15rem" class="mb-2"></Skeleton>
+                        <Skeleton width="15rem" class="mb-2"></Skeleton>
+                    </div>
+                    <section v-else class="ml-2 flex flex-column gap-3 max-w-max">
                         <span v-tooltip.top="formatDate(user.createdAt ?? new Date())"><i class="pi pi-calendar mr-1"></i>Se
                             unió {{ getTimeAgo(user.createdAt ?? new Date()) }}</span>
                         <span v-if="stats.likesReceived"><i class="pi pi-heart mr-1"></i>{{ stats.likesReceived
