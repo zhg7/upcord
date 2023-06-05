@@ -25,11 +25,11 @@ onMounted(async () => {
         <template #content>
             <div class="grid gap-3">
                 <section class="grid col-12 lg:col-5">
-                    <div v-if="isLoading">
-                        <Skeleton class="mt-2 mb-4" width="37rem" height="3.5rem"></Skeleton>
-                        <Skeleton class="mb-4" width="37rem" height="3.5rem"></Skeleton>
-                        <Skeleton class="mb-4" width="37rem" height="3.5rem"></Skeleton>
-                        <Skeleton width="37rem" height="3.5rem"></Skeleton>
+                    <div v-if="isLoading" class="w-full">
+                        <Skeleton class="mt-2 mb-4" height="3.5rem"></Skeleton>
+                        <Skeleton class="mb-4" height="3.5rem"></Skeleton>
+                        <Skeleton class="mb-4" height="3.5rem"></Skeleton>
+                        <Skeleton height="3.5rem"></Skeleton>
                     </div>
                     <div class="col-12" v-for="category in categories">
                         <CategoryCard :title=category.title :subforums=category.subforums :key=category.id />

@@ -79,8 +79,8 @@ onMounted(async () => {
                 <div class="flex justify-content-between mb-3">
                     <section>
                         <span class="block text-500 font-medium mb-3">Últimos hilos</span>
-                        <div class="w-30rem" v-if="isLoading">
-                            <Skeleton class="mb-3"></Skeleton>
+                        <div class="w-full" v-if="isLoading">
+                            <Skeleton class="mb-3 w-15rem"></Skeleton>
                             <Skeleton class="mb-3"></Skeleton>
                             <Skeleton class="mb-3"></Skeleton>
                             <Skeleton class="mb-3"></Skeleton>
