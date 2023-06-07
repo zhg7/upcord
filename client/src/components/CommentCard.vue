@@ -78,6 +78,8 @@ async function addReply() {
 
     if (validationPassed) {
         const result = await createReply(comment.value.threadId, newComment.value.comment, comment.value.id);
+        newComment.value.comment = "";
+        v_new$.value.$reset();
         if (result) {
             showSuccess('Respuesta añadida', "");
             replyingMode.value = false;
@@ -126,8 +128,9 @@ const isUpdated = computed(() => {
                     </div>
                     <div class="flex flex-column">
                         <Skeleton v-if="isLoading" width="7rem" class="mb-2"></Skeleton>
-                        <span v-else v-tooltip.top="formatDate(comment?.createdAt ?? new Date())">{{ getTimeAgo(comment?.createdAt
-                            ?? new Date()) }}</span>
+                        <span v-else v-tooltip.top="formatDate(comment?.createdAt ?? new Date())">{{
+                            getTimeAgo(comment?.createdAt
+                                ?? new Date()) }}</span>
                     </div>
                 </section>
                 <Divider />
@@ -167,7 +170,8 @@ const isUpdated = computed(() => {
                     <span>{{ comment?._count.likes }}</span>
                 </Button>
             </section>
-            <span v-if="isUpdated" class="mt-2 flex justify-content-end text-color-secondary mt-4"><small>Última edición: {{ formatDate(comment?.updatedAt ?? new Date()) }}</small></span>
+            <span v-if="isUpdated" class="mt-2 flex justify-content-end text-color-secondary mt-4"><small>Última edición: {{
+                formatDate(comment?.updatedAt ?? new Date()) }}</small></span>
             <section v-if="replyingMode" class="mt-3">
                 <Textarea v-model="newComment.comment" autoResize rows="5" cols="30" class="w-full"
                     :class="{ 'p-invalid': v_new$.comment.$errors.length }" />
