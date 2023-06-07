@@ -157,6 +157,7 @@ export async function getComments(threadId: number) {
     const comments = await prisma.post.findMany({
         where: {
             threadId: threadId,
+            parentPostId: null,
         }
     })
 
