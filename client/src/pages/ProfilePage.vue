@@ -227,7 +227,7 @@ async function unbanUser() {
             </section>
             <section class="grid">
                 <Accordion class="col-12 lg:col-6" :multiple="true">
-                    <AccordionTab :header="`Hilos creados (${stats?.threadsCreated?.length})`">
+                    <AccordionTab :header="`Hilos creados (${stats?.threadsCreated?.length ?? 0})`">
                         <DataTable :value="stats.threadsCreated" :rows="7" paginator sortMode="multiple" removableSort
                             dataKey="id" scrollable class="mt-3">
                             <template #empty> No se han encontrado hilos. </template>
@@ -256,7 +256,7 @@ async function unbanUser() {
                     </AccordionTab>
                 </Accordion>
                 <Accordion class="col-12 lg:col-6" :multiple="true">
-                    <AccordionTab :header="`Comentarios enviados (${stats?.commentsSent?.length})`">
+                    <AccordionTab :header="`Comentarios enviados (${stats?.commentsSent?.length ?? 0})`">
                         <DataTable :value="stats.commentsSent" :rows="5" paginator sortMode="multiple" removableSort
                             dataKey="id" scrollable scrollHeight="400px" class="mt-3 max-h-30rem overflow-y-auto">
                             <template #empty> No se han encontrado comentarios. </template>
