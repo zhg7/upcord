@@ -114,8 +114,9 @@ async function saveSubforum() {
     if (validationPassed) {
         await changeSubforum(subforum.value.id, forumFormData.value.title, forumFormData.value.description);
         showSuccess("Foro editado correctamente", "");
-        editingForum.value = false;
-        await updateView(Number(route.params.id));
+        setTimeout(() => {
+            window.location.reload();
+        }, 500);
     }
 }
 
@@ -131,7 +132,7 @@ async function saveSubforum() {
         </template>
         <template #content>
             <div class="card">
-                <p class="description">{{ subforum?.description }}</p>
+                <p class="description mt-0">{{ subforum?.description }}</p>
                 <Toast position="bottom-center" />
                 <section class="flex gap-3">
                     <Button v-if="auth.isAuthenticated.value" @click="creatingThread = true" label="Nuevo hilo"

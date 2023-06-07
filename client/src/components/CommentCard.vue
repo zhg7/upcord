@@ -108,6 +108,7 @@ const commentLiked = computed(() => {
     return comment.value?.likes.some((author: Author) => author.authorId === auth.user.value.id);
 })
 
+// Comprobar si el comentario se ha modificado.
 const isUpdated = computed(() => {
     return comment.value?.updatedAt !== comment.value?.createdAt;
 })
