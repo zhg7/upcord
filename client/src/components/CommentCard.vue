@@ -6,6 +6,7 @@ import Button from 'primevue/button';
 import Textarea from 'primevue/textarea';
 import Accordion from 'primevue/accordion';
 import AccordionTab from 'primevue/accordiontab';
+import Skeleton from 'primevue/skeleton';
 import ProfilePicture from '@/components/ProfilePicture.vue'
 import useVuelidator from '@vuelidate/core';
 import { required, minLength } from '@vuelidate/validators';
@@ -23,6 +24,7 @@ const props = defineProps({
 
 const comment = ref();
 const replies = ref();
+const isLoading = ref(true);
 
 const editingMode = ref(false);
 const replyingMode = ref(false);
@@ -45,6 +47,7 @@ const v_new$ = useVuelidator(rules, newComment, { $stopPropagation: true });
 onMounted(async () => {
     comment.value = await getComment(Number(props.commentId));
     replies.value = await getReplies(Number(props.commentId));
+    isLoading.value = false;
 })
 
 function toggleEditMode() {
@@ -111,18 +114,27 @@ const commentLiked = computed(() => {
             <article class="flex flex-column">
                 <section class="flex flex-row align-items-center justify-content-between gap-2">
                     <div class="flex align-items-center gap-2">
-                        <ProfilePicture :image-url=comment?.author.avatar :username=comment?.author.username
+                        <Skeleton v-if="isLoading" shape="circle" size="3rem" class="mr-2"></Skeleton>
+                        <ProfilePicture v-else :image-url=comment?.author.avatar :username=comment?.author.username
                             image-size="large" />
-                        <span>{{ comment?.author.username }}</span>
+                        <Skeleton v-if="isLoading" width="7rem" class="mb-2"></Skeleton>
+                        <span v-else>{{ comment?.author.username }}</span>
                     </div>
                     <div class="flex flex-column">
-                        <span v-tooltip.top="formatDate(comment?.createdAt ?? new Date())">{{ getTimeAgo(comment?.createdAt
+                        <Skeleton v-if="isLoading" width="7rem" class="mb-2"></Skeleton>
+                        <span v-else v-tooltip.top="formatDate(comment?.createdAt ?? new Date())">{{ getTimeAgo(comment?.createdAt
                             ?? new Date()) }}</span>
                     </div>
                 </section>
                 <Divider />
                 <section class="post-content">
-                    <p v-if="!editingMode" class="m-0">{{ comment?.content }}</p>
+                    <div v-if="isLoading">
+                        <Skeleton class="mb-2"></Skeleton>
+                        <Skeleton class="mb-3"></Skeleton>
+                        <Skeleton class="mb-2"></Skeleton>
+                        <Skeleton class="mb-2"></Skeleton>
+                    </div>
+                    <p v-else v-if="!editingMode" class="m-0">{{ comment?.content }}</p>
                     <div v-if="editingMode">
                         <Textarea v-model="editedComment.comment" autoResize rows="5" cols="30" class="w-full"
                             :class="{ 'p-invalid': v$.comment.$errors.length }" />
