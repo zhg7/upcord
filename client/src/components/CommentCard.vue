@@ -63,7 +63,7 @@ async function saveComment() {
         const result = await changeComment(comment.value.id, editedComment.value.comment);
         if (result) {
             showSuccess('Comentario editado correctamente.', "");
-            comment.value.content = editedComment.value.comment;
+            comment.value = await getComment(Number(comment.value.id));
             editingMode.value = false;
         } else {
             showError('Error interno', "No se podido editar el comentario.");
@@ -104,6 +104,10 @@ async function handleLike() {
 // Verificar si el usuario logeado ha dado me gusta.
 const commentLiked = computed(() => {
     return comment.value?.likes.some((author: Author) => author.authorId === auth.user.value.id);
+})
+
+const isUpdated = computed(() => {
+    return comment.value?.updatedAt !== comment.value?.createdAt;
 })
 
 </script>
@@ -162,8 +166,8 @@ const commentLiked = computed(() => {
                     <i class="pi" :class="{ 'pi-heart-fill': commentLiked, 'pi-heart': !commentLiked }"></i>
                     <span>{{ comment?._count.likes }}</span>
                 </Button>
-
             </section>
+            <span v-if="isUpdated" class="mt-2 flex justify-content-end text-color-secondary mt-4"><small>Última edición: {{ formatDate(comment?.updatedAt ?? new Date()) }}</small></span>
             <section v-if="replyingMode" class="mt-3">
                 <Textarea v-model="newComment.comment" autoResize rows="5" cols="30" class="w-full"
                     :class="{ 'p-invalid': v_new$.comment.$errors.length }" />
