@@ -8,6 +8,9 @@ Foro de propósito general organizado en subforos. Los usuarios registrados tien
 ![Prisma](https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=Prisma&logoColor=white)
 ![Socket.io](https://img.shields.io/badge/Socket.io-black?style=for-the-badge&logo=socket.io&badgeColor=010101)
 
+## Demo
+https://github.com/zhg7/upcord/assets/92540253/84fd6d71-c512-4db8-a7bd-96ed3aa73578
+
 ## Uso
 
 ### Requisitos
