@@ -1,4 +1,4 @@
-# <img src="https://raw.githubusercontent.com/zhg7/upcord/557a10359a3711576e6546e940458052c5d54321/client/src/assets/images/upcord-icon.svg" width="42px"></img> Upcord
+# <img src="https://raw.githubusercontent.com/zhg7/upcord/557a10359a3711576e6546e940458052c5d54321/client/src/assets/images/upcord-icon.svg" width="42px"></img> Upcord [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/zhg7/upcord)
 Foro de propósito general organizado en subforos. Los usuarios registrados tienen sus propios perfiles, pueden crear hilos y dejar comentarios. Además, pueden comunicarse entre ellos de manera privada mediante chats.
 
 [![Licence](https://img.shields.io/github/license/zhg7/upcord?style=for-the-badge)](./LICENSE)
