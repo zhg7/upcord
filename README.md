@@ -9,6 +9,9 @@ General-purpose forum organised into subforums. Registered users have their own 
 ![Prisma](https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=Prisma&logoColor=white)
 ![Socket.io](https://img.shields.io/badge/Socket.io-black?style=for-the-badge&logo=socket.io&badgeColor=010101)
 
+> [!NOTE]
+> The UI is only available in Spanish.
+
 <details>
 <summary>Screenshots</summary>
 <br/>
@@ -21,7 +24,7 @@ General-purpose forum organised into subforums. Registered users have their own 
 <img width="1893" height="913" alt="capture_1762548216271" src="https://github.com/user-attachments/assets/93b57975-e99f-48af-aa6a-aa77f041f8f5" />
 </details>
 
-## Uso
+## Usage
 
 ### Requirements
 - [Node.js](https://nodejs.org/)
